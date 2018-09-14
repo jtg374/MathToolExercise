@@ -1,0 +1,10 @@
+function v = mtxNull(M)
+    [~, S, V] = svd(M);
+    SS = diag(S);
+    VN = V(:,abs(SS)<1e-10);
+    n = size(VN,2);
+    if n
+        v = VN*rand(n,1);
+    else
+        v = inf
+        disp('

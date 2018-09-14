@@ -1,0 +1,596 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw1</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-11"><meta name="DC.source" content="hw1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Testing for (non)linearity</a></li><li><a href="#10">2 Inner product with a unit vector</a></li><li><a href="#30">3 Geometry of linear transformation</a></li><li><a href="#44">4 A simple visual neuron</a></li><li><a href="#49">Gram-Schmidt</a></li><li><a href="#53">Null and Range spaces</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
+</pre><h2 id="2">1 Testing for (non)linearity</h2><p>System 1 is possibly linear. L = [1 4] and is unique</p><p>System 2 is possibly linear. L = [-3 1; 0 0] is not unique because there are two elements in output but there is only one independet input vector</p><p>System 3 is possibly linear. L = [-1 1/3] and is unique</p><p>System 4 is not linear because all linear system return zero or zero vector in response to zero input.</p><p>System 5 is not linear because it doesn't follow the rule of superposition</p><pre class="codeinput">[1 -1] + 2*[1 1]
+</pre><pre class="codeoutput">
+ans =
+
+     3     1
+
+</pre><pre class="codeinput">[3  2] + 2*[1 2]
+</pre><pre class="codeoutput">
+ans =
+
+     5     6
+
+</pre><p>is not equal to [5 3]</p><h2 id="10">2 Inner product with a unit vector</h2><div><ul><li>a)</li></ul></div><p><img src="hw1_eq08269971189405727005.png" alt="$$ \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcA = @(u,v) u*dot(v,u);
+</pre><div><ul><li>b)</li></ul></div><p><img src="hw1_eq14645424027093930646.png" alt="$$ \vec{v} - \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcB = @(u,v) v - funcA(u,v);
+</pre><div><ul><li>c)</li></ul></div><p><img src="hw1_eq13054791812446416207.png" alt="$$ ||\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})||^2 $$"></p><pre class="codeinput">funcC = @(u,v) sqrt(sum(func(u,v).^2));
+</pre><div><ul><li>2.1 2-dimensional test</li></ul></div><pre class="codeinput">v = rand(2,1)*2-1
+a = rand()*2*pi; u = [cos(a);sin(a)]
+
+figure; hold <span class="string">on</span>
+quiver(0,0,v(1),v(2),1,<span class="string">'b-'</span>,<span class="string">'DisplayName'</span>,<span class="string">'$\vec{v}$'</span>)
+quiver(0,0,u(1),u(2),1,<span class="string">'r-'</span>,<span class="string">'DisplayName'</span>,<span class="string">'$\hat{u}$'</span>)
+p=funcA(u,v)
+quiver(0,0,p(1),p(2),1,<span class="string">'b-.'</span>,<span class="string">'DisplayName'</span>,<span class="string">'$\hat{u} (\vec{v} \cdot \hat{u})$'</span>)
+q=funcB(u,v)
+quiver(p(1),p(2),q(1),q(2),1,<span class="string">'b:'</span>,<span class="string">'DisplayName'</span>,<span class="string">'$\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})$'</span>)
+leg=legend();
+set(leg,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+plot([-2,2],[0,0],<span class="string">'k'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>)
+plot([0,0],[-2,2],<span class="string">'k'</span>,<span class="string">'HandleVisibility'</span>,<span class="string">'off'</span>)
+hold <span class="string">off</span>
+axis <span class="string">equal</span>
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+</pre><pre class="codeoutput">
+v =
+
+    0.4800
+   -0.1503
+
+
+u =
+
+   -0.7145
+    0.6996
+
+
+p =
+
+    0.3202
+   -0.3135
+
+
+q =
+
+    0.1598
+    0.1632
+
+</pre><img vspace="5" hspace="5" src="hw1_01.png" alt=""> <p>The codes are working.</p><div><ul><li>2.2 4-dimensional test</li></ul></div><pre class="codeinput">v = rand(4,1)*2-1
+u0 = rand(4,1)*2-1; u = u0/norm(u0)
+</pre><pre class="codeoutput">
+v =
+
+    0.3304
+   -0.9241
+    0.1762
+   -0.4878
+
+
+u =
+
+   -0.5114
+   -0.0629
+   -0.8542
+    0.0690
+
+</pre><p>the vector in a)</p><pre class="codeinput">p = funcA(u,v)
+</pre><pre class="codeoutput">
+p =
+
+    0.1509
+    0.0186
+    0.2520
+   -0.0203
+
+</pre><p>is in the same direction as <img src="hw1_eq12245515025261625754.png" alt="$\hat{u}$">.</p><pre class="codeinput">p./u
+</pre><pre class="codeoutput">
+ans =
+
+   -0.2950
+   -0.2950
+   -0.2950
+   -0.2950
+
+</pre><p>the vector in b)</p><pre class="codeinput">q = funcB(u,v)
+</pre><pre class="codeoutput">
+q =
+
+    0.1795
+   -0.9426
+   -0.0758
+   -0.4675
+
+</pre><p>is orthogonal to <img src="hw1_eq10813290176954031051.png" alt="$\vec{p}$">.</p><pre class="codeinput">dot(p,q)
+</pre><pre class="codeoutput">
+ans =
+
+   1.7347e-18
+
+</pre><p>almost zero.</p><p>the sum of the two vector</p><pre class="codeinput">p+q
+</pre><pre class="codeoutput">
+ans =
+
+    0.3304
+   -0.9241
+    0.1762
+   -0.4878
+
+</pre><p>is equal to <img src="hw1_eq09098711414830822605.png" alt="$\vec{v}$">.</p><p>the sum of squared length of the two vectors</p><pre class="codeinput">sum(p.^2) + sum(q.^2)
+</pre><pre class="codeoutput">
+ans =
+
+    1.2321
+
+</pre><p>is equal to $  {\vec{v}}  ^2 $.</p><pre class="codeinput">sum(v.^2)
+</pre><pre class="codeoutput">
+ans =
+
+    1.2321
+
+</pre><h2 id="30">3 Geometry of linear transformation</h2><p>singular value decomposition of a random matrix M</p><pre class="codeinput">M = rand(2,2)
+[U,S,V] = svd(M)
+</pre><pre class="codeoutput">
+M =
+
+    0.7965    0.0790
+    0.1908    0.6145
+
+
+U =
+
+   -0.8637   -0.5040
+   -0.5040    0.8637
+
+
+S =
+
+    0.8705         0
+         0    0.5450
+
+
+V =
+
+   -0.9008   -0.4342
+   -0.4342    0.9008
+
+</pre><p>a unit circle to be operated by the matrix</p><pre class="codeinput">theta = (0:64)/64*2*pi;
+P = [cos(theta);sin(theta)];
+figure;hold <span class="string">on</span>
+plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
+plot(P(1,:),P(2,:))
+hold <span class="string">off</span>;axis <span class="string">equal</span>
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+</pre><img vspace="5" hspace="5" src="hw1_02.png" alt=""> <p><b>First transformation</b></p><pre class="codeinput">R1 = V'*eye(2)
+[lu,lv,a] = vecLenAngle(R1(:,1),R1(:,2));
+disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="string">', '</span>,num2str(lv), <span class="string">'. Angle '</span>,num2str(a*180/pi),<span class="string">' degree'</span>])
+</pre><pre class="codeoutput">
+R1 =
+
+   -0.9008   -0.4342
+   -0.4342    0.9008
+
+resulting length 1, 1. Angle 90 degree
+</pre><p>angle changed but lengths are preserved.</p><pre class="codeinput">plotVec2(R1);
+</pre><img vspace="5" hspace="5" src="hw1_03.png" alt=""> <pre class="codeinput">P = V'*P;
+figure;hold <span class="string">on</span>
+plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
+plot(P(1,:),P(2,:))
+hold <span class="string">off</span>;axis <span class="string">equal</span>
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+</pre><img vspace="5" hspace="5" src="hw1_04.png" alt=""> <p>the circle rotated (potentially flipped axis addtionally) because V is an orthogonal matrix.</p><p><b>Second transformation</b></p><pre class="codeinput">R2 = S*R1
+[lu,lv,a] = vecLenAngle(R2(:,1),R2(:,2));
+disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="string">', '</span>,num2str(lv), <span class="string">'. Angle '</span>,num2str(a*180/pi),<span class="string">' degree'</span>])
+</pre><pre class="codeoutput">
+R2 =
+
+   -0.7841   -0.3780
+   -0.2366    0.4909
+
+resulting length 0.81907, 0.61958. Angle 69.2014 degree
+</pre><p>lengths changed, angle unchanged.</p><pre class="codeinput">plotVec2(R2);
+</pre><img vspace="5" hspace="5" src="hw1_05.png" alt=""> <pre class="codeinput">P = S*P;
+figure;hold <span class="string">on</span>
+plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
+plot(P(1,:),P(2,:))
+hold <span class="string">off</span>;axis <span class="string">equal</span>
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+</pre><img vspace="5" hspace="5" src="hw1_06.png" alt=""> <p>The circle was stretched into an oval because S is a diagonal matrix.</p><p><b>Third transformation</b></p><pre class="codeinput">R3 = U*R2
+[lu,lv,a] = vecLenAngle(R3(:,1),R3(:,2));
+disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="string">', '</span>,num2str(lv), <span class="string">'. Angle '</span>,num2str(a*180/pi),<span class="string">' degree'</span>])
+</pre><pre class="codeoutput">
+R3 =
+
+    0.7965    0.0790
+    0.1908    0.6145
+
+resulting length 0.81907, 0.61958. Angle 69.2014 degree
+</pre><p>angle changed, lengths unchanged</p><pre class="codeinput">plotVec2(R3);
+</pre><img vspace="5" hspace="5" src="hw1_07.png" alt=""> <pre class="codeinput">P = U*P;
+figure;hold <span class="string">on</span>
+plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
+plot(P(1,:),P(2,:))
+hold <span class="string">off</span>;axis <span class="string">equal</span>
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+</pre><img vspace="5" hspace="5" src="hw1_08.png" alt=""> <p>the oval rotated (potentially flipped axis addtionally) because U is an orthogonal matrix.</p><h2 id="44">4 A simple visual neuron</h2><div><ul><li>a) the system is not linear because it only takes positive input, but with positive inputs the response is essentially the dot product a vector of 7 intensities values of each location with the weight vector</li></ul></div><pre class="codeinput">w = [1,3,4,5,4,3,1]
+</pre><pre class="codeoutput">
+w =
+
+     1     3     4     5     4     3     1
+
+</pre><div><ul><li>b) the unit vector that can generate largest response is parallel with the weight vector</li></ul></div><pre class="codeinput">u = w/norm(w)
+</pre><pre class="codeoutput">
+u =
+
+    0.1140    0.3419    0.4558    0.5698    0.4558    0.3419    0.1140
+
+</pre><p>because the response dot(u,w), which is equal to |w|cos(a), where a is the angle between u and w, takes largest value only when cos(a) is 1 which means u and w are on the same direction.</p><div><ul><li>c) [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1].</li></ul></div><h2 id="49">Gram-Schmidt</h2><div><ul><li>3d plot</li></ul></div><pre class="codeinput">Q = gramSchmidt(3)
+figure; hold <span class="string">on</span>
+quiver3(0,0,0,Q(1,1),Q(2,1),Q(3,1))
+quiver3(0,0,0,Q(1,2),Q(2,2),Q(3,2))
+quiver3(0,0,0,Q(1,3),Q(2,3),Q(3,3))
+axis <span class="string">equal</span>
+xlim([-1.1 1.1]);ylim([-1.1 1.1]);zlim([-1.1 1.1]);
+grid <span class="string">on</span>
+view(3)
+rotate3d <span class="string">on</span>
+</pre><pre class="codeoutput">
+Q =
+
+   -0.3176   -0.9466   -0.0558
+   -0.4609    0.1027    0.8815
+    0.8287   -0.3057    0.4689
+
+</pre><img vspace="5" hspace="5" src="hw1_09.png" alt=""> <div><ul><li>10d test</li></ul></div><pre class="codeinput">Q = gramSchmidt(10)
+Q * Q'
+</pre><pre class="codeoutput">
+Q =
+
+  Columns 1 through 7
+
+    0.0189    0.1600    0.2624    0.3857   -0.0502    0.2071   -0.2520
+   -0.4279   -0.0091   -0.3412   -0.2980    0.2086    0.4146    0.2387
+   -0.3259    0.2242    0.2633   -0.2003   -0.5108   -0.2518   -0.1735
+   -0.4484    0.3745    0.2331    0.0669    0.4657    0.3013   -0.2876
+    0.0670   -0.5860    0.4329   -0.2806   -0.0379    0.4270    0.1654
+    0.4773    0.2710   -0.3944    0.1789    0.0443    0.2968    0.0720
+   -0.1828    0.2662   -0.3264   -0.2905   -0.4877    0.1860    0.1288
+   -0.1910   -0.4135   -0.3048    0.3823   -0.3575    0.3206   -0.4936
+    0.2465    0.3458    0.3838    0.0673   -0.3147    0.4621    0.2215
+   -0.3826   -0.0743    0.0363    0.6099   -0.0891   -0.0981    0.6518
+
+  Columns 8 through 10
+
+    0.5156   -0.2647   -0.5582
+   -0.1101   -0.5341   -0.2045
+   -0.4912   -0.0285   -0.3708
+   -0.1081    0.4190    0.1492
+   -0.0307    0.3305   -0.2541
+   -0.4095    0.2858   -0.4082
+    0.4993    0.4060    0.0394
+   -0.1679   -0.0215    0.2249
+   -0.1364   -0.2948    0.4479
+   -0.0652    0.1588   -0.0539
+
+
+ans =
+
+  Columns 1 through 7
+
+    1.0000   -0.0000   -0.0000    0.0000    0.0000    0.0000    0.0000
+   -0.0000    1.0000   -0.0000    0.0000    0.0000   -0.0000   -0.0000
+   -0.0000   -0.0000    1.0000    0.0000    0.0000    0.0000    0.0000
+    0.0000    0.0000    0.0000    1.0000   -0.0000    0.0000   -0.0000
+    0.0000    0.0000    0.0000   -0.0000    1.0000    0.0000   -0.0000
+    0.0000   -0.0000    0.0000    0.0000    0.0000    1.0000    0.0000
+    0.0000   -0.0000    0.0000   -0.0000   -0.0000    0.0000    1.0000
+    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
+   -0.0000    0.0000   -0.0000    0.0000    0.0000   -0.0000   -0.0000
+   -0.0000   -0.0000   -0.0000   -0.0000   -0.0000    0.0000   -0.0000
+
+  Columns 8 through 10
+
+    0.0000   -0.0000   -0.0000
+    0.0000    0.0000   -0.0000
+    0.0000   -0.0000   -0.0000
+    0.0000    0.0000   -0.0000
+    0.0000    0.0000   -0.0000
+    0.0000   -0.0000    0.0000
+    0.0000   -0.0000   -0.0000
+    1.0000   -0.0000    0.0000
+   -0.0000    1.0000   -0.0000
+    0.0000   -0.0000    1.0000
+
+</pre><p><img src="hw1_eq13601281911708470641.png" alt="$QQ^T$"> is almost idendity matrix. Q has orthonormal columes.</p><h2 id="53">Null and Range spaces</h2><p>load mtxExamples.mat</p><div><ul><li>MTX1</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all; close all
+%% 1 Testing for (non)linearity
+%%
+% System 1
+% is possibly linear.
+% L = [1 4]
+% and is unique
+%%
+% System 2
+% is possibly linear.
+% L = [-3 1; 0 0] 
+% is not unique because there are two elements in output but there is only
+% one independet input vector
+%%
+% System 3
+% is possibly linear.
+% L = [-1 1/3]
+% and is unique
+%%
+% System 4
+% is not linear because all linear system return zero or zero vector in
+% response to zero input.
+%%
+% System 5
+% is not linear because it doesn't follow the rule of superposition
+[1 -1] + 2*[1 1] 
+%%
+[3  2] + 2*[1 2]
+%%
+% is not equal to [5 3]
+
+%% 2 Inner product with a unit vector
+%%
+% * a) 
+%%
+% $$ \hat{u} (\vec{v} \cdot \hat{u}) $$
+funcA = @(u,v) u*dot(v,u);
+%%
+% * b) 
+%%
+% $$ \vec{v} - \hat{u} (\vec{v} \cdot \hat{u}) $$
+funcB = @(u,v) v - funcA(u,v);
+%%
+% * c)
+%%
+% $$ ||\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})||^2 $$
+funcC = @(u,v) sqrt(sum(func(u,v).^2));
+
+%% 
+% * 2.1 2-dimensional test
+
+v = rand(2,1)*2-1
+a = rand()*2*pi; u = [cos(a);sin(a)]
+
+figure; hold on
+quiver(0,0,v(1),v(2),1,'b-','DisplayName','$\vec{v}$')
+quiver(0,0,u(1),u(2),1,'r-','DisplayName','$\hat{u}$')
+p=funcA(u,v)
+quiver(0,0,p(1),p(2),1,'b-.','DisplayName','$\hat{u} (\vec{v} \cdot \hat{u})$')
+q=funcB(u,v)
+quiver(p(1),p(2),q(1),q(2),1,'b:','DisplayName','$\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})$')
+leg=legend();
+set(leg,'Interpreter','latex')
+plot([-2,2],[0,0],'k','HandleVisibility','off')
+plot([0,0],[-2,2],'k','HandleVisibility','off')
+hold off
+axis equal
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+%%
+% The codes are working. 
+%% 
+% * 2.2 4-dimensional test
+v = rand(4,1)*2-1
+u0 = rand(4,1)*2-1; u = u0/norm(u0)
+%%
+% the vector in a)
+p = funcA(u,v)
+%%
+% is in the same direction as $\hat{u}$.
+p./u
+%%
+% the vector in b)
+q = funcB(u,v)
+%%
+% is orthogonal to $\vec{p}$.
+dot(p,q)
+%%
+% almost zero.
+%%
+% the sum of the two vector
+p+q
+%%
+% is equal to $\vec{v}$.
+%%
+% the sum of squared length of the two vectors
+sum(p.^2) + sum(q.^2)
+%%
+% is equal to $ || {\vec{v}} || ^2 $. 
+%%
+sum(v.^2)
+
+%% 3 Geometry of linear transformation
+% singular value decomposition of a random matrix M
+M = rand(2,2)
+[U,S,V] = svd(M)
+%%
+% a unit circle to be operated by the matrix
+theta = (0:64)/64*2*pi;
+P = [cos(theta);sin(theta)];
+figure;hold on
+plot(P(1,1),P(2,1),'r','Marker','*')
+plot(P(1,:),P(2,:))
+hold off;axis equal
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+%%
+% *First transformation*
+R1 = V'*eye(2)
+[lu,lv,a] = vecLenAngle(R1(:,1),R1(:,2));
+disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
+%%
+% angle changed but lengths are preserved. 
+plotVec2(R1);
+%%
+P = V'*P;
+figure;hold on
+plot(P(1,1),P(2,1),'r','Marker','*')
+plot(P(1,:),P(2,:))
+hold off;axis equal
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+%%
+% the circle rotated (potentially flipped axis addtionally) because V is an
+% orthogonal matrix.
+%%
+% *Second transformation*
+R2 = S*R1
+[lu,lv,a] = vecLenAngle(R2(:,1),R2(:,2));
+disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
+%%
+% lengths changed, angle unchanged. 
+plotVec2(R2);
+%%
+P = S*P;
+figure;hold on
+plot(P(1,1),P(2,1),'r','Marker','*')
+plot(P(1,:),P(2,:))
+hold off;axis equal
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+%%
+% The circle was stretched into an oval because S is a diagonal matrix. 
+%%
+% *Third transformation*
+R3 = U*R2
+[lu,lv,a] = vecLenAngle(R3(:,1),R3(:,2));
+disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
+%%
+% angle changed, lengths unchanged
+plotVec2(R3);
+%%
+P = U*P;
+figure;hold on
+plot(P(1,1),P(2,1),'r','Marker','*')
+plot(P(1,:),P(2,:))
+hold off;axis equal
+xlim([-1.5,1.5])
+ylim([-1.5,1.5])
+%%
+% the oval rotated (potentially flipped axis addtionally) because U is an
+% orthogonal matrix.
+
+%% 4 A simple visual neuron
+%%
+% * a) 
+% the system is not linear because it only takes positive input,
+% but with positive inputs the response is essentially the dot product
+% a vector of 7 intensities values of each location with the weight vector
+w = [1,3,4,5,4,3,1]
+%%
+% * b)
+% the unit vector that can generate largest response is parallel with the
+% weight vector
+u = w/norm(w)
+%%
+% because the response dot(u,w), which is equal to |w|cos(a), where a is
+% the angle between u and w, takes largest value only when cos(a) is 1 which means u and w are on the same
+% direction. 
+%%
+% * c)
+% [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
+% 
+%% Gram-Schmidt
+%%
+% * 3d plot
+Q = gramSchmidt(3)
+figure; hold on
+quiver3(0,0,0,Q(1,1),Q(2,1),Q(3,1))
+quiver3(0,0,0,Q(1,2),Q(2,2),Q(3,2))
+quiver3(0,0,0,Q(1,3),Q(2,3),Q(3,3))
+axis equal
+xlim([-1.1 1.1]);ylim([-1.1 1.1]);zlim([-1.1 1.1]);
+grid on
+view(3)
+rotate3d on
+%%
+% * 10d test
+Q = gramSchmidt(10)
+Q * Q'
+%%
+% $QQ^T$ is almost idendity matrix. Q has orthonormal columes. 
+%% Null and Range spaces
+% load mtxExamples.mat
+%%
+% * MTX1
+
+##### SOURCE END #####
+--></body></html>
