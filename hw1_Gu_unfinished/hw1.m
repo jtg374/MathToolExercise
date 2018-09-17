@@ -184,12 +184,20 @@ w = [1,3,4,5,4,3,1]
 % weight vector
 u = w/norm(w)
 %%
-% because the response dot(u,w), which is equal to |w|cos(a), where a is
-% the angle between u and w, takes largest value only when cos(a) is 1 which means u and w are on the same
-% direction. 
+% because the response dot(u,w), which is equal to |w|cos(theta), where a is
+% the angle between u and w, takes largest value only when cos(theta) is 1 which 
+% means u and w are on the same direction. 
 %%
 % * c)
 % [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
+% Proof:
+% 1. In two dimendional case
+% Let input vector u = (cos(alpha),sin(alpha)), where 0<=alpha<=pi/2
+% and weight vecor w = (a,b).
+% Then response = a*cos(alpha) + b*sin(alpha) = |w|cos(theta), where
+% theta = alpha - arctan(b/a). 
+% The response is smallest when theta is most close to pi/2, that is
+% arctan(b/a) when 
 % 
 %% Gram-Schmidt
 %%
