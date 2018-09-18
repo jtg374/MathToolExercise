@@ -190,15 +190,45 @@ u = w/norm(w)
 %%
 % * c)
 % [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
+%%
 % Proof:
-% 1. In two dimendional case
+%%
+% 1. In two dimensional case
+%%
 % Let input vector u = (cos(alpha),sin(alpha)), where 0<=alpha<=pi/2
-% and weight vecor w = (a,b).
-% Then response = a*cos(alpha) + b*sin(alpha) = |w|cos(theta), where
-% theta = alpha - arctan(b/a). 
-% The response is smallest when theta is most close to pi/2, that is
-% arctan(b/a) when 
-% 
+% and weight vecor w = (w1,w2).
+% Then response = cos(alpha)*w1 + sin(alpha)*w2 = |w|cos(theta), where
+% theta = alpha - arctan(w2/w1).
+% The response is the least when theta is most further away from 0, that
+% is w1 when w1<=w2 (take alpha as 0), or w2 when w2<w1 (take alpha as pi/2).
+% so cos(alpha)*w1 + sin(alpha)*w2 >= min(w1,w2) (if an only if alpha = 0 or
+% pi/2). 
+%%
+% 1.5 three dimensional case
+% Let input vector u = 
+% (cos(alpha_1), sin(alpha_1)*cos(alpha_2), sin(alpha_1)*sin(alpha_2) )
+% and w = (w1,w2,w3).
+% Then the response = 
+% cos(alpha_1)*w1 + sin(alpha_1)*( cos(alpha_2)*w2 + sin(alpha_2)*w3 )
+% >= cos(alpha_1)*w1 + sin(alpha_1)*min(w2,w3)
+% (if and only if alpha_2 is 0 or pi/2)
+% >= min(w1,min(w2,w3))
+% (if and only if alpha_1 is 0 or pi/2)
+% = min(w1,w2,w3)
+% when only one of the input element is 1 with others to be 0. 
+% 2. n dimensional case (n>2) (induction)
+%%
+% Let input vector u = (cos(alpha_1),sin(alpha_1)*cos(alpha_2),sin(alpha_1)*
+% sin(alpha_2)*cos(alpha_3),...,sin(alpha_1)*sin(alpha_2)*...*sin(alpha_(n-1)))
+% and w = (w1,w2,w3,...wn). 
+% Then response = 
+% cos(alpha_1)*w1 + sin(alpha_1)*(cos(alpha_2)*w2+sin(alpha_2)*(...
+% +(cos(alpha_(n-1)*w_(n-1) + sin(alpha_(n-1)*wn))))
+% >= cos(alpha_1)*w1 + sin(alpha_1)*(cos(alpha_2)*w2+sin(alpha_2)*
+% min(w_(n-1),wn)
+% if and only if alpha_(n-1) is 0 or pi/2
+% >= ... >= min(w1,w2,w3,...,wn). 
+% Q.E.D. 
 %% Gram-Schmidt
 %%
 % * 3d plot
