@@ -2,20 +2,30 @@ clear all; close all
 %% 1 Testing for (non)linearity
 %%
 % System 1
-% is possibly linear.
-% L = [1 4]
-% and is unique
+% is not linear.
+% If it's linear, input 3 will generate 3 times of output of input 1,
+% which is [3 12]
 %%
 % System 2
 % is possibly linear.
-% L = [-3 1; 0 0] 
-% is not unique because there are two elements in output but there is only
-% one independet input vector
+L = [-3 1/2; 0 0] 
+%%
+% is not unique because there are two elements in every output but there is only
+% one independet input vector.
+%%
+% verification
+L*[2;4]
+L*[-1;-2]
 %%
 % System 3
 % is possibly linear.
-% L = [-1 1/3]
-% and is unique
+L = [-1 1/3]
+%%
+% and is unique. 
+%%
+% verification
+L*[2;6]
+L*[-1;3]
 %%
 % System 4
 % is not linear because all linear system return zero or zero vector in
@@ -25,6 +35,7 @@ clear all; close all
 % is not linear because it doesn't follow the rule of superposition
 [1 -1] + 2*[1 1] 
 %%
+% where output
 [3  2] + 2*[1 2]
 %%
 % is not equal to [5 3]
@@ -92,6 +103,7 @@ dot(p,q)
 p+q
 %%
 % is equal to $\vec{v}$.
+v
 %%
 % the sum of squared length of the two vectors
 sum(p.^2) + sum(q.^2)
@@ -120,7 +132,7 @@ R1 = V'*eye(2)
 [lu,lv,a] = vecLenAngle(R1(:,1),R1(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% angle changed but lengths are preserved. 
+% Both angle and lengths are preserved. 
 plotVec2(R1);
 %%
 P = V'*P;
@@ -139,7 +151,7 @@ R2 = S*R1
 [lu,lv,a] = vecLenAngle(R2(:,1),R2(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% lengths changed, angle unchanged. 
+% Both angle and length are changed 
 plotVec2(R2);
 %%
 P = S*P;
@@ -157,7 +169,7 @@ R3 = U*R2
 [lu,lv,a] = vecLenAngle(R3(:,1),R3(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% angle changed, lengths unchanged
+% Both angle and lengths are preserved.
 plotVec2(R3);
 %%
 P = U*P;
@@ -184,52 +196,74 @@ w = [1,3,4,5,4,3,1]
 % weight vector
 u = w/norm(w)
 %%
-% because the response dot(u,w), which is equal to |w|cos(theta), where a is
-% the angle between u and w, takes largest value only when cos(theta) is 1 which 
+% because the response dot(u,w), which is equal to $|w|cos(\theta)$, where a is
+% the angle between u and w, takes largest value only when $cos(\theta) = 1$, which 
 % means u and w are on the same direction. 
 %%
 % * c)
-% [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
+%%
+% Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
 %%
 % Proof:
 %%
 % 1. In two dimensional case
 %%
-% Let input vector u = (cos(alpha),sin(alpha)), where 0<=alpha<=pi/2
-% and weight vecor w = (w1,w2).
-% Then response = cos(alpha)*w1 + sin(alpha)*w2 = |w|cos(theta), where
-% theta = alpha - arctan(w2/w1).
-% The response is the least when theta is most further away from 0, that
-% is w1 when w1<=w2 (take alpha as 0), or w2 when w2<w1 (take alpha as pi/2).
-% so cos(alpha)*w1 + sin(alpha)*w2 >= min(w1,w2) (if an only if alpha = 0 or
-% pi/2). 
+% Let input vector $u = (cos(\alpha),sin(\alpha))$ where $0<=\alpha<=\pi/2$
+% and weight vecor $w = (w_1,w_2)$.
 %%
-% 1.5 three dimensional case
-% Let input vector u = 
-% (cos(alpha_1), sin(alpha_1)*cos(alpha_2), sin(alpha_1)*sin(alpha_2) )
-% and w = (w1,w2,w3).
-% Then the response = 
-% cos(alpha_1)*w1 + sin(alpha_1)*( cos(alpha_2)*w2 + sin(alpha_2)*w3 )
-% >= cos(alpha_1)*w1 + sin(alpha_1)*min(w2,w3)
-% (if and only if alpha_2 is 0 or pi/2)
-% >= min(w1,min(w2,w3))
-% (if and only if alpha_1 is 0 or pi/2)
-% = min(w1,w2,w3)
-% when only one of the input element is 1 with others to be 0. 
-% 2. n dimensional case (n>2) (induction)
+% Then response equals $cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$, where
+% $\theta = \alpha - tan^{-1}(w_2/w_1)$.
 %%
-% Let input vector u = (cos(alpha_1),sin(alpha_1)*cos(alpha_2),sin(alpha_1)*
-% sin(alpha_2)*cos(alpha_3),...,sin(alpha_1)*sin(alpha_2)*...*sin(alpha_(n-1)))
-% and w = (w1,w2,w3,...wn). 
-% Then response = 
-% cos(alpha_1)*w1 + sin(alpha_1)*(cos(alpha_2)*w2+sin(alpha_2)*(...
-% +(cos(alpha_(n-1)*w_(n-1) + sin(alpha_(n-1)*wn))))
-% >= cos(alpha_1)*w1 + sin(alpha_1)*(cos(alpha_2)*w2+sin(alpha_2)*
-% min(w_(n-1),wn)
-% if and only if alpha_(n-1) is 0 or pi/2
-% >= ... >= min(w1,w2,w3,...,wn). 
-% Q.E.D. 
-%% Gram-Schmidt
+% The response is the least when $\theta$ is most further away from 0, that
+% is w1 if w1<=w2 (take $\alpha = 0$), or w2 if w2<w1 (take $\alpha = \pi/2$).
+% so $cos(\alpha)*w_1 + sin(\alpha)*w_2 >= min(w_1,w_2)$ and is the minimum 
+% (takes minimum when $\alpha = 0$ or $\pi/2$). 
+%%
+% 2. three dimensional case
+%%
+% Let input vector $u = 
+% (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$
+% and $w = (w_1,w_2,w_3)$.
+% Then the response =
+%%
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$
+%%
+% whose miminum (if exists) should be equal to 
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*min(w_2,w_3)$
+%%
+% (when $\alpha_2 = 0$ or $\pi/2$)
+%%
+% whose miminum exists and is equal to 
+% $min(w_1,min(w_2,w_3))$
+% $= min(w_1,w_2,w_3)$
+%%
+% (when $\alpha_1 = 0$ or $\pi/2$)
+%%
+% so when only one of the input element (corresponding to the minimum in weight vector)
+% is 1 and others equal 0, the response takes minimum, which is $=
+% min(w_1,w_2,w_3)$. 
+%%
+% 3.. n dimensional case (n>2) (induction)
+%%
+% Let input vector $u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)*
+% sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$
+% and $w = (w_1,w_2,w_3,...w_n)$. 
+%%
+% Then response equals 
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(...
+% +(cos(\alpha_{n-1})*w_{n-1} + sin(\alpha_{n-1})*w_n))))$
+% $\geq cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*
+% min(w_{n-1},w_n)$
+% $\geq ... \geq min(w_1,w_2,w_3,...,w_n)$
+%%
+% (equal if every $alpha_i$ is either 0 or $\pi/2$)
+%%
+% The right side is the minimum and exists. 
+%%
+% Q.E.D.  
+%% 5 Gram-Schmidt
+%%
+% <include>gramSchmidt.m</include>
 %%
 % * 3d plot
 Q = gramSchmidt(3)
@@ -247,8 +281,108 @@ view(3)
 Q = gramSchmidt(7)
 Q * Q'
 %%
-% $QQ^T$ is almost idendity matrix. Q has orthonormal columes. 
-%% Null and Range spaces
-% load mtxExamples.mat
+% $QQ^T$ is almost idendity matrix, so Q has orthonormal columes. 
+%% 6 Null and Range spaces
+%%
+% <include>mtxNull.m</include>
+%%
+% <include>mtxRange.m</include>
+%%
+% <include>mtxInverse.m</include>
+%%
+load mtxExamples.mat
 %%
 % * MTX1
+% Null Space
+nullVec = mtxNull(mtx1)
+%%
+if nullVec
+    isZero = mtx1*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx1)
+%%
+if y
+    x = mtxInverse(mtx1)*y
+end
+%%
+y_hat = mtx1*x
+%% 
+% is equal to y. 
+%%
+% * mtx2
+% Null Space
+nullVec = mtxNull(mtx2)
+%%
+if nullVec
+    isZero = mtx2*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx2)
+%%
+if y
+    x = mtxInverse(mtx2)*y
+end
+%%
+y_hat = mtx2*x
+%% 
+% is equal to y. 
+%%
+% * mtx3
+% Null Space
+nullVec = mtxNull(mtx3)
+%%
+if nullVec
+    isZero = mtx3*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx3)
+%%
+if y
+    x = mtxInverse(mtx3)*y
+end
+%%
+y_hat = mtx3*x
+%% 
+% is equal to y. 
+%%
+% * mtx4
+% Null Space
+nullVec = mtxNull(mtx4)
+%%
+if nullVec
+    isZero = mtx4*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx4)
+%%
+if y
+    x = mtxInverse(mtx4)*y
+end
+%%
+y_hat = mtx4*x
+%% 
+% is equal to y. 
+%%
+% * mtx5
+% Null Space
+nullVec = mtxNull(mtx5)
+%%
+if nullVec
+    isZero = mtx5*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx5)
+%%
+if y
+    x = mtxInverse(mtx5)*y
+end
+%%
+y_hat = mtx5*x
+%% 
+% is equal to y. 

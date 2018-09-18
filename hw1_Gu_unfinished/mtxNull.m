@@ -10,6 +10,6 @@ function v = mtxNull(M)
     if nN
         v = VN*rand(nN,1);
     else
-        v = inf;
+        v = false;
         disp('Null Space is empty')
     end

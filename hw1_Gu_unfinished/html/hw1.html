@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>hw1</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-11"><meta name="DC.source" content="hw1.m"><style type="text/css">
+      --><title>hw1</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-18"><meta name="DC.source" content="hw1.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,20 +66,59 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Testing for (non)linearity</a></li><li><a href="#10">2 Inner product with a unit vector</a></li><li><a href="#30">3 Geometry of linear transformation</a></li><li><a href="#44">4 A simple visual neuron</a></li><li><a href="#49">Gram-Schmidt</a></li><li><a href="#53">Null and Range spaces</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
-</pre><h2 id="2">1 Testing for (non)linearity</h2><p>System 1 is possibly linear. L = [1 4] and is unique</p><p>System 2 is possibly linear. L = [-3 1; 0 0] is not unique because there are two elements in output but there is only one independet input vector</p><p>System 3 is possibly linear. L = [-1 1/3] and is unique</p><p>System 4 is not linear because all linear system return zero or zero vector in response to zero input.</p><p>System 5 is not linear because it doesn't follow the rule of superposition</p><pre class="codeinput">[1 -1] + 2*[1 1]
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Testing for (non)linearity</a></li><li><a href="#14">2 Inner product with a unit vector</a></li><li><a href="#34">3 Geometry of linear transformation</a></li><li><a href="#48">4 A simple visual neuron</a></li><li><a href="#73">5 Gram-Schmidt</a></li><li><a href="#78">6 Null and Range spaces</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
+</pre><h2 id="2">1 Testing for (non)linearity</h2><p>System 1 is not linear. If it's linear, input 3 will generate 3 times of output of input 1, which is [3 12]</p><p>System 2 is possibly linear.</p><pre class="codeinput">L = [-3 1/2; 0 0]
+</pre><pre class="codeoutput">
+L =
+
+   -3.0000    0.5000
+         0         0
+
+</pre><p>is not unique because there are two elements in every output but there is only one independet input vector.</p><p>verification</p><pre class="codeinput">L*[2;4]
+L*[-1;-2]
+</pre><pre class="codeoutput">
+ans =
+
+    -4
+     0
+
+
+ans =
+
+     2
+     0
+
+</pre><p>System 3 is possibly linear.</p><pre class="codeinput">L = [-1 1/3]
+</pre><pre class="codeoutput">
+L =
+
+   -1.0000    0.3333
+
+</pre><p>and is unique.</p><p>verification</p><pre class="codeinput">L*[2;6]
+L*[-1;3]
+</pre><pre class="codeoutput">
+ans =
+
+     0
+
+
+ans =
+
+     2
+
+</pre><p>System 4 is not linear because all linear system return zero or zero vector in response to zero input.</p><p>System 5 is not linear because it doesn't follow the rule of superposition</p><pre class="codeinput">[1 -1] + 2*[1 1]
 </pre><pre class="codeoutput">
 ans =
 
      3     1
 
-</pre><pre class="codeinput">[3  2] + 2*[1 2]
+</pre><p>where output</p><pre class="codeinput">[3  2] + 2*[1 2]
 </pre><pre class="codeoutput">
 ans =
 
      5     6
 
-</pre><p>is not equal to [5 3]</p><h2 id="10">2 Inner product with a unit vector</h2><div><ul><li>a)</li></ul></div><p><img src="hw1_eq08269971189405727005.png" alt="$$ \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcA = @(u,v) u*dot(v,u);
+</pre><p>is not equal to [5 3]</p><h2 id="14">2 Inner product with a unit vector</h2><div><ul><li>a)</li></ul></div><p><img src="hw1_eq08269971189405727005.png" alt="$$ \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcA = @(u,v) u*dot(v,u);
 </pre><div><ul><li>b)</li></ul></div><p><img src="hw1_eq14645424027093930646.png" alt="$$ \vec{v} - \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcB = @(u,v) v - funcA(u,v);
 </pre><div><ul><li>c)</li></ul></div><p><img src="hw1_eq13054791812446416207.png" alt="$$ ||\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})||^2 $$"></p><pre class="codeinput">funcC = @(u,v) sqrt(sum(func(u,v).^2));
 </pre><div><ul><li>2.1 2-dimensional test</li></ul></div><pre class="codeinput">v = rand(2,1)*2-1
@@ -103,124 +142,133 @@ ylim([-1.5,1.5])
 </pre><pre class="codeoutput">
 v =
 
-    0.4800
-   -0.1503
+    0.8350
+    0.4271
 
 
 u =
 
-   -0.7145
-    0.6996
+   -0.7361
+   -0.6769
 
 
 p =
 
-    0.3202
-   -0.3135
+    0.6652
+    0.6117
 
 
 q =
 
-    0.1598
-    0.1632
+    0.1698
+   -0.1846
 
 </pre><img vspace="5" hspace="5" src="hw1_01.png" alt=""> <p>The codes are working.</p><div><ul><li>2.2 4-dimensional test</li></ul></div><pre class="codeinput">v = rand(4,1)*2-1
 u0 = rand(4,1)*2-1; u = u0/norm(u0)
 </pre><pre class="codeoutput">
 v =
 
-    0.3304
-   -0.9241
-    0.1762
-   -0.4878
+   -0.3134
+    0.8721
+   -0.7505
+    0.4612
 
 
 u =
 
-   -0.5114
-   -0.0629
-   -0.8542
-    0.0690
+    0.3234
+    0.7354
+   -0.2245
+    0.5515
 
 </pre><p>the vector in a)</p><pre class="codeinput">p = funcA(u,v)
 </pre><pre class="codeoutput">
 p =
 
-    0.1509
-    0.0186
-    0.2520
-   -0.0203
+    0.3113
+    0.7081
+   -0.2162
+    0.5310
 
 </pre><p>is in the same direction as <img src="hw1_eq12245515025261625754.png" alt="$\hat{u}$">.</p><pre class="codeinput">p./u
 </pre><pre class="codeoutput">
 ans =
 
-   -0.2950
-   -0.2950
-   -0.2950
-   -0.2950
+    0.9628
+    0.9628
+    0.9628
+    0.9628
 
 </pre><p>the vector in b)</p><pre class="codeinput">q = funcB(u,v)
 </pre><pre class="codeoutput">
 q =
 
-    0.1795
-   -0.9426
-   -0.0758
-   -0.4675
+   -0.6248
+    0.1639
+   -0.5342
+   -0.0698
 
 </pre><p>is orthogonal to <img src="hw1_eq10813290176954031051.png" alt="$\vec{p}$">.</p><pre class="codeinput">dot(p,q)
 </pre><pre class="codeoutput">
 ans =
 
-   1.7347e-18
+   1.7347e-16
 
 </pre><p>almost zero.</p><p>the sum of the two vector</p><pre class="codeinput">p+q
 </pre><pre class="codeoutput">
 ans =
 
-    0.3304
-   -0.9241
-    0.1762
-   -0.4878
+   -0.3134
+    0.8721
+   -0.7505
+    0.4612
 
-</pre><p>is equal to <img src="hw1_eq09098711414830822605.png" alt="$\vec{v}$">.</p><p>the sum of squared length of the two vectors</p><pre class="codeinput">sum(p.^2) + sum(q.^2)
+</pre><p>is equal to <img src="hw1_eq09098711414830822605.png" alt="$\vec{v}$">.</p><pre class="codeinput">v
+</pre><pre class="codeoutput">
+v =
+
+   -0.3134
+    0.8721
+   -0.7505
+    0.4612
+
+</pre><p>the sum of squared length of the two vectors</p><pre class="codeinput">sum(p.^2) + sum(q.^2)
 </pre><pre class="codeoutput">
 ans =
 
-    1.2321
+    1.6346
 
 </pre><p>is equal to $  {\vec{v}}  ^2 $.</p><pre class="codeinput">sum(v.^2)
 </pre><pre class="codeoutput">
 ans =
 
-    1.2321
+    1.6346
 
-</pre><h2 id="30">3 Geometry of linear transformation</h2><p>singular value decomposition of a random matrix M</p><pre class="codeinput">M = rand(2,2)
+</pre><h2 id="34">3 Geometry of linear transformation</h2><p>singular value decomposition of a random matrix M</p><pre class="codeinput">M = rand(2,2)
 [U,S,V] = svd(M)
 </pre><pre class="codeoutput">
 M =
 
-    0.7965    0.0790
-    0.1908    0.6145
+    0.8352    0.5523
+    0.3225    0.9791
 
 
 U =
 
-   -0.8637   -0.5040
-   -0.5040    0.8637
+   -0.6939   -0.7201
+   -0.7201    0.6939
 
 
 S =
 
-    0.8705         0
-         0    0.5450
+    1.3577         0
+         0    0.4712
 
 
 V =
 
-   -0.9008   -0.4342
-   -0.4342    0.9008
+   -0.5979   -0.8016
+   -0.8016    0.5979
 
 </pre><p>a unit circle to be operated by the matrix</p><pre class="codeinput">theta = (0:64)/64*2*pi;
 P = [cos(theta);sin(theta)];
@@ -236,11 +284,11 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R1 =
 
-   -0.9008   -0.4342
-   -0.4342    0.9008
+   -0.5979   -0.8016
+   -0.8016    0.5979
 
 resulting length 1, 1. Angle 90 degree
-</pre><p>angle changed but lengths are preserved.</p><pre class="codeinput">plotVec2(R1);
+</pre><p>Both angle and lengths are preserved.</p><pre class="codeinput">plotVec2(R1);
 </pre><img vspace="5" hspace="5" src="hw1_03.png" alt=""> <pre class="codeinput">P = V'*P;
 figure;hold <span class="string">on</span>
 plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
@@ -254,11 +302,11 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R2 =
 
-   -0.7841   -0.3780
-   -0.2366    0.4909
+   -0.8117   -1.0883
+   -0.3777    0.2817
 
-resulting length 0.81907, 0.61958. Angle 69.2014 degree
-</pre><p>lengths changed, angle unchanged.</p><pre class="codeinput">plotVec2(R2);
+resulting length 0.89531, 1.1241. Angle 39.4651 degree
+</pre><p>Both angle and length are changed</p><pre class="codeinput">plotVec2(R2);
 </pre><img vspace="5" hspace="5" src="hw1_05.png" alt=""> <pre class="codeinput">P = S*P;
 figure;hold <span class="string">on</span>
 plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
@@ -272,11 +320,11 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R3 =
 
-    0.7965    0.0790
-    0.1908    0.6145
+    0.8352    0.5523
+    0.3225    0.9791
 
-resulting length 0.81907, 0.61958. Angle 69.2014 degree
-</pre><p>angle changed, lengths unchanged</p><pre class="codeinput">plotVec2(R3);
+resulting length 0.89531, 1.1241. Angle 39.4651 degree
+</pre><p>Both angle and lengths are preserved.</p><pre class="codeinput">plotVec2(R3);
 </pre><img vspace="5" hspace="5" src="hw1_07.png" alt=""> <pre class="codeinput">P = U*P;
 figure;hold <span class="string">on</span>
 plot(P(1,1),P(2,1),<span class="string">'r'</span>,<span class="string">'Marker'</span>,<span class="string">'*'</span>)
@@ -284,7 +332,7 @@ plot(P(1,:),P(2,:))
 hold <span class="string">off</span>;axis <span class="string">equal</span>
 xlim([-1.5,1.5])
 ylim([-1.5,1.5])
-</pre><img vspace="5" hspace="5" src="hw1_08.png" alt=""> <p>the oval rotated (potentially flipped axis addtionally) because U is an orthogonal matrix.</p><h2 id="44">4 A simple visual neuron</h2><div><ul><li>a) the system is not linear because it only takes positive input, but with positive inputs the response is essentially the dot product a vector of 7 intensities values of each location with the weight vector</li></ul></div><pre class="codeinput">w = [1,3,4,5,4,3,1]
+</pre><img vspace="5" hspace="5" src="hw1_08.png" alt=""> <p>the oval rotated (potentially flipped axis addtionally) because U is an orthogonal matrix.</p><h2 id="48">4 A simple visual neuron</h2><div><ul><li>a) the system is not linear because it only takes positive input, but with positive inputs the response is essentially the dot product a vector of 7 intensities values of each location with the weight vector</li></ul></div><pre class="codeinput">w = [1,3,4,5,4,3,1]
 </pre><pre class="codeoutput">
 w =
 
@@ -296,7 +344,25 @@ u =
 
     0.1140    0.3419    0.4558    0.5698    0.4558    0.3419    0.1140
 
-</pre><p>because the response dot(u,w), which is equal to |w|cos(a), where a is the angle between u and w, takes largest value only when cos(a) is 1 which means u and w are on the same direction.</p><div><ul><li>c) [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1].</li></ul></div><h2 id="49">Gram-Schmidt</h2><div><ul><li>3d plot</li></ul></div><pre class="codeinput">Q = gramSchmidt(3)
+</pre><p>because the response dot(u,w), which is equal to <img src="hw1_eq16453666147483458554.png" alt="$|w|cos(\theta)$">, where a is the angle between u and w, takes largest value only when <img src="hw1_eq10776724847641420545.png" alt="$cos(\theta) = 1$">, which means u and w are on the same direction.</p><div><ul><li>c)</li></ul></div><p>Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1].</p><p>Proof:</p><p>1. In two dimensional case</p><p>Let input vector <img src="hw1_eq03380220533027978311.png" alt="$u = (cos(\alpha),sin(\alpha))$"> where <img src="hw1_eq00855999298256428706.png" alt="$0<=\alpha<=\pi/2$"> and weight vecor <img src="hw1_eq14111121600224149322.png" alt="$w = (w_1,w_2)$">.</p><p>Then response equals <img src="hw1_eq07067275945667917049.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$">, where <img src="hw1_eq11130784617294509055.png" alt="$\theta = \alpha - tan^{-1}(w_2/w_1)$">.</p><p>The response is the least when <img src="hw1_eq08288499342375314727.png" alt="$\theta$"> is most further away from 0, that is w1 if w1&lt;=w2 (take <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$">), or w2 if w2&lt;w1 (take <img src="hw1_eq11744944486023930309.png" alt="$\alpha = \pi/2$">). so <img src="hw1_eq05409826342468766317.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 &gt;= min(w_1,w_2)$"> and is the minimum (takes minimum when <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">).</p><p>2. three dimensional case</p><p>Let input vector <img src="hw1_eq04523862192930513930.png" alt="$u = (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$"> and <img src="hw1_eq00043590233564527972.png" alt="$w = (w_1,w_2,w_3)$">. Then the response =</p><p><img src="hw1_eq18405994153574200819.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$"></p><p>whose miminum (if exists) should be equal to <img src="hw1_eq11785267957165093634.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*min(w_2,w_3)$"></p><p>(when <img src="hw1_eq01067005293200132906.png" alt="$\alpha_2 = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>whose miminum exists and is equal to <img src="hw1_eq09615746418111711499.png" alt="$min(w_1,min(w_2,w_3))$"> <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$"></p><p>(when <img src="hw1_eq02955961851968213289.png" alt="$\alpha_1 = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>so when only one of the input element (corresponding to the minimum in weight vector) is 1 and others equal 0, the response takes minimum, which is <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$">.</p><p>3.. n dimensional case (n&gt;2) (induction)</p><p>Let input vector <img src="hw1_eq01844768527615643717.png" alt="$u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)* sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$"> and <img src="hw1_eq01945634895911239941.png" alt="$w = (w_1,w_2,w_3,...w_n)$">.</p><p>Then response equals <img src="hw1_eq16242541604387447063.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(... +(cos(\alpha_{n-1})*w_{n-1} + sin(\alpha_{n-1})*w_n))))$"> <img src="hw1_eq00130441753468746994.png" alt="$\geq cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)* min(w_{n-1},w_n)$"> <img src="hw1_eq10797736199357174080.png" alt="$\geq ... \geq min(w_1,w_2,w_3,...,w_n)$"></p><p>(equal if every <img src="hw1_eq04345346234036396138.png" alt="$alpha_i$"> is either 0 or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>The right side is the minimum and exists.</p><p>Q.E.D.</p><h2 id="73">5 Gram-Schmidt</h2><pre class="language-matlab">
+<span class="keyword">function</span> Q=gramSchmidt(N)
+    Q = gramSchmidtRec(N,N);
+    
+<span class="keyword">function</span> Q=gramSchmidtRec(n,N)
+    v = rand(N,1)*2-1;
+    <span class="keyword">if</span> n&gt;1
+        M = gramSchmidtRec(n-1,N);
+        v = v - M*M'*v;
+        <span class="keyword">while</span> all(v==0) <span class="comment">% rare case if random vector sits on previous plane</span>
+            v = rand(N,1)*2-1;
+            v = v - M*M'*v;
+        <span class="keyword">end</span>
+        Q = [M,v/norm(v)];
+    <span class="keyword">else</span>
+        Q=v/norm(v);
+    <span class="keyword">end</span>
+
+</pre><div><ul><li>3d plot</li></ul></div><pre class="codeinput">Q = gramSchmidt(3)
 figure; hold <span class="string">on</span>
 quiver3(0,0,0,Q(1,1),Q(2,1),Q(3,1))
 quiver3(0,0,0,Q(1,2),Q(2,2),Q(3,2))
@@ -305,94 +371,317 @@ axis <span class="string">equal</span>
 xlim([-1.1 1.1]);ylim([-1.1 1.1]);zlim([-1.1 1.1]);
 grid <span class="string">on</span>
 view(3)
-rotate3d <span class="string">on</span>
+<span class="comment">% rotate3d on</span>
 </pre><pre class="codeoutput">
 Q =
 
-   -0.3176   -0.9466   -0.0558
-   -0.4609    0.1027    0.8815
-    0.8287   -0.3057    0.4689
+   -0.0150   -0.4579   -0.8889
+    0.3809    0.8193   -0.4285
+    0.9245   -0.3449    0.1621
 
-</pre><img vspace="5" hspace="5" src="hw1_09.png" alt=""> <div><ul><li>10d test</li></ul></div><pre class="codeinput">Q = gramSchmidt(10)
+</pre><img vspace="5" hspace="5" src="hw1_09.png" alt=""> <div><ul><li>7d test</li></ul></div><pre class="codeinput">Q = gramSchmidt(7)
 Q * Q'
 </pre><pre class="codeoutput">
 Q =
 
-  Columns 1 through 7
-
-    0.0189    0.1600    0.2624    0.3857   -0.0502    0.2071   -0.2520
-   -0.4279   -0.0091   -0.3412   -0.2980    0.2086    0.4146    0.2387
-   -0.3259    0.2242    0.2633   -0.2003   -0.5108   -0.2518   -0.1735
-   -0.4484    0.3745    0.2331    0.0669    0.4657    0.3013   -0.2876
-    0.0670   -0.5860    0.4329   -0.2806   -0.0379    0.4270    0.1654
-    0.4773    0.2710   -0.3944    0.1789    0.0443    0.2968    0.0720
-   -0.1828    0.2662   -0.3264   -0.2905   -0.4877    0.1860    0.1288
-   -0.1910   -0.4135   -0.3048    0.3823   -0.3575    0.3206   -0.4936
-    0.2465    0.3458    0.3838    0.0673   -0.3147    0.4621    0.2215
-   -0.3826   -0.0743    0.0363    0.6099   -0.0891   -0.0981    0.6518
-
-  Columns 8 through 10
-
-    0.5156   -0.2647   -0.5582
-   -0.1101   -0.5341   -0.2045
-   -0.4912   -0.0285   -0.3708
-   -0.1081    0.4190    0.1492
-   -0.0307    0.3305   -0.2541
-   -0.4095    0.2858   -0.4082
-    0.4993    0.4060    0.0394
-   -0.1679   -0.0215    0.2249
-   -0.1364   -0.2948    0.4479
-   -0.0652    0.1588   -0.0539
+   -0.5133   -0.5208   -0.2506   -0.5386   -0.0508   -0.0363    0.3293
+   -0.4443    0.3594    0.1073    0.3126   -0.6023    0.2061    0.3987
+    0.5070    0.1047    0.1371   -0.6004   -0.4147    0.4207    0.0607
+    0.1616    0.3075   -0.0356   -0.0461    0.5640    0.1242    0.7365
+   -0.2870   -0.2266    0.5026    0.0740    0.3228    0.6876   -0.1766
+   -0.1031    0.2348   -0.7827    0.0331    0.0890    0.4936   -0.2625
+   -0.4036    0.6225    0.2010   -0.4929    0.1803   -0.2174   -0.2940
 
 
 ans =
 
-  Columns 1 through 7
+    1.0000         0   -0.0000   -0.0000   -0.0000   -0.0000    0.0000
+         0    1.0000   -0.0000    0.0000   -0.0000   -0.0000    0.0000
+   -0.0000   -0.0000    1.0000    0.0000   -0.0000    0.0000   -0.0000
+   -0.0000    0.0000    0.0000    1.0000    0.0000   -0.0000    0.0000
+   -0.0000   -0.0000   -0.0000    0.0000    1.0000    0.0000   -0.0000
+   -0.0000   -0.0000    0.0000   -0.0000    0.0000    1.0000    0.0000
+    0.0000    0.0000   -0.0000    0.0000   -0.0000    0.0000    1.0000
 
-    1.0000   -0.0000   -0.0000    0.0000    0.0000    0.0000    0.0000
-   -0.0000    1.0000   -0.0000    0.0000    0.0000   -0.0000   -0.0000
-   -0.0000   -0.0000    1.0000    0.0000    0.0000    0.0000    0.0000
-    0.0000    0.0000    0.0000    1.0000   -0.0000    0.0000   -0.0000
-    0.0000    0.0000    0.0000   -0.0000    1.0000    0.0000   -0.0000
-    0.0000   -0.0000    0.0000    0.0000    0.0000    1.0000    0.0000
-    0.0000   -0.0000    0.0000   -0.0000   -0.0000    0.0000    1.0000
-    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000    0.0000
-   -0.0000    0.0000   -0.0000    0.0000    0.0000   -0.0000   -0.0000
-   -0.0000   -0.0000   -0.0000   -0.0000   -0.0000    0.0000   -0.0000
+</pre><p><img src="hw1_eq13601281911708470641.png" alt="$QQ^T$"> is almost idendity matrix, so Q has orthonormal columes.</p><h2 id="78">6 Null and Range spaces</h2><pre class="language-matlab">
+<span class="keyword">function</span> v = mtxNull(M)
+    [~, S, V] = svd(M);
+    [m,n] = size(M);
+    SS = diag(S);
+    VN = V(:,abs(SS)&lt;1e-10);
+    <span class="keyword">if</span> m&lt;n
+        VN = [VN V(:,(m+1):n)];
+    <span class="keyword">end</span>
+    nN = size(VN,2);
+    <span class="keyword">if</span> nN
+        v = VN*rand(nN,1);
+    <span class="keyword">else</span>
+        v = false;
+        disp(<span class="string">'Null Space is empty'</span>)
+    <span class="keyword">end</span>
 
-  Columns 8 through 10
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> v = mtxRange(M)
+    [U, S, ~] = svd(M);
+    SS = diag(S);
+    UR = U(:,SS&gt;1e-10);
+    n = size(UR,2);
+    <span class="keyword">if</span> n
+        v = UR*rand(n,1);
+    <span class="keyword">else</span>
+        v = false;
+        disp(<span class="string">'Range Space is empty'</span>)
+    <span class="keyword">end</span>
 
-    0.0000   -0.0000   -0.0000
-    0.0000    0.0000   -0.0000
-    0.0000   -0.0000   -0.0000
-    0.0000    0.0000   -0.0000
-    0.0000    0.0000   -0.0000
-    0.0000   -0.0000    0.0000
-    0.0000   -0.0000   -0.0000
-    1.0000   -0.0000    0.0000
-   -0.0000    1.0000   -0.0000
-    0.0000   -0.0000    1.0000
+</pre><pre class="language-matlab">
+<span class="keyword">function</span> invM = mtxInverse(M)
+    [U,S,V] = svd(M);
+    invS = zeros(size(S'));
+    <span class="keyword">for</span> ii = 1:min(size(S))
+        s_i = S(ii,ii);
+        <span class="keyword">if</span> s_i&gt;1e-10
+            invS(ii,ii) = 1/s_i;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+    invM = V*invS*U';
 
-</pre><p><img src="hw1_eq13601281911708470641.png" alt="$QQ^T$"> is almost idendity matrix. Q has orthonormal columes.</p><h2 id="53">Null and Range spaces</h2><p>load mtxExamples.mat</p><div><ul><li>MTX1</li></ul></div><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+
+
+</pre><pre class="codeinput">load <span class="string">mtxExamples.mat</span>
+</pre><div><ul><li>MTX1 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx1)
+</pre><pre class="codeoutput">Null Space is empty
+
+nullVec =
+
+  logical
+
+   0
+
+</pre><pre class="codeinput"><span class="keyword">if</span> nullVec
+    isZero = mtx1*nullVec
+<span class="keyword">end</span>
+</pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx1)
+</pre><pre class="codeoutput">
+y =
+
+    0.3587
+    0.0993
+
+</pre><pre class="codeinput"><span class="keyword">if</span> y
+    x = mtxInverse(mtx1)*y
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+x =
+
+    0.1027
+    0.1437
+
+</pre><pre class="codeinput">y_hat = mtx1*x
+</pre><pre class="codeoutput">
+y_hat =
+
+    0.3587
+    0.0993
+
+</pre><p>is equal to y.</p><div><ul><li>mtx2 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx2)
+</pre><pre class="codeoutput">
+nullVec =
+
+    0.1123
+   -0.1709
+    0.3023
+
+</pre><pre class="codeinput"><span class="keyword">if</span> nullVec
+    isZero = mtx2*nullVec
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+isZero =
+
+   1.0e-15 *
+
+    0.1110
+         0
+         0
+
+</pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx2)
+</pre><pre class="codeoutput">
+y =
+
+   -0.3272
+   -0.0327
+    0.1140
+
+</pre><pre class="codeinput"><span class="keyword">if</span> y
+    x = mtxInverse(mtx2)*y
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+x =
+
+   -0.0106
+    0.0460
+    0.0300
+
+</pre><pre class="codeinput">y_hat = mtx2*x
+</pre><pre class="codeoutput">
+y_hat =
+
+   -0.3272
+   -0.0327
+    0.1140
+
+</pre><p>is equal to y.</p><div><ul><li>mtx3 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx3)
+</pre><pre class="codeoutput">
+nullVec =
+
+    0.0623
+    0.0772
+    0.0705
+
+</pre><pre class="codeinput"><span class="keyword">if</span> nullVec
+    isZero = mtx3*nullVec
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+isZero =
+
+   1.0e-16 *
+
+   -0.2776
+    0.1561
+
+</pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx3)
+</pre><pre class="codeoutput">
+y =
+
+    0.8804
+   -0.1244
+
+</pre><pre class="codeinput"><span class="keyword">if</span> y
+    x = mtxInverse(mtx3)*y
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+x =
+
+   -0.1408
+   -0.0870
+    0.2197
+
+</pre><pre class="codeinput">y_hat = mtx3*x
+</pre><pre class="codeoutput">
+y_hat =
+
+    0.8804
+   -0.1244
+
+</pre><p>is equal to y.</p><div><ul><li>mtx4 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx4)
+</pre><pre class="codeoutput">
+nullVec =
+
+   -0.5221
+   -0.3907
+   -0.7739
+
+</pre><pre class="codeinput"><span class="keyword">if</span> nullVec
+    isZero = mtx4*nullVec
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+isZero =
+
+   1.0e-15 *
+
+   -0.0069
+   -0.2220
+
+</pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx4)
+</pre><pre class="codeoutput">
+y =
+
+   -0.0018
+   -0.0474
+
+</pre><pre class="codeinput"><span class="keyword">if</span> y
+    x = mtxInverse(mtx4)*y
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+x =
+
+   -0.0111
+    0.0004
+    0.0073
+
+</pre><pre class="codeinput">y_hat = mtx4*x
+</pre><pre class="codeoutput">
+y_hat =
+
+   -0.0018
+   -0.0474
+
+</pre><p>is equal to y.</p><div><ul><li>mtx5 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx5)
+</pre><pre class="codeoutput">Null Space is empty
+
+nullVec =
+
+  logical
+
+   0
+
+</pre><pre class="codeinput"><span class="keyword">if</span> nullVec
+    isZero = mtx5*nullVec
+<span class="keyword">end</span>
+</pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx5)
+</pre><pre class="codeoutput">
+y =
+
+    0.5960
+    0.3035
+   -0.4599
+
+</pre><pre class="codeinput"><span class="keyword">if</span> y
+    x = mtxInverse(mtx5)*y
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+x =
+
+    0.3294
+    0.0130
+
+</pre><pre class="codeinput">y_hat = mtx5*x
+</pre><pre class="codeoutput">
+y_hat =
+
+    0.5960
+    0.3035
+   -0.4599
+
+</pre><p>is equal to y.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 clear all; close all
 %% 1 Testing for (non)linearity
 %%
 % System 1
-% is possibly linear.
-% L = [1 4]
-% and is unique
+% is not linear.
+% If it's linear, input 3 will generate 3 times of output of input 1,
+% which is [3 12]
 %%
 % System 2
 % is possibly linear.
-% L = [-3 1; 0 0] 
-% is not unique because there are two elements in output but there is only
-% one independet input vector
+L = [-3 1/2; 0 0] 
+%%
+% is not unique because there are two elements in every output but there is only
+% one independet input vector.
+%%
+% verification
+L*[2;4]
+L*[-1;-2]
 %%
 % System 3
 % is possibly linear.
-% L = [-1 1/3]
-% and is unique
+L = [-1 1/3]
+%%
+% and is unique. 
+%%
+% verification
+L*[2;6]
+L*[-1;3]
 %%
 % System 4
 % is not linear because all linear system return zero or zero vector in
@@ -402,6 +691,7 @@ clear all; close all
 % is not linear because it doesn't follow the rule of superposition
 [1 -1] + 2*[1 1] 
 %%
+% where output
 [3  2] + 2*[1 2]
 %%
 % is not equal to [5 3]
@@ -469,6 +759,7 @@ dot(p,q)
 p+q
 %%
 % is equal to $\vec{v}$.
+v
 %%
 % the sum of squared length of the two vectors
 sum(p.^2) + sum(q.^2)
@@ -497,7 +788,7 @@ R1 = V'*eye(2)
 [lu,lv,a] = vecLenAngle(R1(:,1),R1(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% angle changed but lengths are preserved. 
+% Both angle and lengths are preserved. 
 plotVec2(R1);
 %%
 P = V'*P;
@@ -516,7 +807,7 @@ R2 = S*R1
 [lu,lv,a] = vecLenAngle(R2(:,1),R2(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% lengths changed, angle unchanged. 
+% Both angle and length are changed 
 plotVec2(R2);
 %%
 P = S*P;
@@ -534,7 +825,7 @@ R3 = U*R2
 [lu,lv,a] = vecLenAngle(R3(:,1),R3(:,2));
 disp(['resulting length ',num2str(lu),', ',num2str(lv), '. Angle ',num2str(a*180/pi),' degree'])
 %%
-% angle changed, lengths unchanged
+% Both angle and lengths are preserved.
 plotVec2(R3);
 %%
 P = U*P;
@@ -561,14 +852,74 @@ w = [1,3,4,5,4,3,1]
 % weight vector
 u = w/norm(w)
 %%
-% because the response dot(u,w), which is equal to |w|cos(a), where a is
-% the angle between u and w, takes largest value only when cos(a) is 1 which means u and w are on the same
-% direction. 
+% because the response dot(u,w), which is equal to $|w|cos(\theta)$, where a is
+% the angle between u and w, takes largest value only when $cos(\theta) = 1$, which 
+% means u and w are on the same direction. 
 %%
 % * c)
-% [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
-% 
-%% Gram-Schmidt
+%%
+% Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
+%%
+% Proof:
+%%
+% 1. In two dimensional case
+%%
+% Let input vector $u = (cos(\alpha),sin(\alpha))$ where $0<=\alpha<=\pi/2$
+% and weight vecor $w = (w_1,w_2)$.
+%%
+% Then response equals $cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$, where
+% $\theta = \alpha - tan^{-1}(w_2/w_1)$.
+%%
+% The response is the least when $\theta$ is most further away from 0, that
+% is w1 if w1<=w2 (take $\alpha = 0$), or w2 if w2<w1 (take $\alpha = \pi/2$).
+% so $cos(\alpha)*w_1 + sin(\alpha)*w_2 >= min(w_1,w_2)$ and is the minimum 
+% (takes minimum when $\alpha = 0$ or $\pi/2$). 
+%%
+% 2. three dimensional case
+%%
+% Let input vector $u = 
+% (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$
+% and $w = (w_1,w_2,w_3)$.
+% Then the response =
+%%
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$
+%%
+% whose miminum (if exists) should be equal to 
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*min(w_2,w_3)$
+%%
+% (when $\alpha_2 = 0$ or $\pi/2$)
+%%
+% whose miminum exists and is equal to 
+% $min(w_1,min(w_2,w_3))$
+% $= min(w_1,w_2,w_3)$
+%%
+% (when $\alpha_1 = 0$ or $\pi/2$)
+%%
+% so when only one of the input element (corresponding to the minimum in weight vector)
+% is 1 and others equal 0, the response takes minimum, which is $=
+% min(w_1,w_2,w_3)$. 
+%%
+% 3.. n dimensional case (n>2) (induction)
+%%
+% Let input vector $u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)*
+% sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$
+% and $w = (w_1,w_2,w_3,...w_n)$. 
+%%
+% Then response equals 
+% $cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(...
+% +(cos(\alpha_{n-1})*w_{n-1} + sin(\alpha_{n-1})*w_n))))$
+% $\geq cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*
+% min(w_{n-1},w_n)$
+% $\geq ... \geq min(w_1,w_2,w_3,...,w_n)$
+%%
+% (equal if every $alpha_i$ is either 0 or $\pi/2$)
+%%
+% The right side is the minimum and exists. 
+%%
+% Q.E.D.  
+%% 5 Gram-Schmidt
+%%
+% <include>gramSchmidt.m</include>
 %%
 % * 3d plot
 Q = gramSchmidt(3)
@@ -580,17 +931,117 @@ axis equal
 xlim([-1.1 1.1]);ylim([-1.1 1.1]);zlim([-1.1 1.1]);
 grid on
 view(3)
-rotate3d on
+% rotate3d on
 %%
-% * 10d test
-Q = gramSchmidt(10)
+% * 7d test
+Q = gramSchmidt(7)
 Q * Q'
 %%
-% $QQ^T$ is almost idendity matrix. Q has orthonormal columes. 
-%% Null and Range spaces
-% load mtxExamples.mat
+% $QQ^T$ is almost idendity matrix, so Q has orthonormal columes. 
+%% 6 Null and Range spaces
+%%
+% <include>mtxNull.m</include>
+%%
+% <include>mtxRange.m</include>
+%%
+% <include>mtxInverse.m</include>
+%%
+load mtxExamples.mat
 %%
 % * MTX1
+% Null Space
+nullVec = mtxNull(mtx1)
+%%
+if nullVec
+    isZero = mtx1*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx1)
+%%
+if y
+    x = mtxInverse(mtx1)*y
+end
+%%
+y_hat = mtx1*x
+%% 
+% is equal to y. 
+%%
+% * mtx2
+% Null Space
+nullVec = mtxNull(mtx2)
+%%
+if nullVec
+    isZero = mtx2*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx2)
+%%
+if y
+    x = mtxInverse(mtx2)*y
+end
+%%
+y_hat = mtx2*x
+%% 
+% is equal to y. 
+%%
+% * mtx3
+% Null Space
+nullVec = mtxNull(mtx3)
+%%
+if nullVec
+    isZero = mtx3*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx3)
+%%
+if y
+    x = mtxInverse(mtx3)*y
+end
+%%
+y_hat = mtx3*x
+%% 
+% is equal to y. 
+%%
+% * mtx4
+% Null Space
+nullVec = mtxNull(mtx4)
+%%
+if nullVec
+    isZero = mtx4*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx4)
+%%
+if y
+    x = mtxInverse(mtx4)*y
+end
+%%
+y_hat = mtx4*x
+%% 
+% is equal to y. 
+%%
+% * mtx5
+% Null Space
+nullVec = mtxNull(mtx5)
+%%
+if nullVec
+    isZero = mtx5*nullVec
+end
+%%
+% Range Space
+y = mtxRange(mtx5)
+%%
+if y
+    x = mtxInverse(mtx5)*y
+end
+%%
+y_hat = mtx5*x
+%% 
+% is equal to y. 
 
 ##### SOURCE END #####
 --></body></html>
