@@ -8,10 +8,13 @@ clear all; close all
 %%
 % System 2
 % is possibly linear.
-L = [-3 1/2; 0 0] 
+L = [-3 0;1 0] 
 %%
 % is not unique because there are two elements in every output but there is only
 % one independet input vector.
+%%
+% say
+L = [0 -1.5;0 0.5]
 %%
 % verification
 L*[2;4]
@@ -108,11 +111,14 @@ v
 % the sum of squared length of the two vectors
 sum(p.^2) + sum(q.^2)
 %%
-% is equal to $ || {\vec{v}} || ^2 $. 
+% is equal to $ \vec{v} ^2 $. 
 %%
 sum(v.^2)
 
 %% 3 Geometry of linear transformation
+%%
+% <include>vecLenAngle.m</include>
+%%
 % singular value decomposition of a random matrix M
 M = rand(2,2)
 [U,S,V] = svd(M)
