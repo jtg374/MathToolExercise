@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>hw1</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-18"><meta name="DC.source" content="hw1.m"><style type="text/css">
+      --><title>hw1</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-20"><meta name="DC.source" content="hw1.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Testing for (non)linearity</a></li><li><a href="#15">2 Inner product with a unit vector</a></li><li><a href="#35">3 Geometry of linear transformation</a></li><li><a href="#51">4 A simple visual neuron</a></li><li><a href="#76">5 Gram-Schmidt</a></li><li><a href="#81">6 Null and Range spaces</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Testing for (non)linearity</a></li><li><a href="#15">2 Inner product with a unit vector</a></li><li><a href="#35">3 Geometry of linear transformation</a></li><li><a href="#51">4 A simple visual neuron</a></li><li><a href="#78">5 Gram-Schmidt</a></li><li><a href="#83">6 Null and Range spaces</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>; close <span class="string">all</span>
 </pre><h2 id="2">1 Testing for (non)linearity</h2><p>System 1 is not linear. If it's linear, input 3 will generate 3 times of output of input 1, which is [3 12]</p><p>System 2 is possibly linear.</p><pre class="codeinput">L = [-3 0;1 0]
 </pre><pre class="codeoutput">
 L =
@@ -125,9 +125,9 @@ ans =
 
      5     6
 
-</pre><p>is not equal to [5 3]</p><h2 id="15">2 Inner product with a unit vector</h2><div><ul><li>a)</li></ul></div><p><img src="hw1_eq08269971189405727005.png" alt="$$ \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcA = @(u,v) u*dot(v,u);
-</pre><div><ul><li>b)</li></ul></div><p><img src="hw1_eq14645424027093930646.png" alt="$$ \vec{v} - \hat{u} (\vec{v} \cdot \hat{u}) $$"></p><pre class="codeinput">funcB = @(u,v) v - funcA(u,v);
-</pre><div><ul><li>c)</li></ul></div><p><img src="hw1_eq13054791812446416207.png" alt="$$ ||\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})||^2 $$"></p><pre class="codeinput">funcC = @(u,v) sqrt(sum(func(u,v).^2));
+</pre><p>is not equal to [5 3]</p><h2 id="15">2 Inner product with a unit vector</h2><div><ul><li>a)</li></ul></div><p><img src="hw1_eq08269971189405727005.png" alt="$$ \hat{u} (\vec{v} \cdot \hat{u}) $$" style="width:45px;height:15px;"></p><pre class="codeinput">funcA = @(u,v) u*dot(v,u);
+</pre><div><ul><li>b)</li></ul></div><p><img src="hw1_eq14645424027093930646.png" alt="$$ \vec{v} - \hat{u} (\vec{v} \cdot \hat{u}) $$" style="width:71px;height:15px;"></p><pre class="codeinput">funcB = @(u,v) v - funcA(u,v);
+</pre><div><ul><li>c)</li></ul></div><p><img src="hw1_eq13054791812446416207.png" alt="$$ ||\vec{v} - \hat{u} (\vec{v} \cdot \hat{u})||^2 $$" style="width:92px;height:17px;"></p><pre class="codeinput">funcC = @(u,v) sqrt(sum(func(u,v).^2));
 </pre><div><ul><li>2.1 2-dimensional test</li></ul></div><pre class="codeinput">v = rand(2,1)*2-1
 a = rand()*2*pi; u = [cos(a);sin(a)]
 
@@ -149,73 +149,73 @@ ylim([-1.5,1.5])
 </pre><pre class="codeoutput">
 v =
 
-   -0.5887
-    0.7993
+    0.0361
+    0.8872
 
 
 u =
 
-    0.0790
-   -0.9969
+   -0.6484
+   -0.7613
 
 
 p =
 
-   -0.0666
-    0.8407
+    0.4532
+    0.5320
 
 
 q =
 
-   -0.5220
-   -0.0414
+   -0.4171
+    0.3553
 
 </pre><img vspace="5" hspace="5" src="hw1_01.png" alt=""> <p>The codes are working.</p><div><ul><li>2.2 4-dimensional test</li></ul></div><pre class="codeinput">v = rand(4,1)*2-1
 u0 = rand(4,1)*2-1; u = u0/norm(u0)
 </pre><pre class="codeoutput">
 v =
 
-    0.7650
-   -0.4301
-    0.3465
-    0.3286
+    0.9154
+   -0.5186
+    0.3522
+   -0.4219
 
 
 u =
 
-   -0.7569
-   -0.1860
-   -0.4510
-    0.4348
+    0.3064
+    0.3480
+   -0.7705
+   -0.4373
 
 </pre><p>the vector in a)</p><pre class="codeinput">p = funcA(u,v)
 </pre><pre class="codeoutput">
 p =
 
-    0.3879
-    0.0953
-    0.2311
-   -0.2228
+    0.0040
+    0.0046
+   -0.0101
+   -0.0057
 
-</pre><p>is in the same direction as <img src="hw1_eq12245515025261625754.png" alt="$\hat{u}$">.</p><pre class="codeinput">p./u
+</pre><p>is on the same line as <img src="hw1_eq12245515025261625754.png" alt="$\hat{u}$" style="width:8px;height:11px;">.</p><pre class="codeinput">p./u
 </pre><pre class="codeoutput">
 ans =
 
-   -0.5124
-   -0.5124
-   -0.5124
-   -0.5124
+    0.0131
+    0.0131
+    0.0131
+    0.0131
 
 </pre><p>the vector in b)</p><pre class="codeinput">q = funcB(u,v)
 </pre><pre class="codeoutput">
 q =
 
-    0.3771
-   -0.5254
-    0.1154
-    0.5514
+    0.9114
+   -0.5231
+    0.3623
+   -0.4161
 
-</pre><p>is orthogonal to <img src="hw1_eq10813290176954031051.png" alt="$\vec{p}$">.</p><pre class="codeinput">dot(p,q)
+</pre><p>is orthogonal to <img src="hw1_eq10813290176954031051.png" alt="$\vec{p}$" style="width:8px;height:13px;">.</p><pre class="codeinput">dot(p,q)
 </pre><pre class="codeoutput">
 ans =
 
@@ -225,31 +225,31 @@ ans =
 </pre><pre class="codeoutput">
 ans =
 
-    0.7650
-   -0.4301
-    0.3465
-    0.3286
+    0.9154
+   -0.5186
+    0.3522
+   -0.4219
 
-</pre><p>is equal to <img src="hw1_eq09098711414830822605.png" alt="$\vec{v}$">.</p><pre class="codeinput">v
+</pre><p>is equal to <img src="hw1_eq09098711414830822605.png" alt="$\vec{v}$" style="width:8px;height:11px;">.</p><pre class="codeinput">v
 </pre><pre class="codeoutput">
 v =
 
-    0.7650
-   -0.4301
-    0.3465
-    0.3286
+    0.9154
+   -0.5186
+    0.3522
+   -0.4219
 
 </pre><p>the sum of squared length of the two vectors</p><pre class="codeinput">sum(p.^2) + sum(q.^2)
 </pre><pre class="codeoutput">
 ans =
 
-    0.9981
+    1.4089
 
-</pre><p>is equal to $ \vec{v} ^2 $.</p><pre class="codeinput">sum(v.^2)
+</pre><p>is equal to <img src="hw1_eq15595945028078739539.png" alt="$\vec{v} ^2$" style="width:13px;height:13px;">.</p><pre class="codeinput">sum(v.^2)
 </pre><pre class="codeoutput">
 ans =
 
-    0.9981
+    1.4089
 
 </pre><h2 id="35">3 Geometry of linear transformation</h2><pre class="language-matlab">
 <span class="keyword">function</span> [length_u,length_v,angle] = vecLenAngle(u,v)
@@ -267,26 +267,26 @@ ans =
 </pre><pre class="codeoutput">
 M =
 
-    0.2834    0.8266
-    0.8962    0.3900
+    0.2240    0.8444
+    0.6678    0.3445
 
 
 U =
 
-   -0.6465   -0.7629
-   -0.7629    0.6465
+   -0.7810   -0.6246
+   -0.6246    0.7810
 
 
 S =
 
-    1.2015         0
-         0    0.5245
+    1.0562         0
+         0    0.4609
 
 
 V =
 
-   -0.7215    0.6924
-   -0.6924   -0.7215
+   -0.5606    0.8281
+   -0.8281   -0.5606
 
 </pre><p>a unit circle to be operated by the matrix</p><pre class="codeinput">theta = (0:64)/64*2*pi;
 P = [cos(theta);sin(theta)];
@@ -302,8 +302,8 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R1 =
 
-   -0.7215   -0.6924
-    0.6924   -0.7215
+   -0.5606   -0.8281
+    0.8281   -0.5606
 
 resulting length 1, 1. Angle 90 degree
 </pre><p>Both angle and lengths are preserved.</p><pre class="codeinput">plotVec2(R1);
@@ -320,10 +320,10 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R2 =
 
-   -0.8669   -0.8319
-    0.3632   -0.3785
+   -0.5921   -0.8746
+    0.3816   -0.2584
 
-resulting length 0.93994, 0.91398. Angle 47.1921 degree
+resulting length 0.70441, 0.91195. Angle 49.2622 degree
 </pre><p>Both angle and length are changed</p><pre class="codeinput">plotVec2(R2);
 </pre><img vspace="5" hspace="5" src="hw1_05.png" alt=""> <pre class="codeinput">P = S*P;
 figure;hold <span class="string">on</span>
@@ -338,10 +338,10 @@ disp([<span class="string">'resulting length '</span>,num2str(lu),<span class="s
 </pre><pre class="codeoutput">
 R3 =
 
-    0.2834    0.8266
-    0.8962    0.3900
+    0.2240    0.8444
+    0.6678    0.3445
 
-resulting length 0.93994, 0.91398. Angle 47.1921 degree
+resulting length 0.70441, 0.91195. Angle 49.2622 degree
 </pre><p>Both angle and lengths are preserved.</p><pre class="codeinput">plotVec2(R3);
 </pre><img vspace="5" hspace="5" src="hw1_07.png" alt=""> <pre class="codeinput">P = U*P;
 figure;hold <span class="string">on</span>
@@ -350,7 +350,7 @@ plot(P(1,:),P(2,:))
 hold <span class="string">off</span>;axis <span class="string">equal</span>
 xlim([-1.5,1.5])
 ylim([-1.5,1.5])
-</pre><img vspace="5" hspace="5" src="hw1_08.png" alt=""> <p>the oval rotated (potentially flipped axis addtionally) because U is an orthogonal matrix.</p><h2 id="51">4 A simple visual neuron</h2><div><ul><li>a) the system is not linear because it only takes positive input, but with positive inputs the response is essentially the dot product a vector of 7 intensities values of each location with the weight vector</li></ul></div><pre class="codeinput">w = [1,3,4,5,4,3,1]
+</pre><img vspace="5" hspace="5" src="hw1_08.png" alt=""> <p>the oval rotated (potentially flipped axis addtionally) because U is an orthogonal matrix.</p><h2 id="51">4 A simple visual neuron</h2><div><ul><li>a) the system is not linear because it only takes non-negative input, but with positive inputs the response is essentially the dot product a vector of 7 intensities values of each location with the weight vector</li></ul></div><pre class="codeinput">w = [1,3,4,5,4,3,1]
 </pre><pre class="codeoutput">
 w =
 
@@ -362,7 +362,7 @@ u =
 
     0.1140    0.3419    0.4558    0.5698    0.4558    0.3419    0.1140
 
-</pre><p>because the response dot(u,w), which is equal to <img src="hw1_eq16453666147483458554.png" alt="$|w|cos(\theta)$">, where a is the angle between u and w, takes largest value only when <img src="hw1_eq10776724847641420545.png" alt="$cos(\theta) = 1$">, which means u and w are on the same direction.</p><div><ul><li>c)</li></ul></div><p>Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1].</p><p>Proof:</p><p>1. In two dimensional case</p><p>Let input vector <img src="hw1_eq03380220533027978311.png" alt="$u = (cos(\alpha),sin(\alpha))$"> where <img src="hw1_eq00855999298256428706.png" alt="$0<=\alpha<=\pi/2$"> and weight vecor <img src="hw1_eq14111121600224149322.png" alt="$w = (w_1,w_2)$">.</p><p>Then response equals <img src="hw1_eq07067275945667917049.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$">, where <img src="hw1_eq11130784617294509055.png" alt="$\theta = \alpha - tan^{-1}(w_2/w_1)$">.</p><p>The response is the least when <img src="hw1_eq08288499342375314727.png" alt="$\theta$"> is most further away from 0, that is w1 if w1&lt;=w2 (take <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$">), or w2 if w2&lt;w1 (take <img src="hw1_eq11744944486023930309.png" alt="$\alpha = \pi/2$">). so <img src="hw1_eq05409826342468766317.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 &gt;= min(w_1,w_2)$"> and is the minimum (takes minimum when <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">).</p><p>2. three dimensional case</p><p>Let input vector <img src="hw1_eq04523862192930513930.png" alt="$u = (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$"> and <img src="hw1_eq00043590233564527972.png" alt="$w = (w_1,w_2,w_3)$">. Then the response =</p><p><img src="hw1_eq18405994153574200819.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$"></p><p>whose miminum (if exists) should be equal to <img src="hw1_eq11785267957165093634.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*min(w_2,w_3)$"></p><p>(when <img src="hw1_eq01067005293200132906.png" alt="$\alpha_2 = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>whose miminum exists and is equal to <img src="hw1_eq09615746418111711499.png" alt="$min(w_1,min(w_2,w_3))$"> <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$"></p><p>(when <img src="hw1_eq02955961851968213289.png" alt="$\alpha_1 = 0$"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>so when only one of the input element (corresponding to the minimum in weight vector) is 1 and others equal 0, the response takes minimum, which is <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$">.</p><p>3.. n dimensional case (n&gt;2) (induction)</p><p>Let input vector <img src="hw1_eq01844768527615643717.png" alt="$u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)* sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$"> and <img src="hw1_eq01945634895911239941.png" alt="$w = (w_1,w_2,w_3,...w_n)$">.</p><p>Then response equals <img src="hw1_eq16242541604387447063.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(... +(cos(\alpha_{n-1})*w_{n-1} + sin(\alpha_{n-1})*w_n))))$"> <img src="hw1_eq00130441753468746994.png" alt="$\geq cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)* min(w_{n-1},w_n)$"> <img src="hw1_eq10797736199357174080.png" alt="$\geq ... \geq min(w_1,w_2,w_3,...,w_n)$"></p><p>(equal if every <img src="hw1_eq04345346234036396138.png" alt="$alpha_i$"> is either 0 or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$">)</p><p>The right side is the minimum and exists.</p><p>Q.E.D.</p><h2 id="76">5 Gram-Schmidt</h2><pre class="language-matlab">
+</pre><p>because the response dot(u,w), which is equal to <img src="hw1_eq16453666147483458554.png" alt="$|w|cos(\theta)$" style="width:55px;height:15px;">, where a is the angle between u and w, takes largest value only when <img src="hw1_eq10776724847641420545.png" alt="$cos(\theta) = 1$" style="width:65px;height:15px;">, which means u and w are on the same direction.</p><div><ul><li>c)</li></ul></div><p>Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1].</p><p>Without constriant the unit vector that can generate smallest response would on the opposite direction of w, so that <img src="hw1_eq12643004339140778193.png" alt="$cos(\theta) = -1$" style="width:76px;height:15px;">, but that would make all input negative. If we want the smallest abosolute response, or magnitute of response, without constraint, we would want input vector to be perpendicular to w, which is also not applicable, because that would need <img src="hw1_eq02264844268360126173.png" alt="$u_1 + 3u_2 + 4u_3 + 5u_4 + 4u_5 + 3u_6 + u_7 =0$" style="width:271px;height:13px;">. if all <img src="hw1_eq07515804179761612057.png" alt="$u_i$" style="width:12px;height:10px;">'s are non-negative, than the only solution would require <img src="hw1_eq07515804179761612057.png" alt="$u_i$" style="width:12px;height:10px;"> = 0 for every i, that's not a unit vector.</p><p>So under the physical constraint (all positive weight + non-negative inputs) , we could only take the a unit vector with the largest angle between it and w. This unit vector can only be the elementery unit vector that lie on the axis where the weight vector has the smallest element. In other words, the unit vector finds where the minimal entry of weight vector lies.</p><p>Proof:</p><p>1. In two dimensional case</p><p>Let input vector <img src="hw1_eq03380220533027978311.png" alt="$u = (cos(\alpha),sin(\alpha))$" style="width:127px;height:15px;"> where <img src="hw1_eq00855999298256428706.png" alt="$0<=\alpha<=\pi/2$" style="width:101px;height:15px;"> and weight vecor <img src="hw1_eq14111121600224149322.png" alt="$w = (w_1,w_2)$" style="width:80px;height:15px;">, where <img src="hw1_eq17472087542323192363.png" alt="$w_i &gt; 0$" style="width:41px;height:13px;"> for every i. So u represents all possible non-negative inputs.</p><p>Then response equals <img src="hw1_eq07067275945667917049.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$" style="width:237px;height:15px;">, where <img src="hw1_eq11130784617294509055.png" alt="$\theta = \alpha - tan^{-1}(w_2/w_1)$" style="width:140px;height:16px;">.</p><p>The response is the least when <img src="hw1_eq08288499342375314727.png" alt="$\theta$" style="width:7px;height:11px;"> is most further away from 0, that is w1 if w1&lt;=w2 (take <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$" style="width:36px;height:11px;">), or w2 if w2&lt;w1 (take <img src="hw1_eq11744944486023930309.png" alt="$\alpha = \pi/2$" style="width:52px;height:15px;">). so <img src="hw1_eq05409826342468766317.png" alt="$cos(\alpha)*w_1 + sin(\alpha)*w_2 &gt;= min(w_1,w_2)$" style="width:268px;height:15px;"> and is the minimum (takes minimum when <img src="hw1_eq14827416189643691992.png" alt="$\alpha = 0$" style="width:36px;height:11px;"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$" style="width:23px;height:15px;">).</p><p>2. three dimensional case</p><p>Let input vector <img src="hw1_eq04523862192930513930.png" alt="$u = (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$" style="width:321px;height:15px;"> and <img src="hw1_eq00043590233564527972.png" alt="$w = (w_1,w_2,w_3)$" style="width:103px;height:15px;">, where <img src="hw1_eq17472087542323192363.png" alt="$w_i &gt; 0$" style="width:41px;height:13px;"> for every i. Then the response =</p><p><img src="hw1_eq18405994153574200819.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$" style="width:339px;height:15px;"></p><p>whose miminum (if exists) should be equal to <img src="hw1_eq11785267957165093634.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*min(w_2,w_3)$" style="width:233px;height:15px;"></p><p>(when <img src="hw1_eq01067005293200132906.png" alt="$\alpha_2 = 0$" style="width:42px;height:13px;"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$" style="width:23px;height:15px;">)</p><p>whose miminum exists and is equal to <img src="hw1_eq09615746418111711499.png" alt="$min(w_1,min(w_2,w_3))$" style="width:137px;height:15px;"> <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$" style="width:114px;height:15px;"></p><p>(when <img src="hw1_eq02955961851968213289.png" alt="$\alpha_1 = 0$" style="width:42px;height:13px;"> or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$" style="width:23px;height:15px;">)</p><p>so when only one of the input element (corresponding to the minimum in weight vector) is 1 and others equal 0, the response takes minimum, which is <img src="hw1_eq10587171600778490105.png" alt="$= min(w_1,w_2,w_3)$" style="width:114px;height:15px;">.</p><p>3.. n dimensional case (n&gt;2) (induction)</p><p>Let input vector <img src="hw1_eq01844768527615643717.png" alt="$u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)* sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$" style="width:611px;height:15px;"> and <img src="hw1_eq01945634895911239941.png" alt="$w = (w_1,w_2,w_3,...w_n)$" style="width:139px;height:15px;">, where <img src="hw1_eq17472087542323192363.png" alt="$w_i &gt; 0$" style="width:41px;height:13px;"> for every i.</p><p>Then response equals <img src="hw1_eq16242541604387447063.png" alt="$cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(... +(cos(\alpha_{n-1})*w_{n-1} + sin(\alpha_{n-1})*w_n))))$" style="width:598px;height:15px;"> <img src="hw1_eq00130441753468746994.png" alt="$\geq cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)* min(w_{n-1},w_n)$" style="width:425px;height:15px;"> <img src="hw1_eq10797736199357174080.png" alt="$\geq ... \geq min(w_1,w_2,w_3,...,w_n)$" style="width:188px;height:15px;"></p><p>(equal if every <img src="hw1_eq11703973680670173031.png" alt="$\alpha_i$" style="width:12px;height:10px;"> is either 0 or <img src="hw1_eq10205113142531059609.png" alt="$\pi/2$" style="width:23px;height:15px;">)</p><p>The right side is the minimum and exists.</p><p>Q.E.D.</p><h2 id="78">5 Gram-Schmidt</h2><pre class="language-matlab">
 <span class="keyword">function</span> Q=gramSchmidt(N)
     Q = gramSchmidtRec(N,N);
     
@@ -393,35 +393,35 @@ view(3)
 </pre><pre class="codeoutput">
 Q =
 
-   -0.0986    0.5434    0.8337
-    0.4837    0.7583   -0.4371
-    0.8697   -0.3601    0.3376
+   -0.9860   -0.1209    0.1151
+   -0.0742   -0.3003   -0.9510
+   -0.1495    0.9462   -0.2871
 
 </pre><img vspace="5" hspace="5" src="hw1_09.png" alt=""> <div><ul><li>7d test</li></ul></div><pre class="codeinput">Q = gramSchmidt(7)
 Q * Q'
 </pre><pre class="codeoutput">
 Q =
 
-    0.5108    0.7439   -0.1014   -0.3144   -0.0299   -0.0569    0.2691
-   -0.5736    0.0593   -0.2463   -0.5965   -0.1000   -0.4906    0.0202
-   -0.0841    0.0198   -0.4498   -0.3644    0.0915    0.7376   -0.3241
-    0.4303   -0.2335   -0.0901   -0.2056    0.5979   -0.3770   -0.4587
-   -0.1389   -0.1070    0.5662   -0.3947    0.4963    0.2613    0.4221
-    0.1495   -0.0070    0.5865   -0.3534   -0.5036    0.0415   -0.5034
-    0.4198   -0.6137   -0.2324   -0.2994   -0.3512    0.0048    0.4244
+    0.5124    0.0229   -0.1436   -0.3401   -0.2220   -0.6656    0.3292
+    0.4989    0.0413    0.3678    0.7160    0.2852   -0.1116    0.0872
+   -0.3650    0.3145   -0.2175    0.5148   -0.5722   -0.1307    0.3332
+    0.1700    0.7580    0.2088   -0.2810    0.0808    0.3941    0.3348
+    0.1233   -0.3550   -0.5107    0.0748    0.2632    0.3733    0.6195
+    0.0611    0.4421   -0.6668    0.1340    0.3974   -0.1842   -0.3825
+    0.5544   -0.0535   -0.2185    0.0637   -0.5552    0.4459   -0.3617
 
 
 ans =
 
-    1.0000   -0.0000    0.0000    0.0000    0.0000   -0.0000   -0.0000
-   -0.0000    1.0000    0.0000    0.0000   -0.0000    0.0000   -0.0000
-    0.0000    0.0000    1.0000   -0.0000    0.0000    0.0000    0.0000
-    0.0000    0.0000   -0.0000    1.0000   -0.0000   -0.0000    0.0000
-    0.0000   -0.0000    0.0000   -0.0000    1.0000   -0.0000    0.0000
-   -0.0000    0.0000    0.0000   -0.0000   -0.0000    1.0000   -0.0000
-   -0.0000   -0.0000    0.0000    0.0000    0.0000   -0.0000    1.0000
+    1.0000   -0.0000   -0.0000    0.0000    0.0000    0.0000   -0.0000
+   -0.0000    1.0000   -0.0000    0.0000    0.0000    0.0000    0.0000
+   -0.0000   -0.0000    1.0000    0.0000    0.0000    0.0000    0.0000
+    0.0000    0.0000    0.0000    1.0000   -0.0000   -0.0000   -0.0000
+    0.0000    0.0000    0.0000   -0.0000    1.0000   -0.0000    0.0000
+    0.0000    0.0000    0.0000   -0.0000   -0.0000    1.0000   -0.0000
+   -0.0000    0.0000    0.0000   -0.0000    0.0000   -0.0000    1.0000
 
-</pre><p><img src="hw1_eq13601281911708470641.png" alt="$QQ^T$"> is almost idendity matrix, so Q has orthonormal columes.</p><h2 id="81">6 Null and Range spaces</h2><pre class="language-matlab">
+</pre><p><img src="hw1_eq13601281911708470641.png" alt="$QQ^T$" style="width:30px;height:16px;"> is almost idendity matrix, so Q has orthonormal columes.</p><h2 id="83">6 Null and Range spaces</h2><pre class="language-matlab">
 <span class="keyword">function</span> v = mtxNull(M)
     [~, S, V] = svd(M);
     [m,n] = size(M);
@@ -482,8 +482,8 @@ nullVec =
 </pre><pre class="codeoutput">
 y =
 
-    1.2530
-    0.2870
+    0.4087
+    0.0654
 
 </pre><pre class="codeinput"><span class="keyword">if</span> y
     x = mtxInverse(mtx1)*y
@@ -491,23 +491,23 @@ y =
 </pre><pre class="codeoutput">
 x =
 
-    0.3778
-    0.4816
+    0.1322
+    0.1474
 
 </pre><pre class="codeinput">y_hat = mtx1*x
 </pre><pre class="codeoutput">
 y_hat =
 
-    1.2530
-    0.2870
+    0.4087
+    0.0654
 
 </pre><p>is equal to y.</p><div><ul><li>mtx2 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx2)
 </pre><pre class="codeoutput">
 nullVec =
 
-   -0.0583
-   -0.1817
-    0.2586
+    0.1762
+   -0.4789
+    0.7982
 
 </pre><pre class="codeinput"><span class="keyword">if</span> nullVec
     isZero = mtx2*nullVec
@@ -517,17 +517,17 @@ isZero =
 
    1.0e-15 *
 
-    0.1110
-    0.0139
-         0
+    0.3988
+    0.0509
+   -0.0421
 
 </pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx2)
 </pre><pre class="codeoutput">
 y =
 
-   -0.8441
-   -0.0845
-    0.2941
+   -0.6069
+   -0.0607
+    0.2114
 
 </pre><pre class="codeinput"><span class="keyword">if</span> y
     x = mtxInverse(mtx2)*y
@@ -535,25 +535,25 @@ y =
 </pre><pre class="codeoutput">
 x =
 
-   -0.0273
-    0.1188
-    0.0773
+   -0.0196
+    0.0854
+    0.0556
 
 </pre><pre class="codeinput">y_hat = mtx2*x
 </pre><pre class="codeoutput">
 y_hat =
 
-   -0.8441
-   -0.0845
-    0.2941
+   -0.6069
+   -0.0607
+    0.2114
 
 </pre><p>is equal to y.</p><div><ul><li>mtx3 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx3)
 </pre><pre class="codeoutput">
 nullVec =
 
-    0.3039
-    0.3763
-    0.3437
+    0.2455
+    0.3041
+    0.2777
 
 </pre><pre class="codeinput"><span class="keyword">if</span> nullVec
     isZero = mtx3*nullVec
@@ -563,15 +563,15 @@ isZero =
 
    1.0e-15 *
 
-   -0.1110
-    0.0347
+    0.0169
+    0.1934
 
 </pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx3)
 </pre><pre class="codeoutput">
 y =
 
-    0.6382
-    0.4713
+    0.7529
+    0.3722
 
 </pre><pre class="codeinput"><span class="keyword">if</span> y
     x = mtxInverse(mtx3)*y
@@ -579,24 +579,24 @@ y =
 </pre><pre class="codeoutput">
 x =
 
-    0.1300
-   -0.3395
-    0.2568
+    0.0774
+   -0.3101
+    0.2711
 
 </pre><pre class="codeinput">y_hat = mtx3*x
 </pre><pre class="codeoutput">
 y_hat =
 
-    0.6382
-    0.4713
+    0.7529
+    0.3722
 
 </pre><p>is equal to y.</p><div><ul><li>mtx4 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx4)
 </pre><pre class="codeoutput">
 nullVec =
 
-   -0.4653
-   -0.5244
-   -0.6803
+   -0.3709
+   -0.5387
+   -0.5358
 
 </pre><pre class="codeinput"><span class="keyword">if</span> nullVec
     isZero = mtx4*nullVec
@@ -604,15 +604,17 @@ nullVec =
 </pre><pre class="codeoutput">
 isZero =
 
-     0
-     0
+   1.0e-16 *
+
+    0.0745
+   -0.1286
 
 </pre><p>Range Space</p><pre class="codeinput">y = mtxRange(mtx4)
 </pre><pre class="codeoutput">
 y =
 
-   -0.0076
-   -0.2019
+   -0.0271
+   -0.7205
 
 </pre><pre class="codeinput"><span class="keyword">if</span> y
     x = mtxInverse(mtx4)*y
@@ -620,16 +622,16 @@ y =
 </pre><pre class="codeoutput">
 x =
 
-   -0.0475
-    0.0017
-    0.0312
+   -0.1695
+    0.0060
+    0.1113
 
 </pre><pre class="codeinput">y_hat = mtx4*x
 </pre><pre class="codeoutput">
 y_hat =
 
-   -0.0076
-   -0.2019
+   -0.0271
+   -0.7205
 
 </pre><p>is equal to y.</p><div><ul><li>mtx5 Null Space</li></ul></div><pre class="codeinput">nullVec = mtxNull(mtx5)
 </pre><pre class="codeoutput">Null Space is empty
@@ -647,9 +649,9 @@ nullVec =
 </pre><pre class="codeoutput">
 y =
 
-    0.4429
-    0.0146
-   -0.4391
+    0.8275
+    0.3715
+   -0.6615
 
 </pre><pre class="codeinput"><span class="keyword">if</span> y
     x = mtxInverse(mtx5)*y
@@ -657,16 +659,16 @@ y =
 </pre><pre class="codeoutput">
 x =
 
-    0.1924
-    0.0282
+    0.4449
+    0.0225
 
 </pre><pre class="codeinput">y_hat = mtx5*x
 </pre><pre class="codeoutput">
 y_hat =
 
-    0.4429
-    0.0146
-   -0.4391
+    0.8275
+    0.3715
+   -0.6615
 
 </pre><p>is equal to y.</p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
@@ -763,7 +765,7 @@ u0 = rand(4,1)*2-1; u = u0/norm(u0)
 % the vector in a)
 p = funcA(u,v)
 %%
-% is in the same direction as $\hat{u}$.
+% is on the same line as $\hat{u}$.
 p./u
 %%
 % the vector in b)
@@ -783,7 +785,7 @@ v
 % the sum of squared length of the two vectors
 sum(p.^2) + sum(q.^2)
 %%
-% is equal to $ \vec{v} ^2 $. 
+% is equal to $\vec{v} ^2$. 
 %%
 sum(v.^2)
 
@@ -864,7 +866,7 @@ ylim([-1.5,1.5])
 %% 4 A simple visual neuron
 %%
 % * a) 
-% the system is not linear because it only takes positive input,
+% the system is not linear because it only takes non-negative input,
 % but with positive inputs the response is essentially the dot product
 % a vector of 7 intensities values of each location with the weight vector
 w = [1,3,4,5,4,3,1]
@@ -882,12 +884,30 @@ u = w/norm(w)
 %%
 % Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
 %%
+% Without constriant the unit vector that can generate smallest response
+% would on the opposite direction of w, so that $cos(\theta) = -1$, but that
+% would make all input negative. If we want the smallest abosolute
+% response, or magnitute of response, without constraint, we would want
+% input vector to be perpendicular to w, which is also not applicable,
+% because that would need $u_1 + 3u_2 + 4u_3 + 5u_4 + 4u_5 + 3u_6 + u_7
+% =0$. if all $u_i$'s are non-negative, than the only solution would
+% require $u_i$ = 0 for every i, that's not a unit vector. 
+%%
+% So under the physical constraint (all positive weight + non-negative inputs)
+% , we could only take the a unit 
+% vector with the largest angle between it and w. This unit vector can only
+% be the elementery unit vector
+% that lie on the axis where the weight vector has the smallest element.
+% In other words, the unit vector finds where the minimal entry of weight
+% vector lies. 
+%%
 % Proof:
 %%
 % 1. In two dimensional case
 %%
 % Let input vector $u = (cos(\alpha),sin(\alpha))$ where $0<=\alpha<=\pi/2$
-% and weight vecor $w = (w_1,w_2)$.
+% and weight vecor $w = (w_1,w_2)$, where $w_i > 0$ for every i. So u
+% represents all possible non-negative inputs. 
 %%
 % Then response equals $cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$, where
 % $\theta = \alpha - tan^{-1}(w_2/w_1)$.
@@ -901,7 +921,7 @@ u = w/norm(w)
 %%
 % Let input vector $u = 
 % (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$
-% and $w = (w_1,w_2,w_3)$.
+% and $w = (w_1,w_2,w_3)$, where $w_i > 0$ for every i. 
 % Then the response =
 %%
 % $cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$
@@ -925,7 +945,7 @@ u = w/norm(w)
 %%
 % Let input vector $u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)*
 % sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$
-% and $w = (w_1,w_2,w_3,...w_n)$. 
+% and $w = (w_1,w_2,w_3,...w_n)$, where $w_i > 0$ for every i. 
 %%
 % Then response equals 
 % $cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(...
@@ -934,7 +954,7 @@ u = w/norm(w)
 % min(w_{n-1},w_n)$
 % $\geq ... \geq min(w_1,w_2,w_3,...,w_n)$
 %%
-% (equal if every $alpha_i$ is either 0 or $\pi/2$)
+% (equal if every $\alpha_i$ is either 0 or $\pi/2$)
 %%
 % The right side is the minimum and exists. 
 %%
