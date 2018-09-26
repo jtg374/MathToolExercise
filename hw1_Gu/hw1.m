@@ -91,7 +91,7 @@ u0 = rand(4,1)*2-1; u = u0/norm(u0)
 % the vector in a)
 p = funcA(u,v)
 %%
-% is in the same direction as $\hat{u}$.
+% is on the same line as $\hat{u}$.
 p./u
 %%
 % the vector in b)
@@ -111,7 +111,7 @@ v
 % the sum of squared length of the two vectors
 sum(p.^2) + sum(q.^2)
 %%
-% is equal to $ \vec{v} ^2 $. 
+% is equal to $\vec{v} ^2$. 
 %%
 sum(v.^2)
 
@@ -192,7 +192,7 @@ ylim([-1.5,1.5])
 %% 4 A simple visual neuron
 %%
 % * a) 
-% the system is not linear because it only takes positive input,
+% the system is not linear because it only takes non-negative input,
 % but with positive inputs the response is essentially the dot product
 % a vector of 7 intensities values of each location with the weight vector
 w = [1,3,4,5,4,3,1]
@@ -210,12 +210,30 @@ u = w/norm(w)
 %%
 % Answer: [1,0,0,0,0,0,0] or [0,0,0,0,0,0,1]. 
 %%
+% Without constriant the unit vector that can generate smallest response
+% would on the opposite direction of w, so that $cos(\theta) = -1$, but that
+% would make all input negative. If we want the smallest abosolute
+% response, or magnitute of response, without constraint, we would want
+% input vector to be perpendicular to w, which is also not applicable,
+% because that would need $u_1 + 3u_2 + 4u_3 + 5u_4 + 4u_5 + 3u_6 + u_7
+% =0$. if all $u_i$'s are non-negative, than the only solution would
+% require $u_i$ = 0 for every i, that's not a unit vector. 
+%%
+% So under the physical constraint (all positive weight + non-negative inputs)
+% , we could only take the a unit 
+% vector with the largest angle between it and w. This unit vector can only
+% be the elementery unit vector
+% that lie on the axis where the weight vector has the smallest element.
+% In other words, the unit vector finds where the minimal entry of weight
+% vector lies. 
+%%
 % Proof:
 %%
 % 1. In two dimensional case
 %%
 % Let input vector $u = (cos(\alpha),sin(\alpha))$ where $0<=\alpha<=\pi/2$
-% and weight vecor $w = (w_1,w_2)$.
+% and weight vecor $w = (w_1,w_2)$, where $w_i > 0$ for every i. So u
+% represents all possible non-negative inputs. 
 %%
 % Then response equals $cos(\alpha)*w_1 + sin(\alpha)*w_2 = |w|cos(\theta)$, where
 % $\theta = \alpha - tan^{-1}(w_2/w_1)$.
@@ -229,7 +247,7 @@ u = w/norm(w)
 %%
 % Let input vector $u = 
 % (cos(\alpha_1), sin(\alpha_1)*cos(\alpha_2) ), sin(\alpha_1)*sin(\alpha_2) )$
-% and $w = (w_1,w_2,w_3)$.
+% and $w = (w_1,w_2,w_3)$, where $w_i > 0$ for every i. 
 % Then the response =
 %%
 % $cos(\alpha_1)*w_1 + sin(\alpha_1)*( cos(\alpha_2)*w_2 + sin(\alpha_2)*w_3 )$
@@ -253,7 +271,7 @@ u = w/norm(w)
 %%
 % Let input vector $u = (cos(\alpha_1),sin(\alpha_1)*cos(\alpha_2),sin(\alpha_1)*
 % sin(\alpha_2)*cos(\alpha_3),...,sin(\alpha_1)*sin(\alpha_2)*...*sin(\alpha_{n-1}))$
-% and $w = (w_1,w_2,w_3,...w_n)$. 
+% and $w = (w_1,w_2,w_3,...w_n)$, where $w_i > 0$ for every i. 
 %%
 % Then response equals 
 % $cos(\alpha_1)*w_1 + sin(\alpha_1)*(cos(\alpha_2)*w_2+sin(\alpha_2)*(...
@@ -262,7 +280,7 @@ u = w/norm(w)
 % min(w_{n-1},w_n)$
 % $\geq ... \geq min(w_1,w_2,w_3,...,w_n)$
 %%
-% (equal if every $alpha_i$ is either 0 or $\pi/2$)
+% (equal if every $\alpha_i$ is either 0 or $\pi/2$)
 %%
 % The right side is the minimum and exists. 
 %%
