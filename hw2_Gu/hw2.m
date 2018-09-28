@@ -1,3 +1,4 @@
+close all; clear
 %% 1 Trichromacy
 load colMatch.mat;
 %%
@@ -199,7 +200,164 @@ Z = reshape(z_hat,13,13);
 surf(X,Y,Z)
 view(3)
 rotate3d on
-
+%% 
+% 3rd order fit seems reasonable enough to capture the trend of the data
+%%
+SE = (z-z_hat).^2;
+figure;hist(SE)
+%%
+% mean squared error
+MSE = mean(SE)
+%%
+z_hat_allTerm = p3*diag(beta3); % decompose z_hat, one term for every predictors
+importance=sqrt(sum(z_hat_allTerm.^2,1)) % calculate vector length of each term
+%%
+% term $x^2y$, $x^2$ and $y^3$ terms are not so important
+z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance<0.05),2);
+MSE_new = mean((z-z_hat_drop).^2)
+%%
+% mean squared error increase less than 10%
+%% Constrained Least Squares
+load constrainedLS.mat
+%%
+% * a)
+%%
+% The original problem can be written as
+%%
+% 
+% $$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$
+% 
+%%
+% s.t. $\vec{v}^T\vec{w}=1$, where nth row in $D$ is $\vec{d}_n
+%%
+% singular value decompose $D=USV^T$, keep only first 2 colomns of U and
+% first two rows of S
+[U,S,V] = svd(data,'econ');
+%%
+% let $\tilde{v} = \tilde{S}V^T \vec{v}$, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$
+w_tilde = S\V'*w;
+%%
+% thus 
+%%
+% $$\min_{\tilde{v}} ||\tilde{v}||^2  $$
+%%
+% s.t. $\tilde{v}^T\tilde{w} = \vec{v}^T\vec{w}=1$.
+%%
+% * b)
+%%
+v_tilde = w_tilde/norm(w_tilde)^2
+%%
+figure; hold on
+scatter(U(:,1),U(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w_tilde(1),w_tilde(2),1,'r','LineWidth',2)
+xx = v_tilde(1)+w_tilde(2)*(-250:250);
+yy = v_tilde(2)-w_tilde(1)*(-250:250);
+plot(xx,yy,'r--')
+quiver(0,0,v_tilde(1),v_tilde(2),1,'b')
+leg=legend('data','$\tilde{w}$','constraint line','$\tilde{v}$');
+set(leg,'Interpreter','latex')
+axis equal
+xlim([-10,15])
+ylim([-20,5])
+hold off
+%%
+% * c)
+%%
+v = V/S*v_tilde
+%%
+figure; hold on
+scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
+tt= w/norm(w)^2 + [w(2);-w(1)]*(-5:5);
+plot(tt(1,:),tt(2,:),'r--')
+quiver(0,0,v(1),v(2),1,'b','LineWidth',2)
+leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$');
+set(leg,'Interpreter','latex')
+axis equal
+% xlim([-.25,.4])
+% ylim([-.25,.4])
+hold off
+%%
+% $\vec{v}$ is not perpendicular to constraint line in the original space,
+% although is still on the constraint line. 
+%%
+% Total least square solution:
+v_tls = V(:,end);
+%%
+figure; hold on
+scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
+plot(tt(1,:),tt(2,:),'r--')
+quiver(0,0,v(1),v(2),1,'b','LineWidth',1)
+quiver(0,0,v_tls(1),v_tls(2),1,'c','LineWidth',2)
+leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$','$\vec{v}_{total\ least\ square}$');
+set(leg,'Interpreter','latex')
+axis equal
+% xlim([-.25,.4])
+% ylim([-.25,.4])
+hold off
+%%
+% Solutions are different. 
+%% Principal Components
+load PCA.mat
+%%
+% * a)
+%%
+figure;
+plot(M)
+xlabel('time')
+ylabel('mean spike count')
+%%
+% There are several clusters of neuron, within which cell responses are
+% similar. For example, there are 4 neurons that linearly ramp up slowly
+% from beginning and peak at about 30th intervel and than ramp down. There
+% are 4 neurons that elicit large peak at the middle of the trail. There
+% are are a bunch of neurons that response weakly throughout the trail. 
+%%
+% * b)
+%%
+M_ = M - repmat(mean(M),50,1); % substract mean
+[U,S,~] = svd(M_);S = diag(S);
+figure;bar(S)
+t=title('singular values of $\tilde{M}$');
+set(t,'Interpreter','latex')
+%%
+% "True" dimensionality of the response should be 3. 
+%%
+% * c)
+%%
+figure;
+plot(U(:,1:3))
+xlabel('time')
+leg = legend('first eigenvector of $\tilde{M}\tilde{M}^T$',...
+    'second eigenvector of $\tilde{M}\tilde{M}^T$',...
+    'third eigenvector of $\tilde{M}\tilde{M}^T$');
+set(leg,'Interpreter','latex')
+%%
+% first 3 eigenvectors looks like half integer sinusoids. 
+%%
+% the fourth eigenvector
+%%
+figure;
+plot(U(:,4))
+xlabel('time')
+legend('fourth eigenvector')
+%%
+% looks messy. 
+%%
+% * d)
+%%
+figure;
+plot3(S(1)*U(:,1),S(2)*U(:,2),S(3)*U(:,3),'Marker','o');
+xlabel('PC1');ylabel('PC2');zlabel('PC3')
+view(3)
+grid on
+rotate3d on
+%%
+% The trajectory forms a loop, composed of two half circle connected with
+% an angle in the PC3 dimension.
+%%
+close all
 
 
 

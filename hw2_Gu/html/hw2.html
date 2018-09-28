@@ -1,0 +1,995 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw2</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-27"><meta name="DC.source" content="hw2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Trichromacy</a></li><li><a href="#40">2D polynomial regression</a></li><li><a href="#53">Constrained Least Squares</a></li><li><a href="#73">Principal Components</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear
+</pre><h2 id="2">1 Trichromacy</h2><pre class="codeinput">load <span class="string">colMatch.mat</span>;
+</pre><div><ul><li>a)</li></ul></div><p>Subjects match a random spectrum to the 3 primaries</p><pre class="codeinput">N=31;
+randomLight=rand(N,1);
+matches=humanColorMatcher(randomLight,P)
+</pre><pre class="codeoutput">
+matches =
+
+    0.9197
+   -0.5936
+    1.1206
+
+</pre><p>What subject actually generated from primaries is</p><pre class="codeinput">matchLight = P*matches
+</pre><pre class="codeoutput">
+matchLight =
+
+    0.3877
+    0.4624
+    0.4817
+    0.4934
+    0.4861
+    0.4854
+    0.4847
+    0.4858
+    0.4913
+    0.5145
+    0.5772
+    0.6672
+    0.7083
+    0.6756
+    0.6132
+    0.5536
+    0.4910
+    0.4335
+    0.3882
+    0.3432
+    0.2923
+    0.2558
+    0.2305
+    0.2182
+    0.2230
+    0.2553
+    0.3186
+    0.3948
+    0.4561
+    0.4968
+    0.5178
+
+</pre><p>And the actually testing wavelength spectrum is</p><pre class="codeinput">randomLight
+</pre><pre class="codeoutput">
+randomLight =
+
+    0.2262
+    0.3846
+    0.5830
+    0.2518
+    0.2904
+    0.6171
+    0.2653
+    0.8244
+    0.9827
+    0.7302
+    0.3439
+    0.5841
+    0.1078
+    0.9063
+    0.8797
+    0.8178
+    0.2607
+    0.5944
+    0.0225
+    0.4253
+    0.3127
+    0.1615
+    0.1788
+    0.4229
+    0.0942
+    0.5985
+    0.4709
+    0.6959
+    0.6999
+    0.6385
+    0.0336
+
+</pre><pre class="codeinput">figure;hold <span class="string">on</span>
+plot(randomLight)
+plot(matchLight)
+legend(<span class="string">'randomLight'</span>,<span class="string">'matchLight'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_01.png" alt=""> <p>The two spectra look the same to the subject although they are acutually different because the dimension of the spectra (31) is much higher than human color perception (3). there are much more different spectra that have the same projection in lower dimension space.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">expLight=eye(N);
+M=humanColorMatcher(expLight,P)
+</pre><pre class="codeoutput">
+M =
+
+  Columns 1 through 7
+
+    0.0656    0.1369    0.2490    0.3403    0.3741    0.3421    0.2964
+    0.0008    0.0014    0.0014   -0.0027   -0.0125   -0.0261   -0.0447
+   -0.0384   -0.0798   -0.1439   -0.1913   -0.1989   -0.1643   -0.1157
+
+  Columns 8 through 14
+
+    0.2520    0.1629    0.0856    0.0341   -0.0061   -0.0394   -0.0564
+   -0.0734   -0.1025   -0.1340   -0.1826   -0.2512   -0.3059   -0.3100
+   -0.0538    0.0381    0.1299    0.2335    0.3643    0.4825    0.5278
+
+  Columns 15 through 21
+
+   -0.0632   -0.0637   -0.0573   -0.0485   -0.0356   -0.0220   -0.0102
+   -0.2725   -0.2015   -0.1016    0.0225    0.1553    0.2748    0.3542
+    0.5122    0.4479    0.3417    0.2004    0.0397   -0.1140   -0.2281
+
+  Columns 22 through 28
+
+   -0.0021    0.0021    0.0033    0.0031    0.0023    0.0014    0.0008
+    0.3761    0.3418    0.2663    0.1899    0.1221    0.0712    0.0380
+   -0.2816   -0.2739   -0.2209   -0.1608   -0.1047   -0.0613   -0.0329
+
+  Columns 29 through 31
+
+    0.0004    0.0002    0.0001
+    0.0206    0.0099    0.0051
+   -0.0179   -0.0086   -0.0045
+
+</pre><div><ul><li>Verification</li></ul></div><pre class="codeinput"><span class="keyword">for</span> ii = 1:5
+    disp([<span class="string">'test light'</span>,num2str(ii)])
+    randomLight=rand(N,1);
+    matchesFunc=humanColorMatcher(randomLight,P)
+    matchesMatx=M*randomLight
+    disp(<span class="string">'they are same! '</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">test light1
+
+matchesFunc =
+
+    1.2835
+    0.5716
+   -0.3948
+
+
+matchesMatx =
+
+    1.2835
+    0.5716
+   -0.3948
+
+they are same! 
+test light2
+
+matchesFunc =
+
+    1.0426
+   -0.0640
+    0.4589
+
+
+matchesMatx =
+
+    1.0426
+   -0.0640
+    0.4589
+
+they are same! 
+test light3
+
+matchesFunc =
+
+    0.7954
+    0.0549
+    0.6105
+
+
+matchesMatx =
+
+    0.7954
+    0.0549
+    0.6105
+
+they are same! 
+test light4
+
+matchesFunc =
+
+    1.0238
+    0.0049
+    0.3720
+
+
+matchesMatx =
+
+    1.0238
+    0.0049
+    0.3720
+
+they are same! 
+test light5
+
+matchesFunc =
+
+    1.1180
+    0.2671
+    0.0946
+
+
+matchesMatx =
+
+    1.1180
+    0.2671
+    0.0946
+
+they are same! 
+</pre><div><ul><li>c)</li></ul></div><pre class="codeinput">figure;
+plot(Cones')
+legend(<span class="string">'L (red)'</span>,<span class="string">'M (green)'</span>,<span class="string">'S (blue)'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_02.png" alt=""> <p>for an random wavelength spectrum</p><pre class="codeinput">randomLight=rand(N,1)
+</pre><pre class="codeoutput">
+randomLight =
+
+    0.3912
+    0.7691
+    0.3968
+    0.8085
+    0.7551
+    0.3774
+    0.2160
+    0.7904
+    0.9493
+    0.3276
+    0.6713
+    0.4386
+    0.8335
+    0.7689
+    0.1673
+    0.8620
+    0.9899
+    0.5144
+    0.8843
+    0.5880
+    0.1548
+    0.1999
+    0.4070
+    0.7487
+    0.8256
+    0.7900
+    0.3185
+    0.5341
+    0.0900
+    0.1117
+    0.1363
+
+</pre><p>The subject match it with another spectrum generated from primaries</p><pre class="codeinput">matches=M*randomLight;
+matchingLight = P*matches
+</pre><pre class="codeoutput">
+matchingLight =
+
+    0.4781
+    0.5720
+    0.5943
+    0.6040
+    0.5959
+    0.5907
+    0.5861
+    0.5827
+    0.5816
+    0.5955
+    0.6419
+    0.7089
+    0.7365
+    0.7167
+    0.6868
+    0.6611
+    0.6240
+    0.5888
+    0.5679
+    0.5464
+    0.5158
+    0.4947
+    0.4762
+    0.4702
+    0.4837
+    0.5284
+    0.6057
+    0.6934
+    0.7610
+    0.8039
+    0.8267
+
+</pre><p>Two spectra produce equal cone absorption</p><pre class="codeinput">absorptionRandomLight = Cones*randomLight
+absorptionMatchLight = Cones*matchingLight
+</pre><pre class="codeoutput">
+absorptionRandomLight =
+
+    6.7701
+    5.8512
+    3.9250
+
+
+absorptionMatchLight =
+
+    6.7701
+    5.8512
+    3.9250
+
+</pre><p>because for any pair of light (<img src="hw2_eq14334771572674264186.png" alt="$l_1,l_2$" style="width:26px;height:14px;">) that map to the same knob settings</p><p><img src="hw2_eq14639569927597584983.png" alt="$$M l_1 = M l_2$$" style="width:70px;height:13px;"></p><p>In other words, <img src="hw2_eq01365245257446230869.png" alt="$l_1-l_2$" style="width:37px;height:13px;"> is in M's null space.</p><p>If cones matching matrix C has the same null space as M, then</p><p><img src="hw2_eq00310727617892217367.png" alt="$$C (l_1-l_2)$$" style="width:60px;height:15px;"></p><p>would also hold true, which means that any pair of light that elicits the same behavioral response, i.e, knob settings, produces the same cone absorption, vice versa.</p><p>From SVD we can get the two null space,</p><pre class="codeinput">[~,~,V_M]=svd(M);
+[~,~,V_cone]=svd(Cones);
+null_M = V_M(:,4:end);
+null_cone = V_M(:,4:end);
+</pre><p>the two null space are the same because there will be no more addtional dimensions when we add columns from one to the other</p><pre class="codeinput">svd([null_M,null_cone])
+</pre><pre class="codeoutput">
+ans =
+
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    1.4142
+    0.0000
+    0.0000
+    0.0000
+
+</pre><p>There are still 28 = 31-3 non-zero singular values, as well as two null space respectively.</p><p>Alternatively, we can think of an arbitary spectrum <img src="hw2_eq11306495728221823791.png" alt="$l$" style="width:4px;height:11px;"> and the spectrum that the subject match it with primaries <img src="hw2_eq14084997902502981745.png" alt="$l'$" style="width:7px;height:12px;">.</p><p><img src="hw2_eq04703291428587852838.png" alt="$$l' = P x$$" style="width:47px;height:12px;"></p><p>where x is the knob settings. both spectra should produce the same cone absorption</p><p><img src="hw2_eq04773890559063192288.png" alt="$$C l = C P x$$" style="width:66px;height:11px;"></p><p>for every <img src="hw2_eq11306495728221823791.png" alt="$l$" style="width:4px;height:11px;">.</p><p>There should always be a unique matching. So</p><p><img src="hw2_eq08260984352014686318.png" alt="$$x = (C P)^{-1} C l$$" style="width:92px;height:17px;"></p><p>So <img src="hw2_eq14242081254175491011.png" alt="$CP$" style="width:22px;height:11px;"> should be invertible, and <img src="hw2_eq18235500995861142344.png" alt="$M=(C P)^{-1} C$" style="width:95px;height:16px;"> is actually the color matching matrix,</p><pre class="codeinput">M_hat = (Cones*P)\Cones;
+error = M-M_hat;
+all(all(error&lt;1e-10))
+</pre><pre class="codeoutput">
+ans =
+
+  logical
+
+   1
+
+</pre><p>which should have the same null space as C, because any <img src="hw2_eq07972641343395931655.png" alt="$l_0$" style="width:9px;height:13px;"> in <img src="hw2_eq03986222445007418011.png" alt="$C$" style="width:11px;height:11px;">'s null space, <img src="hw2_eq04621399982832101571.png" alt="$C l_0 = 0$" style="width:48px;height:13px;">, <img src="hw2_eq08134514896636338048.png" alt="$M l_0 = (C P)^{-1} \cdot 0 = 0$" style="width:138px;height:16px;"></p><div><ul><li>d)</li></ul></div><pre class="codeinput">randomLight=rand(N,5); <span class="comment">% generate several test lights</span>
+matchesNorm =   humanColorMatcher(randomLight,P) <span class="comment">% knob settings from normal subject</span>
+matchesAlt = altHumanColorMatcher(randomLight,P) <span class="comment">% from the patient</span>
+</pre><pre class="codeoutput">
+matchesNorm =
+
+    0.7641    1.5663    1.0409    0.6291    0.5067
+   -0.0794   -0.4827    0.2996    0.1978   -0.4086
+    1.0741    0.5080   -0.0434    0.4696    1.1582
+
+
+matchesAlt =
+
+    0.6630    1.3841    0.8188    0.2360    0.3834
+   -1.2770   -2.6413   -2.3314   -4.4596   -1.8705
+    2.4551    2.9973    2.9907    5.8405    2.8441
+
+</pre><p>They are totally different. I can't tell the pattern.</p><p>Cone absorption for test Light</p><pre class="codeinput">Cones * randomLight
+</pre><pre class="codeoutput">
+ans =
+
+    7.2837    4.5262    4.5526    5.3656    5.0995
+    6.1556    4.2767    3.5243    4.2876    4.6517
+    3.0192    4.8706    3.3042    2.3424    2.1180
+
+</pre><p>Cone absorption for mixtures of matching primaries (normal)</p><pre class="codeinput">Cones * P * matchesNorm
+</pre><pre class="codeoutput">
+ans =
+
+    7.2837    4.5262    4.5526    5.3656    5.0995
+    6.1556    4.2767    3.5243    4.2876    4.6517
+    3.0192    4.8706    3.3042    2.3424    2.1180
+
+</pre><p>Same Cone absorption</p><p>Cone absorption for mixtures of matching primaries (patient)</p><pre class="codeinput">Cones * P * matchesAlt
+</pre><pre class="codeoutput">
+ans =
+
+    7.2837    4.5262    4.5526    5.3656    5.0995
+    7.3155    6.3674    6.0726    8.7986    6.0676
+    3.0192    4.8706    3.3042    2.3424    2.1180
+
+</pre><p>Cone absorption for red and blue cones are the same but green is random,</p><pre class="codeinput"><span class="comment">%So the patient may miss copies of green cone.</span>
+</pre><h2 id="40">2D polynomial regression</h2><pre class="codeinput">load <span class="string">regress2.mat</span>
+</pre><div><ul><li>a)</li></ul></div><pre class="codeinput">x=D(:,1);y=D(:,2);z=D(:,3);
+X=reshape(x,13,13);
+Y=reshape(y,13,13);
+Z=reshape(z,13,13);
+figure;surf(X,Y,Z)
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_03.png" alt=""> <div><ul><li>b) prepare predictors</li></ul></div><pre class="codeinput">p0 = ones(169,1);
+p1 = [p0,x,y];
+x2 = x.^2;
+y2 = y.^2;
+xy = x.*y;
+p2 = [p1,x2,xy,y2];
+x3 = x.^3;
+y3 = y.^3;
+x2y= x2.*y;
+xy2= x.*y2;
+p3 = [p2,x3,x2y,xy2,y3];
+<span class="comment">% regression</span>
+beta0 = (p0'*p0)\p0'*z;
+beta1 = (p1'*p1)\p1'*z;
+beta2 = (p2'*p2)\p2'*z;
+beta3 = (p3'*p3)\p3'*z;
+</pre><div><ul><li>order 0</li></ul></div><pre class="codeinput">z_hat = p0*beta0;
+figure;hold <span class="string">on</span>
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_04.png" alt=""> <div><ul><li>order 1</li></ul></div><pre class="codeinput">z_hat = p1*beta1;
+figure;hold <span class="string">on</span>
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_05.png" alt=""> <div><ul><li>order 2</li></ul></div><pre class="codeinput">z_hat = p2*beta2;
+figure;hold <span class="string">on</span>
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_06.png" alt=""> <div><ul><li>order 3</li></ul></div><pre class="codeinput">z_hat = p3*beta3;
+figure;hold <span class="string">on</span>
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_07.png" alt=""> <p>3rd order fit seems reasonable enough to capture the trend of the data</p><pre class="codeinput">SE = (z-z_hat).^2;
+figure;hist(SE)
+</pre><img vspace="5" hspace="5" src="hw2_08.png" alt=""> <p>mean squared error</p><pre class="codeinput">MSE = mean(SE)
+</pre><pre class="codeoutput">
+MSE =
+
+   2.0500e-04
+
+</pre><pre class="codeinput">z_hat_allTerm = p3*diag(beta3); <span class="comment">% decompose z_hat, one term for every predictors</span>
+importance=sqrt(sum(z_hat_allTerm.^2,1)) <span class="comment">% calculate vector length of each term</span>
+</pre><pre class="codeoutput">
+importance =
+
+  Columns 1 through 7
+
+    2.0556    2.1797    0.3722    0.0139    0.1927    0.3461    1.5516
+
+  Columns 8 through 10
+
+    0.0067    1.5088    0.0496
+
+</pre><p>term <img src="hw2_eq11198666166595392749.png" alt="$x^2y$" style="width:22px;height:16px;">, <img src="hw2_eq18272244738375251809.png" alt="$x^2$" style="width:13px;height:13px;"> and <img src="hw2_eq01421424023024894863.png" alt="$y^3$" style="width:13px;height:16px;"> terms are not so important</p><pre class="codeinput">z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance&lt;0.05),2);
+MSE_new = mean((z-z_hat_drop).^2)
+</pre><pre class="codeoutput">
+MSE_new =
+
+   2.1825e-04
+
+</pre><p>mean squared error increase less than 10%</p><h2 id="53">Constrained Least Squares</h2><pre class="codeinput">load <span class="string">constrainedLS.mat</span>
+</pre><div><ul><li>a)</li></ul></div><p>The original problem can be written as</p><p><img src="hw2_eq04178200030371640244.png" alt="$$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$" style="width:84px;height:24px;"></p><p>s.t. <img src="hw2_eq08542345637261214087.png" alt="$\vec{v}^T\vec{w}=1$" style="width:53px;height:13px;">, where nth row in <img src="hw2_eq16171345478199012472.png" alt="$D$" style="width:12px;height:11px;"> is $\vec{d}_n</p><p>singular value decompose <img src="hw2_eq05740224045418958009.png" alt="$D=USV^T$" style="width:72px;height:13px;">, keep only first 2 colomns of U and first two rows of S</p><pre class="codeinput">[U,S,V] = svd(data,<span class="string">'econ'</span>);
+</pre><p>let <img src="hw2_eq16382403992339623822.png" alt="$\tilde{v} = \tilde{S}V^T \vec{v}$" style="width:65px;height:14px;">, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$</p><pre class="codeinput">w_tilde = S\V'*w;
+</pre><p>thus</p><p><img src="hw2_eq10767715996071076604.png" alt="$$\min_{\tilde{v}} ||\tilde{v}||^2  $$" style="width:56px;height:23px;"></p><p>s.t. <img src="hw2_eq05239955474786675984.png" alt="$\tilde{v}^T\tilde{w} = \vec{v}^T\vec{w}=1$" style="width:99px;height:13px;">.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">v_tilde = w_tilde/norm(w_tilde)^2
+</pre><pre class="codeoutput">
+v_tilde =
+
+   -5.8205
+  -14.6384
+
+</pre><pre class="codeinput">figure; hold <span class="string">on</span>
+scatter(U(:,1),U(:,2),<span class="string">'k+'</span>) <span class="comment">% first two columns of U is just transformed D</span>
+quiver(0,0,w_tilde(1),w_tilde(2),1,<span class="string">'r'</span>,<span class="string">'LineWidth'</span>,2)
+xx = v_tilde(1)+w_tilde(2)*(-250:250);
+yy = v_tilde(2)-w_tilde(1)*(-250:250);
+plot(xx,yy,<span class="string">'r--'</span>)
+quiver(0,0,v_tilde(1),v_tilde(2),1,<span class="string">'b'</span>)
+leg=legend(<span class="string">'data'</span>,<span class="string">'$\tilde{w}$'</span>,<span class="string">'constraint line'</span>,<span class="string">'$\tilde{v}$'</span>);
+set(leg,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+axis <span class="string">equal</span>
+xlim([-10,15])
+ylim([-20,5])
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="hw2_09.png" alt=""> <div><ul><li>c)</li></ul></div><pre class="codeinput">v = V/S*v_tilde
+</pre><pre class="codeoutput">
+v =
+
+   -0.3782
+    2.0200
+
+</pre><pre class="codeinput">figure; hold <span class="string">on</span>
+scatter(data(:,1),data(:,2),<span class="string">'k+'</span>) <span class="comment">% first two columns of U is just transformed D</span>
+quiver(0,0,w(1),w(2),1,<span class="string">'r'</span>,<span class="string">'LineWidth'</span>,2)
+tt= w/norm(w)^2 + [w(2);-w(1)]*(-5:5);
+plot(tt(1,:),tt(2,:),<span class="string">'r--'</span>)
+quiver(0,0,v(1),v(2),1,<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,2)
+leg=legend(<span class="string">'data'</span>,<span class="string">'$\vec{w}$'</span>,<span class="string">'constraint line'</span>,<span class="string">'$\vec{v}$'</span>);
+set(leg,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+axis <span class="string">equal</span>
+<span class="comment">% xlim([-.25,.4])</span>
+<span class="comment">% ylim([-.25,.4])</span>
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="hw2_10.png" alt=""> <p><img src="hw2_eq09098711414830822605.png" alt="$\vec{v}$" style="width:8px;height:11px;"> is not perpendicular to constraint line in the original space, although is still on the constraint line.</p><p>Total least square solution:</p><pre class="codeinput">v_tls = V(:,end);
+</pre><pre class="codeinput">figure; hold <span class="string">on</span>
+scatter(data(:,1),data(:,2),<span class="string">'k+'</span>) <span class="comment">% first two columns of U is just transformed D</span>
+quiver(0,0,w(1),w(2),1,<span class="string">'r'</span>,<span class="string">'LineWidth'</span>,2)
+plot(tt(1,:),tt(2,:),<span class="string">'r--'</span>)
+quiver(0,0,v(1),v(2),1,<span class="string">'b'</span>,<span class="string">'LineWidth'</span>,1)
+quiver(0,0,v_tls(1),v_tls(2),1,<span class="string">'c'</span>,<span class="string">'LineWidth'</span>,2)
+leg=legend(<span class="string">'data'</span>,<span class="string">'$\vec{w}$'</span>,<span class="string">'constraint line'</span>,<span class="string">'$\vec{v}$'</span>,<span class="string">'$\vec{v}_{total\ least\ square}$'</span>);
+set(leg,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+axis <span class="string">equal</span>
+<span class="comment">% xlim([-.25,.4])</span>
+<span class="comment">% ylim([-.25,.4])</span>
+hold <span class="string">off</span>
+</pre><img vspace="5" hspace="5" src="hw2_11.png" alt=""> <p>Solutions are different.</p><h2 id="73">Principal Components</h2><pre class="codeinput">load <span class="string">PCA.mat</span>
+</pre><div><ul><li>a)</li></ul></div><pre class="codeinput">figure;
+plot(M)
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'mean spike count'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_12.png" alt=""> <p>There are several clusters of neuron, within which cell responses are similar. For example, there are 4 neurons that linearly ramp up slowly from beginning and peak at about 30th intervel and than ramp down. There are 4 neurons that elicit large peak at the middle of the trail. There are are a bunch of neurons that response weakly throughout the trail.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">M_ = M - repmat(mean(M),50,1); <span class="comment">% substract mean</span>
+[U,S,~] = svd(M_);S = diag(S);
+figure;bar(S)
+t=title(<span class="string">'singular values of $\tilde{M}$'</span>);
+set(t,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_13.png" alt=""> <p>"True" dimensionality of the response should be 3.</p><div><ul><li>c)</li></ul></div><pre class="codeinput">figure;
+plot(U(:,1:3))
+xlabel(<span class="string">'time'</span>)
+leg = legend(<span class="string">'first eigenvector of $\tilde{M}\tilde{M}^T$'</span>,<span class="keyword">...</span>
+    <span class="string">'second eigenvector of $\tilde{M}\tilde{M}^T$'</span>,<span class="keyword">...</span>
+    <span class="string">'third eigenvector of $\tilde{M}\tilde{M}^T$'</span>);
+set(leg,<span class="string">'Interpreter'</span>,<span class="string">'latex'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_14.png" alt=""> <p>first 3 eigenvectors looks like half integer sinusoids.</p><p>the fourth eigenvector</p><pre class="codeinput">figure;
+plot(U(:,4))
+xlabel(<span class="string">'time'</span>)
+legend(<span class="string">'fourth eigenvector'</span>)
+</pre><img vspace="5" hspace="5" src="hw2_15.png" alt=""> <p>looks messy.</p><div><ul><li>d)</li></ul></div><pre class="codeinput">figure;
+plot3(S(1)*U(:,1),S(2)*U(:,2),S(3)*U(:,3),<span class="string">'Marker'</span>,<span class="string">'o'</span>);
+xlabel(<span class="string">'PC1'</span>);ylabel(<span class="string">'PC2'</span>);zlabel(<span class="string">'PC3'</span>)
+view(3)
+grid <span class="string">on</span>
+rotate3d <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw2_16.png" alt=""> <p>The trajectory forms a loop, composed of two half circle connected with an angle in the PC3 dimension.</p><pre class="codeinput">close <span class="string">all</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all; clear
+%% 1 Trichromacy
+load colMatch.mat;
+%%
+% * a)
+%%
+% Subjects match a random spectrum to the 3 primaries
+N=31;
+randomLight=rand(N,1);
+matches=humanColorMatcher(randomLight,P)
+%%
+% What subject actually generated from primaries is
+matchLight = P*matches
+%% 
+% And the actually testing wavelength spectrum is 
+randomLight
+%%
+figure;hold on
+plot(randomLight)
+plot(matchLight)
+legend('randomLight','matchLight')
+%%
+% The two spectra look the same to the subject although they are acutually
+% different because the dimension of the spectra (31) is much higher than human
+% color perception (3). there are much more different spectra that have the
+% same projection in lower dimension space. 
+%%
+% * b)
+expLight=eye(N);
+M=humanColorMatcher(expLight,P)
+%%
+% * Verification
+for ii = 1:5
+    disp(['test light',num2str(ii)])
+    randomLight=rand(N,1);
+    matchesFunc=humanColorMatcher(randomLight,P)
+    matchesMatx=M*randomLight
+    disp('they are same! ')
+end
+%% 
+% * c)
+figure;
+plot(Cones')
+legend('L (red)','M (green)','S (blue)')
+%%
+% for an random wavelength spectrum
+randomLight=rand(N,1)
+%% 
+% The subject match it with another spectrum generated from primaries
+matches=M*randomLight;
+matchingLight = P*matches
+%%
+% Two spectra produce equal cone absorption
+absorptionRandomLight = Cones*randomLight
+absorptionMatchLight = Cones*matchingLight
+%%
+% because for any pair of light ($l_1,l_2$) that map to the same knob settings
+%%
+% 
+% $$M l_1 = M l_2$$
+% 
+%%
+% In other words, $l_1-l_2$ is in M's null space. 
+%%
+% If cones matching matrix C has the same null space as M, then
+%%
+%
+% $$C (l_1-l_2)$$
+%
+%%
+% would also hold true, which means that any pair of light that elicits the
+% same behavioral response, i.e, knob settings, produces the same cone
+% absorption, vice versa. 
+%%
+% From SVD we can get the two null space, 
+[~,~,V_M]=svd(M);
+[~,~,V_cone]=svd(Cones);
+null_M = V_M(:,4:end);
+null_cone = V_M(:,4:end);
+%%
+% the two null space are the same because there will be no more addtional
+% dimensions when we add columns from one to the other
+svd([null_M,null_cone])
+%%
+% There are still 28 = 31-3 non-zero singular values, as well as two null
+% space respectively. 
+%%
+% Alternatively, we can think of an arbitary spectrum $l$ and the spectrum
+% that the subject match it with primaries $l'$. 
+%%
+%
+% $$l' = P x$$
+%
+%%
+% where x is the knob settings. both spectra should produce the same cone absorption
+%%
+%
+% $$C l = C P x$$
+%
+%%
+% for every $l$. 
+%%
+% There should always be a unique matching. So 
+%%
+%
+% $$x = (C P)^{-1} C l$$
+%
+%%
+% So $CP$ should be invertible, and $M=(C P)^{-1} C$ is actually the color
+% matching matrix, 
+M_hat = (Cones*P)\Cones;
+error = M-M_hat;
+all(all(error<1e-10))
+%%
+% which should have the same null space as C, because any
+% $l_0$ in $C$'s null space, $C l_0 = 0$, $M l_0 = (C P)^{-1} \cdot 0 = 0$
+%%
+% * d)
+randomLight=rand(N,5); % generate several test lights
+matchesNorm =   humanColorMatcher(randomLight,P) % knob settings from normal subject
+matchesAlt = altHumanColorMatcher(randomLight,P) % from the patient
+%%
+% They are totally different. I can't tell the pattern. 
+%%
+% Cone absorption for test Light
+Cones * randomLight
+%%
+% Cone absorption for mixtures of matching primaries (normal)
+Cones * P * matchesNorm
+%%
+% Same Cone absorption
+%%
+% Cone absorption for mixtures of matching primaries (patient)
+Cones * P * matchesAlt
+%%
+% Cone absorption for red and blue cones are the same but green is random,
+%So the patient may miss copies of green cone. 
+%% 2D polynomial regression
+load regress2.mat
+%%
+% * a)
+x=D(:,1);y=D(:,2);z=D(:,3);
+X=reshape(x,13,13);
+Y=reshape(y,13,13);
+Z=reshape(z,13,13);
+figure;surf(X,Y,Z)
+rotate3d on
+%%
+% * b)
+% prepare predictors
+p0 = ones(169,1);
+p1 = [p0,x,y];
+x2 = x.^2;
+y2 = y.^2;
+xy = x.*y;
+p2 = [p1,x2,xy,y2];
+x3 = x.^3;
+y3 = y.^3;
+x2y= x2.*y;
+xy2= x.*y2;
+p3 = [p2,x3,x2y,xy2,y3];
+% regression
+beta0 = (p0'*p0)\p0'*z;
+beta1 = (p1'*p1)\p1'*z;
+beta2 = (p2'*p2)\p2'*z;
+beta3 = (p3'*p3)\p3'*z;
+%%
+% * order 0
+z_hat = p0*beta0;
+figure;hold on
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d on
+%%
+% * order 1
+z_hat = p1*beta1;
+figure;hold on
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d on
+%%
+% * order 2
+z_hat = p2*beta2;
+figure;hold on
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d on
+%%
+% * order 3
+z_hat = p3*beta3;
+figure;hold on
+scatter3(x,y,z)
+Z = reshape(z_hat,13,13);
+surf(X,Y,Z)
+view(3)
+rotate3d on
+%% 
+% 3rd order fit seems reasonable enough to capture the trend of the data
+%%
+SE = (z-z_hat).^2;
+figure;hist(SE)
+%%
+% mean squared error
+MSE = mean(SE)
+%%
+z_hat_allTerm = p3*diag(beta3); % decompose z_hat, one term for every predictors
+importance=sqrt(sum(z_hat_allTerm.^2,1)) % calculate vector length of each term
+%%
+% term $x^2y$, $x^2$ and $y^3$ terms are not so important
+z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance<0.05),2);
+MSE_new = mean((z-z_hat_drop).^2)
+%%
+% mean squared error increase less than 10%
+%% Constrained Least Squares
+load constrainedLS.mat
+%%
+% * a)
+%%
+% The original problem can be written as
+%%
+% 
+% $$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$
+% 
+%%
+% s.t. $\vec{v}^T\vec{w}=1$, where nth row in $D$ is $\vec{d}_n
+%%
+% singular value decompose $D=USV^T$, keep only first 2 colomns of U and
+% first two rows of S
+[U,S,V] = svd(data,'econ');
+%%
+% let $\tilde{v} = \tilde{S}V^T \vec{v}$, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$
+w_tilde = S\V'*w;
+%%
+% thus 
+%%
+% $$\min_{\tilde{v}} ||\tilde{v}||^2  $$
+%%
+% s.t. $\tilde{v}^T\tilde{w} = \vec{v}^T\vec{w}=1$.
+%%
+% * b)
+%%
+v_tilde = w_tilde/norm(w_tilde)^2
+%%
+figure; hold on
+scatter(U(:,1),U(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w_tilde(1),w_tilde(2),1,'r','LineWidth',2)
+xx = v_tilde(1)+w_tilde(2)*(-250:250);
+yy = v_tilde(2)-w_tilde(1)*(-250:250);
+plot(xx,yy,'rREPLACE_WITH_DASH_DASH')
+quiver(0,0,v_tilde(1),v_tilde(2),1,'b')
+leg=legend('data','$\tilde{w}$','constraint line','$\tilde{v}$');
+set(leg,'Interpreter','latex')
+axis equal
+xlim([-10,15])
+ylim([-20,5])
+hold off
+%%
+% * c)
+%%
+v = V/S*v_tilde
+%%
+figure; hold on
+scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
+tt= w/norm(w)^2 + [w(2);-w(1)]*(-5:5);
+plot(tt(1,:),tt(2,:),'rREPLACE_WITH_DASH_DASH')
+quiver(0,0,v(1),v(2),1,'b','LineWidth',2)
+leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$');
+set(leg,'Interpreter','latex')
+axis equal
+% xlim([-.25,.4])
+% ylim([-.25,.4])
+hold off
+%%
+% $\vec{v}$ is not perpendicular to constraint line in the original space,
+% although is still on the constraint line. 
+%%
+% Total least square solution:
+v_tls = V(:,end);
+%%
+figure; hold on
+scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
+quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
+plot(tt(1,:),tt(2,:),'rREPLACE_WITH_DASH_DASH')
+quiver(0,0,v(1),v(2),1,'b','LineWidth',1)
+quiver(0,0,v_tls(1),v_tls(2),1,'c','LineWidth',2)
+leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$','$\vec{v}_{total\ least\ square}$');
+set(leg,'Interpreter','latex')
+axis equal
+% xlim([-.25,.4])
+% ylim([-.25,.4])
+hold off
+%%
+% Solutions are different. 
+%% Principal Components
+load PCA.mat
+%%
+% * a)
+%%
+figure;
+plot(M)
+xlabel('time')
+ylabel('mean spike count')
+%%
+% There are several clusters of neuron, within which cell responses are
+% similar. For example, there are 4 neurons that linearly ramp up slowly
+% from beginning and peak at about 30th intervel and than ramp down. There
+% are 4 neurons that elicit large peak at the middle of the trail. There
+% are are a bunch of neurons that response weakly throughout the trail. 
+%%
+% * b)
+%%
+M_ = M - repmat(mean(M),50,1); % substract mean
+[U,S,~] = svd(M_);S = diag(S);
+figure;bar(S)
+t=title('singular values of $\tilde{M}$');
+set(t,'Interpreter','latex')
+%%
+% "True" dimensionality of the response should be 3. 
+%%
+% * c)
+%%
+figure;
+plot(U(:,1:3))
+xlabel('time')
+leg = legend('first eigenvector of $\tilde{M}\tilde{M}^T$',...
+    'second eigenvector of $\tilde{M}\tilde{M}^T$',...
+    'third eigenvector of $\tilde{M}\tilde{M}^T$');
+set(leg,'Interpreter','latex')
+%%
+% first 3 eigenvectors looks like half integer sinusoids. 
+%%
+% the fourth eigenvector
+%%
+figure;
+plot(U(:,4))
+xlabel('time')
+legend('fourth eigenvector')
+%%
+% looks messy. 
+%%
+% * d)
+%%
+figure;
+plot3(S(1)*U(:,1),S(2)*U(:,2),S(3)*U(:,3),'Marker','o');
+xlabel('PC1');ylabel('PC2');zlabel('PC3')
+view(3)
+grid on
+rotate3d on
+%%
+% The trajectory forms a loop, composed of two half circle connected with
+% an angle in the PC3 dimension.
+%%
+close all
+
+
+
+
+
+    
+
+##### SOURCE END #####
+--></body></html>
