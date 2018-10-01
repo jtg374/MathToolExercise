@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>hw2</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-09-27"><meta name="DC.source" content="hw2.m"><style type="text/css">
+      --><title>hw2</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-01"><meta name="DC.source" content="hw2.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -74,81 +74,81 @@ matches=humanColorMatcher(randomLight,P)
 </pre><pre class="codeoutput">
 matches =
 
-    0.9197
-   -0.5936
-    1.1206
+    1.0092
+    0.2037
+    0.6315
 
 </pre><p>What subject actually generated from primaries is</p><pre class="codeinput">matchLight = P*matches
 </pre><pre class="codeoutput">
 matchLight =
 
-    0.3877
-    0.4624
-    0.4817
-    0.4934
-    0.4861
-    0.4854
-    0.4847
-    0.4858
-    0.4913
-    0.5145
-    0.5772
-    0.6672
-    0.7083
-    0.6756
-    0.6132
-    0.5536
-    0.4910
-    0.4335
-    0.3882
-    0.3432
-    0.2923
-    0.2558
-    0.2305
-    0.2182
-    0.2230
-    0.2553
-    0.3186
-    0.3948
-    0.4561
-    0.4968
-    0.5178
+    0.4454
+    0.5315
+    0.5502
+    0.5565
+    0.5503
+    0.5441
+    0.5392
+    0.5363
+    0.5353
+    0.5457
+    0.5803
+    0.6299
+    0.6560
+    0.6615
+    0.6702
+    0.6795
+    0.6710
+    0.6606
+    0.6608
+    0.6583
+    0.6456
+    0.6378
+    0.6277
+    0.6277
+    0.6447
+    0.6882
+    0.7595
+    0.8380
+    0.8974
+    0.9342
+    0.9552
 
 </pre><p>And the actually testing wavelength spectrum is</p><pre class="codeinput">randomLight
 </pre><pre class="codeoutput">
 randomLight =
 
-    0.2262
-    0.3846
-    0.5830
-    0.2518
-    0.2904
-    0.6171
-    0.2653
-    0.8244
-    0.9827
-    0.7302
-    0.3439
-    0.5841
-    0.1078
-    0.9063
-    0.8797
-    0.8178
-    0.2607
-    0.5944
-    0.0225
-    0.4253
-    0.3127
-    0.1615
-    0.1788
-    0.4229
-    0.0942
-    0.5985
-    0.4709
-    0.6959
-    0.6999
-    0.6385
-    0.0336
+    0.8147
+    0.9058
+    0.1270
+    0.9134
+    0.6324
+    0.0975
+    0.2785
+    0.5469
+    0.9575
+    0.9649
+    0.1576
+    0.9706
+    0.9572
+    0.4854
+    0.8003
+    0.1419
+    0.4218
+    0.9157
+    0.7922
+    0.9595
+    0.6557
+    0.0357
+    0.8491
+    0.9340
+    0.6787
+    0.7577
+    0.7431
+    0.3922
+    0.6555
+    0.1712
+    0.7060
 
 </pre><pre class="codeinput">figure;hold <span class="string">on</span>
 plot(randomLight)
@@ -200,80 +200,80 @@ M =
 
 matchesFunc =
 
-    1.2835
-    0.5716
-   -0.3948
+    0.8071
+    0.0285
+    0.6635
 
 
 matchesMatx =
 
-    1.2835
-    0.5716
-   -0.3948
+    0.8071
+    0.0285
+    0.6635
 
 they are same! 
 test light2
 
 matchesFunc =
 
-    1.0426
-   -0.0640
-    0.4589
+    1.0504
+    0.4609
+    0.0155
 
 
 matchesMatx =
 
-    1.0426
-   -0.0640
-    0.4589
+    1.0504
+    0.4609
+    0.0155
 
 they are same! 
 test light3
 
 matchesFunc =
 
-    0.7954
-    0.0549
-    0.6105
+    0.7001
+    0.1980
+    0.4594
 
 
 matchesMatx =
 
-    0.7954
-    0.0549
-    0.6105
+    0.7001
+    0.1980
+    0.4594
 
 they are same! 
 test light4
 
 matchesFunc =
 
-    1.0238
-    0.0049
-    0.3720
+    0.8994
+   -0.3140
+    0.7825
 
 
 matchesMatx =
 
-    1.0238
-    0.0049
-    0.3720
+    0.8994
+   -0.3140
+    0.7825
 
 they are same! 
 test light5
 
 matchesFunc =
 
-    1.1180
-    0.2671
-    0.0946
+    0.8398
+    0.0316
+    0.3819
 
 
 matchesMatx =
 
-    1.1180
-    0.2671
-    0.0946
+    0.8398
+    0.0316
+    0.3819
 
 they are same! 
 </pre><div><ul><li>c)</li></ul></div><pre class="codeinput">figure;
@@ -283,90 +283,90 @@ legend(<span class="string">'L (red)'</span>,<span class="string">'M (green)'</s
 </pre><pre class="codeoutput">
 randomLight =
 
-    0.3912
-    0.7691
-    0.3968
-    0.8085
-    0.7551
-    0.3774
-    0.2160
-    0.7904
-    0.9493
-    0.3276
-    0.6713
-    0.4386
-    0.8335
-    0.7689
-    0.1673
-    0.8620
-    0.9899
-    0.5144
-    0.8843
-    0.5880
-    0.1548
-    0.1999
-    0.4070
-    0.7487
-    0.8256
-    0.7900
-    0.3185
-    0.5341
-    0.0900
-    0.1117
-    0.1363
+    0.3685
+    0.6256
+    0.7802
+    0.0811
+    0.9294
+    0.7757
+    0.4868
+    0.4359
+    0.4468
+    0.3063
+    0.5085
+    0.5108
+    0.8176
+    0.7948
+    0.6443
+    0.3786
+    0.8116
+    0.5328
+    0.3507
+    0.9390
+    0.8759
+    0.5502
+    0.6225
+    0.5870
+    0.2077
+    0.3012
+    0.4709
+    0.2305
+    0.8443
+    0.1948
+    0.2259
 
 </pre><p>The subject match it with another spectrum generated from primaries</p><pre class="codeinput">matches=M*randomLight;
 matchingLight = P*matches
 </pre><pre class="codeoutput">
 matchingLight =
 
-    0.4781
-    0.5720
-    0.5943
-    0.6040
-    0.5959
-    0.5907
-    0.5861
-    0.5827
-    0.5816
-    0.5955
-    0.6419
-    0.7089
-    0.7365
-    0.7167
-    0.6868
-    0.6611
-    0.6240
-    0.5888
-    0.5679
-    0.5464
-    0.5158
-    0.4947
-    0.4762
-    0.4702
-    0.4837
-    0.5284
-    0.6057
-    0.6934
-    0.7610
-    0.8039
-    0.8267
+    0.4582
+    0.5486
+    0.5689
+    0.5755
+    0.5684
+    0.5615
+    0.5554
+    0.5502
+    0.5461
+    0.5529
+    0.5829
+    0.6262
+    0.6436
+    0.6390
+    0.6386
+    0.6417
+    0.6290
+    0.6153
+    0.6143
+    0.6118
+    0.5995
+    0.5918
+    0.5810
+    0.5804
+    0.5975
+    0.6428
+    0.7165
+    0.7971
+    0.8578
+    0.8952
+    0.9158
 
 </pre><p>Two spectra produce equal cone absorption</p><pre class="codeinput">absorptionRandomLight = Cones*randomLight
 absorptionMatchLight = Cones*matchingLight
 </pre><pre class="codeoutput">
 absorptionRandomLight =
 
-    6.7701
-    5.8512
-    3.9250
+    6.9552
+    5.6901
+    3.7157
 
 
 absorptionMatchLight =
 
-    6.7701
-    5.8512
-    3.9250
+    6.9552
+    5.6901
+    3.7157
 
 </pre><p>because for any pair of light (<img src="hw2_eq14334771572674264186.png" alt="$l_1,l_2$" style="width:26px;height:14px;">) that map to the same knob settings</p><p><img src="hw2_eq14639569927597584983.png" alt="$$M l_1 = M l_2$$" style="width:70px;height:13px;"></p><p>In other words, <img src="hw2_eq01365245257446230869.png" alt="$l_1-l_2$" style="width:37px;height:13px;"> is in M's null space.</p><p>If cones matching matrix C has the same null space as M, then</p><p><img src="hw2_eq00310727617892217367.png" alt="$$C (l_1-l_2)$$" style="width:60px;height:15px;"></p><p>would also hold true, which means that any pair of light that elicits the same behavioral response, i.e, knob settings, produces the same cone absorption, vice versa.</p><p>From SVD we can get the two null space,</p><pre class="codeinput">[~,~,V_M]=svd(M);
 [~,~,V_cone]=svd(Cones);
@@ -424,40 +424,40 @@ matchesAlt = altHumanColorMatcher(randomLight,P) <span class="comment">% from th
 </pre><pre class="codeoutput">
 matchesNorm =
 
-    0.7641    1.5663    1.0409    0.6291    0.5067
-   -0.0794   -0.4827    0.2996    0.1978   -0.4086
-    1.0741    0.5080   -0.0434    0.4696    1.1582
+    1.0657    1.0315    1.2389    1.2029    1.1009
+   -0.1349   -0.1484   -0.0776    0.0031   -0.0438
+    0.3883    0.6697    0.3797    0.3043    0.4798
 
 
 matchesAlt =
 
-    0.6630    1.3841    0.8188    0.2360    0.3834
-   -1.2770   -2.6413   -2.3314   -4.4596   -1.8705
-    2.4551    2.9973    2.9907    5.8405    2.8441
+    0.8883    0.8303    1.0132    1.0359    0.8655
+   -2.2366   -2.5323   -2.7517   -1.9757   -2.8324
+    2.8121    3.4188    3.4635    2.5863    3.6957
 
 </pre><p>They are totally different. I can't tell the pattern.</p><p>Cone absorption for test Light</p><pre class="codeinput">Cones * randomLight
 </pre><pre class="codeoutput">
 ans =
 
-    7.2837    4.5262    4.5526    5.3656    5.0995
-    6.1556    4.2767    3.5243    4.2876    4.6517
-    3.0192    4.8706    3.3042    2.3424    2.1180
+    4.3830    5.6355    5.1750    5.1376    5.4634
+    3.8057    4.8594    4.4136    4.3031    4.6167
+    3.4448    3.5242    3.9975    3.8789    3.6620
 
 </pre><p>Cone absorption for mixtures of matching primaries (normal)</p><pre class="codeinput">Cones * P * matchesNorm
 </pre><pre class="codeoutput">
 ans =
 
-    7.2837    4.5262    4.5526    5.3656    5.0995
-    6.1556    4.2767    3.5243    4.2876    4.6517
-    3.0192    4.8706    3.3042    2.3424    2.1180
+    4.3830    5.6355    5.1750    5.1376    5.4634
+    3.8057    4.8594    4.4136    4.3031    4.6167
+    3.4448    3.5242    3.9975    3.8789    3.6620
 
 </pre><p>Same Cone absorption</p><p>Cone absorption for mixtures of matching primaries (patient)</p><pre class="codeinput">Cones * P * matchesAlt
 </pre><pre class="codeoutput">
 ans =
 
-    7.2837    4.5262    4.5526    5.3656    5.0995
-    7.3155    6.3674    6.0726    8.7986    6.0676
-    3.0192    4.8706    3.3042    2.3424    2.1180
+    4.3830    5.6355    5.1750    5.1376    5.4634
+    5.8414    7.1684    7.0037    6.2198    7.3177
+    3.4448    3.5242    3.9975    3.8789    3.6620
 
 </pre><p>Cone absorption for red and blue cones are the same but green is random,</p><pre class="codeinput"><span class="comment">%So the patient may miss copies of green cone.</span>
 </pre><h2 id="40">2D polynomial regression</h2><pre class="codeinput">load <span class="string">regress2.mat</span>
@@ -532,14 +532,16 @@ importance =
 
     0.0067    1.5088    0.0496
 
-</pre><p>term <img src="hw2_eq11198666166595392749.png" alt="$x^2y$" style="width:22px;height:16px;">, <img src="hw2_eq18272244738375251809.png" alt="$x^2$" style="width:13px;height:13px;"> and <img src="hw2_eq01421424023024894863.png" alt="$y^3$" style="width:13px;height:16px;"> terms are not so important</p><pre class="codeinput">z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance&lt;0.05),2);
+</pre><p>term <img src="hw2_eq11198666166595392749.png" alt="$x^2y$" style="width:22px;height:16px;">, <img src="hw2_eq18272244738375251809.png" alt="$x^2$" style="width:13px;height:13px;"> and <img src="hw2_eq01421424023024894863.png" alt="$y^3$" style="width:13px;height:16px;"> terms are not so important</p><pre class="codeinput">p3_drop = p3(:,importance&gt;0.05);
+beta3_drop = (p3_drop'*p3_drop)\p3_drop'*z;
+z_hat_drop = p3_drop*beta3_drop;
 MSE_new = mean((z-z_hat_drop).^2)
 </pre><pre class="codeoutput">
 MSE_new =
 
-   2.1825e-04
+   2.0785e-04
 
-</pre><p>mean squared error increase less than 10%</p><h2 id="53">Constrained Least Squares</h2><pre class="codeinput">load <span class="string">constrainedLS.mat</span>
+</pre><p>mean squared error only increase about 1%</p><h2 id="53">Constrained Least Squares</h2><pre class="codeinput">load <span class="string">constrainedLS.mat</span>
 </pre><div><ul><li>a)</li></ul></div><p>The original problem can be written as</p><p><img src="hw2_eq04178200030371640244.png" alt="$$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$" style="width:84px;height:24px;"></p><p>s.t. <img src="hw2_eq08542345637261214087.png" alt="$\vec{v}^T\vec{w}=1$" style="width:53px;height:13px;">, where nth row in <img src="hw2_eq16171345478199012472.png" alt="$D$" style="width:12px;height:11px;"> is $\vec{d}_n</p><p>singular value decompose <img src="hw2_eq05740224045418958009.png" alt="$D=USV^T$" style="width:72px;height:13px;">, keep only first 2 colomns of U and first two rows of S</p><pre class="codeinput">[U,S,V] = svd(data,<span class="string">'econ'</span>);
 </pre><p>let <img src="hw2_eq16382403992339623822.png" alt="$\tilde{v} = \tilde{S}V^T \vec{v}$" style="width:65px;height:14px;">, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$</p><pre class="codeinput">w_tilde = S\V'*w;
 </pre><p>thus</p><p><img src="hw2_eq10767715996071076604.png" alt="$$\min_{\tilde{v}} ||\tilde{v}||^2  $$" style="width:56px;height:23px;"></p><p>s.t. <img src="hw2_eq05239955474786675984.png" alt="$\tilde{v}^T\tilde{w} = \vec{v}^T\vec{w}=1$" style="width:99px;height:13px;">.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">v_tilde = w_tilde/norm(w_tilde)^2
@@ -839,10 +841,12 @@ z_hat_allTerm = p3*diag(beta3); % decompose z_hat, one term for every predictors
 importance=sqrt(sum(z_hat_allTerm.^2,1)) % calculate vector length of each term
 %%
 % term $x^2y$, $x^2$ and $y^3$ terms are not so important
-z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance<0.05),2);
+p3_drop = p3(:,importance>0.05);
+beta3_drop = (p3_drop'*p3_drop)\p3_drop'*z;
+z_hat_drop = p3_drop*beta3_drop;
 MSE_new = mean((z-z_hat_drop).^2)
 %%
-% mean squared error increase less than 10%
+% mean squared error only increase about 1%
 %% Constrained Least Squares
 load constrainedLS.mat
 %%

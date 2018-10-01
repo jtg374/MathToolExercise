@@ -135,7 +135,7 @@ Cones * P * matchesAlt
 %%
 % Cone absorption for red and blue cones are the same but green is random,
 %So the patient may miss copies of green cone. 
-%% 2D polynomial regression
+%% 2 2D polynomial regression
 load regress2.mat
 %%
 % * a)
@@ -213,11 +213,13 @@ z_hat_allTerm = p3*diag(beta3); % decompose z_hat, one term for every predictors
 importance=sqrt(sum(z_hat_allTerm.^2,1)) % calculate vector length of each term
 %%
 % term $x^2y$, $x^2$ and $y^3$ terms are not so important
-z_hat_drop = z_hat - sum(z_hat_allTerm(:,importance<0.05),2);
+p3_drop = p3(:,importance>0.05);
+beta3_drop = (p3_drop'*p3_drop)\p3_drop'*z;
+z_hat_drop = p3_drop*beta3_drop;
 MSE_new = mean((z-z_hat_drop).^2)
 %%
-% mean squared error increase less than 10%
-%% Constrained Least Squares
+% mean squared error only increase about 1%
+%% 3 Constrained Least Squares
 load constrainedLS.mat
 %%
 % * a)
@@ -298,7 +300,7 @@ axis equal
 hold off
 %%
 % Solutions are different. 
-%% Principal Components
+%% 4 Principal Components
 load PCA.mat
 %%
 % * a)
