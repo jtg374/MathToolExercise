@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Trichromacy</a></li><li><a href="#40">2D polynomial regression</a></li><li><a href="#53">Constrained Least Squares</a></li><li><a href="#73">Principal Components</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Trichromacy</a></li><li><a href="#40">2 2D polynomial regression</a></li><li><a href="#53">3 Constrained Least Squares</a></li><li><a href="#73">4 Principal Components</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear
 </pre><h2 id="2">1 Trichromacy</h2><pre class="codeinput">load <span class="string">colMatch.mat</span>;
 </pre><div><ul><li>a)</li></ul></div><p>Subjects match a random spectrum to the 3 primaries</p><pre class="codeinput">N=31;
 randomLight=rand(N,1);
@@ -460,7 +460,7 @@ ans =
     3.4448    3.5242    3.9975    3.8789    3.6620
 
 </pre><p>Cone absorption for red and blue cones are the same but green is random,</p><pre class="codeinput"><span class="comment">%So the patient may miss copies of green cone.</span>
-</pre><h2 id="40">2D polynomial regression</h2><pre class="codeinput">load <span class="string">regress2.mat</span>
+</pre><h2 id="40">2 2D polynomial regression</h2><pre class="codeinput">load <span class="string">regress2.mat</span>
 </pre><div><ul><li>a)</li></ul></div><pre class="codeinput">x=D(:,1);y=D(:,2);z=D(:,3);
 X=reshape(x,13,13);
 Y=reshape(y,13,13);
@@ -541,7 +541,7 @@ MSE_new =
 
    2.0785e-04
 
-</pre><p>mean squared error only increase about 1%</p><h2 id="53">Constrained Least Squares</h2><pre class="codeinput">load <span class="string">constrainedLS.mat</span>
+</pre><p>mean squared error only increase about 1%</p><h2 id="53">3 Constrained Least Squares</h2><pre class="codeinput">load <span class="string">constrainedLS.mat</span>
 </pre><div><ul><li>a)</li></ul></div><p>The original problem can be written as</p><p><img src="hw2_eq04178200030371640244.png" alt="$$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$" style="width:84px;height:24px;"></p><p>s.t. <img src="hw2_eq08542345637261214087.png" alt="$\vec{v}^T\vec{w}=1$" style="width:53px;height:13px;">, where nth row in <img src="hw2_eq16171345478199012472.png" alt="$D$" style="width:12px;height:11px;"> is $\vec{d}_n</p><p>singular value decompose <img src="hw2_eq05740224045418958009.png" alt="$D=USV^T$" style="width:72px;height:13px;">, keep only first 2 colomns of U and first two rows of S</p><pre class="codeinput">[U,S,V] = svd(data,<span class="string">'econ'</span>);
 </pre><p>let <img src="hw2_eq16382403992339623822.png" alt="$\tilde{v} = \tilde{S}V^T \vec{v}$" style="width:65px;height:14px;">, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$</p><pre class="codeinput">w_tilde = S\V'*w;
 </pre><p>thus</p><p><img src="hw2_eq10767715996071076604.png" alt="$$\min_{\tilde{v}} ||\tilde{v}||^2  $$" style="width:56px;height:23px;"></p><p>s.t. <img src="hw2_eq05239955474786675984.png" alt="$\tilde{v}^T\tilde{w} = \vec{v}^T\vec{w}=1$" style="width:99px;height:13px;">.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">v_tilde = w_tilde/norm(w_tilde)^2
@@ -596,7 +596,7 @@ axis <span class="string">equal</span>
 <span class="comment">% xlim([-.25,.4])</span>
 <span class="comment">% ylim([-.25,.4])</span>
 hold <span class="string">off</span>
-</pre><img vspace="5" hspace="5" src="hw2_11.png" alt=""> <p>Solutions are different.</p><h2 id="73">Principal Components</h2><pre class="codeinput">load <span class="string">PCA.mat</span>
+</pre><img vspace="5" hspace="5" src="hw2_11.png" alt=""> <p>Solutions are different.</p><h2 id="73">4 Principal Components</h2><pre class="codeinput">load <span class="string">PCA.mat</span>
 </pre><div><ul><li>a)</li></ul></div><pre class="codeinput">figure;
 plot(M)
 xlabel(<span class="string">'time'</span>)
@@ -763,7 +763,7 @@ Cones * P * matchesAlt
 %%
 % Cone absorption for red and blue cones are the same but green is random,
 %So the patient may miss copies of green cone. 
-%% 2D polynomial regression
+%% 2 2D polynomial regression
 load regress2.mat
 %%
 % * a)
@@ -847,7 +847,7 @@ z_hat_drop = p3_drop*beta3_drop;
 MSE_new = mean((z-z_hat_drop).^2)
 %%
 % mean squared error only increase about 1%
-%% Constrained Least Squares
+%% 3 Constrained Least Squares
 load constrainedLS.mat
 %%
 % * a)
@@ -928,7 +928,7 @@ axis equal
 hold off
 %%
 % Solutions are different. 
-%% Principal Components
+%% 4 Principal Components
 load PCA.mat
 %%
 % * a)
