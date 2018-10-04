@@ -4,7 +4,7 @@ load colMatch.mat;
 %%
 % * a)
 %%
-% Subjects match a random spectrum to the 3 primaries
+% Subjects match a random spectrum to the 3 primaries with 3 knob settings: 
 N=31;
 randomLight=rand(N,1);
 matches=humanColorMatcher(randomLight,P)
@@ -15,17 +15,22 @@ matchLight = P*matches
 % And the actually testing wavelength spectrum is 
 randomLight
 %%
+% Compare them in a single plot: 
 figure;hold on
 plot(randomLight)
 plot(matchLight)
 legend('randomLight','matchLight')
 %%
 % The two spectra look the same to the subject although they are acutually
-% different because the dimension of the spectra (31) is much higher than human
+% different,
+%%
+% because the dimension of the spectra (31) is much higher than human
 % color perception (3). there are much more different spectra that have the
-% same projection in lower dimension space. 
+% same projection in lower dimension color perception space. 
 %%
 % * b)
+%%
+% The human matcher can be modeled by a matrix $M$.
 expLight=eye(N);
 M=humanColorMatcher(expLight,P)
 %%
@@ -35,7 +40,7 @@ for ii = 1:5
     randomLight=rand(N,1);
     matchesFunc=humanColorMatcher(randomLight,P)
     matchesMatx=M*randomLight
-    disp('they are same! ')
+    disp('they are same!\n\n ')
 end
 %% 
 % * c)
@@ -60,9 +65,9 @@ absorptionMatchLight = Cones*matchingLight
 % $$M l_1 = M l_2$$
 % 
 %%
-% In other words, $l_1-l_2$ is in M's null space. 
+% In other words, $l_1-l_2$ is in $M$'s null space. 
 %%
-% If cones matching matrix C has the same null space as M, then
+% If cones matching matrix $C$ has the same null space as $M$, then
 %%
 %
 % $$C (l_1-l_2)$$
@@ -75,8 +80,8 @@ absorptionMatchLight = Cones*matchingLight
 % From SVD we can get the two null space, 
 [~,~,V_M]=svd(M);
 [~,~,V_cone]=svd(Cones);
-null_M = V_M(:,4:end);
-null_cone = V_M(:,4:end);
+null_M = V_M(:,4:end)
+null_cone = V_M(:,4:end)
 %%
 % the two null space are the same because there will be no more addtional
 % dimensions when we add columns from one to the other
@@ -86,13 +91,14 @@ svd([null_M,null_cone])
 % space respectively. 
 %%
 % Alternatively, we can think of an arbitary spectrum $l$ and the spectrum
-% that the subject match it with primaries $l'$. 
+% that the subject match it with knob settings $x$, which generate a
+% combination of primaries, $l'$.
 %%
 %
 % $$l' = P x$$
 %
 %%
-% where x is the knob settings. both spectra should produce the same cone absorption
+% Both spectra should produce the same cone absorption
 %%
 %
 % $$C l = C P x$$
@@ -106,34 +112,42 @@ svd([null_M,null_cone])
 % $$x = (C P)^{-1} C l$$
 %
 %%
-% So $CP$ should be invertible, and $M=(C P)^{-1} C$ is actually the color
-% matching matrix, 
+% So $CP$ should be invertible, and $\hat{M}=(C P)^{-1} C$ is actually the color
+% matching matrix, $M$
 M_hat = (Cones*P)\Cones;
 error = M-M_hat;
-all(all(error<1e-10))
+all(all(error<1e-10)) % I don't use ==0 in order to avoid floatin point errors
 %%
-% which should have the same null space as C, because any
-% $l_0$ in $C$'s null space, $C l_0 = 0$, $M l_0 = (C P)^{-1} \cdot 0 = 0$
+% which should have the same null space as C,
+%%
+% because for any
+% $l_0$ in $C$'s null space,
+%%
+% $$C l_0 = 0$$
+%%
+% $$M l_0 = (C P)^{-1} \cdot C l_0 = 0$$
 %%
 % * d)
+%%
+% compare the responses between norm subjects and the patient.
 randomLight=rand(N,5); % generate several test lights
 matchesNorm =   humanColorMatcher(randomLight,P) % knob settings from normal subject
 matchesAlt = altHumanColorMatcher(randomLight,P) % from the patient
 %%
 % They are totally different. I can't tell the pattern. 
 %%
-% Cone absorption for test Light
+% Cone absorptions for test light are
 Cones * randomLight
 %%
-% Cone absorption for mixtures of matching primaries (normal)
+% and cone absorptions for mixtures of matching primaries (normal) are
 Cones * P * matchesNorm
 %%
-% Same Cone absorption
+% Same with that of the test light. 
 %%
-% Cone absorption for mixtures of matching primaries (patient)
+% While cone absorptions for mixtures of matching primaries (patient) are
 Cones * P * matchesAlt
 %%
-% Cone absorption for red and blue cones are the same but green is random,
+% For red and blue cones, absorptions are the same but green is different,
 %So the patient may miss copies of green cone. 
 %% 2 2D polynomial regression
 load regress2.mat
@@ -201,8 +215,9 @@ surf(X,Y,Z)
 view(3)
 rotate3d on
 %% 
-% 3rd order fit seems reasonable enough to capture the trend of the data
+% 3rd order fit seems reasonable enough to capture the tilde-like trend of the data
 %%
+% If we plot the 
 SE = (z-z_hat).^2;
 figure;hist(SE)
 %%
