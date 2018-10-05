@@ -10,10 +10,12 @@ randomLight=rand(N,1);
 matches=humanColorMatcher(randomLight,P)
 %%
 % What subject actually generated from primaries is
-matchLight = P*matches
+matchLight = P*matches;
 %% 
 % And the actually testing wavelength spectrum is 
-randomLight
+T=table;
+T.matchLight=matchLight;T.randomLight=randomLight;
+disp(T)
 %%
 % Compare them in a single plot: 
 figure;hold on
@@ -32,7 +34,9 @@ legend('randomLight','matchLight')
 %%
 % The human matcher can be modeled by a matrix $M$.
 expLight=eye(N);
-M=humanColorMatcher(expLight,P)
+M=humanColorMatcher(expLight,P);
+%%
+M_transpose=M'
 %%
 % * Verification
 for ii = 1:5
@@ -40,7 +44,7 @@ for ii = 1:5
     randomLight=rand(N,1);
     matchesFunc=humanColorMatcher(randomLight,P)
     matchesMatx=M*randomLight
-    disp('they are same!\n\n ')
+    sprintf('they are same!\n\n')
 end
 %% 
 % * c)
@@ -49,15 +53,22 @@ plot(Cones')
 legend('L (red)','M (green)','S (blue)')
 %%
 % for an random wavelength spectrum
-randomLight=rand(N,1)
+randomLight=rand(N,1);
 %% 
 % The subject match it with another spectrum generated from primaries
 matches=M*randomLight;
-matchingLight = P*matches
+matchingLight = P*matches;
+T=table;
+T.matchLight=matchingLight;T.randomLight=randomLight;
+disp(T)
 %%
 % Two spectra produce equal cone absorption
-absorptionRandomLight = Cones*randomLight
-absorptionMatchLight = Cones*matchingLight
+absorptionRandomLight = Cones*randomLight;
+absorptionMatchLight = Cones*matchingLight;
+T=table;
+T.absorptionRandomLight=absorptionRandomLight;
+T.absorptionMatchLight=absorptionMatchLight;
+disp(T)
 %%
 % because for any pair of light ($l_1,l_2$) that map to the same knob settings
 %%
@@ -85,7 +96,7 @@ null_cone = V_M(:,4:end)
 %%
 % the two null space are the same because there will be no more addtional
 % dimensions when we add columns from one to the other
-svd([null_M,null_cone])
+svd([null_M,null_cone])'
 %%
 % There are still 28 = 31-3 non-zero singular values, as well as two null
 % space respectively. 
@@ -137,18 +148,30 @@ matchesAlt = altHumanColorMatcher(randomLight,P) % from the patient
 % They are totally different. I can't tell the pattern. 
 %%
 % Cone absorptions for test light are
-Cones * randomLight
+temp = Cones * randomLight;
+c = {'L (red)';'M (green)';'S (blue)'};
+T = table;T.cone = c;
+for ii=1:5; eval(sprintf('T.l_%d = temp(:,ii);',ii)); end
+disp(T)
 %%
 % and cone absorptions for mixtures of matching primaries (normal) are
-Cones * P * matchesNorm
+temp=Cones * P * matchesNorm;
+c = {'L (red)';'M (green)';'S (blue)'};
+T = table;T.cone = c;
+for ii=1:5; eval(sprintf('T.l_%d = temp(:,ii);',ii)); end
+disp(T)
 %%
 % Same with that of the test light. 
 %%
 % While cone absorptions for mixtures of matching primaries (patient) are
-Cones * P * matchesAlt
+temp=Cones * P * matchesAlt;
+c = {'L (red)';'M (green)';'S (blue)'};
+T = table;T.cone = c;
+for ii=1:5; eval(sprintf('T.l_%d = temp(:,ii);',ii)); end
+disp(T)
 %%
-% For red and blue cones, absorptions are the same but green is different,
-%So the patient may miss copies of green cone. 
+% For red and blue cones, absorptions are the same but green is
+% different, so the patient may miss copies of green cone. 
 %% 2 2D polynomial regression
 load regress2.mat
 %%
@@ -217,18 +240,23 @@ rotate3d on
 %% 
 % 3rd order fit seems reasonable enough to capture the tilde-like trend of the data
 %%
-% If we plot the 
+% If we plot the squared errors, we can see there is few large errors
 SE = (z-z_hat).^2;
 figure;hist(SE)
 %%
-% mean squared error
+% mean squared error is small
 MSE = mean(SE)
 %%
+% We can see the contribution of each term, 
 z_hat_allTerm = p3*diag(beta3); % decompose z_hat, one term for every predictors
-importance=sqrt(sum(z_hat_allTerm.^2,1)) % calculate vector length of each term
+importance=sqrt(sum(z_hat_allTerm.^2,1)); % calculate vector length of each term
+terms = {'constant','x','y','x2','xy','y2','x3','x2y','xy2','y3'};
+T = table; T.term = terms'; T.contribution = importance';
+format shorte;disp(T);format
 %%
-% term $x^2y$, $x^2$ and $y^3$ terms are not so important
-p3_drop = p3(:,importance>0.05);
+% term $x^2y$, $x^2$ and $y^3$ terms are not so important. If we drop them
+% out: 
+p3_drop = p3(:,importance>5e-2);
 beta3_drop = (p3_drop'*p3_drop)\p3_drop'*z;
 z_hat_drop = p3_drop*beta3_drop;
 MSE_new = mean((z-z_hat_drop).^2)
@@ -245,16 +273,16 @@ load constrainedLS.mat
 % $$\min_{\vec{v}} \vec{v}^T D^T D \vec{v}$$
 % 
 %%
-% s.t. $\vec{v}^T\vec{w}=1$, where nth row in $D$ is $\vec{d}_n
+% s.t. $\vec{v}^T\vec{w}=1$, where $D$'s nth row is $\vec{d}_n$
 %%
 % singular value decompose $D=USV^T$, keep only first 2 colomns of U and
-% first two rows of S
+% first two rows of $S$, call it $\tilde{S}$.
 [U,S,V] = svd(data,'econ');
 %%
-% let $\tilde{v} = \tilde{S}V^T \vec{v}$, and \tilde{w} = \tilde{S}^{-1} V^T \vec{w}$
+% let $\tilde{v} = \tilde{S}V^T \vec{v}$, and $\tilde{w} = \tilde{S}^{-1} V^T \vec{w}$
 w_tilde = S\V'*w;
 %%
-% thus 
+% thus the problem can be rewritten as
 %%
 % $$\min_{\tilde{v}} ||\tilde{v}||^2  $$
 %%
@@ -262,10 +290,19 @@ w_tilde = S\V'*w;
 %%
 % * b)
 %%
+% Solution: 
+%%
+% The shortest vector that lie on the line perpendicular to $\tilde{w}$
+% should align with $\tilde{w}$. So
+%%
+% $$\tilde{v}^T\tilde{w} = ||\tilde{v}||\cdot||\tilde{w}|| = 1$$
+%%
+% $$||\tilde{v}|| = 1/||\tilde{w}||$$
+%%
 v_tilde = w_tilde/norm(w_tilde)^2
 %%
 figure; hold on
-scatter(U(:,1),U(:,2),'k+') % first two columns of U is just transformed D
+scatter(U(:,1),U(:,2),'k+') % first two columns of U is just the transformed D
 quiver(0,0,w_tilde(1),w_tilde(2),1,'r','LineWidth',2)
 xx = v_tilde(1)+w_tilde(2)*(-250:250);
 yy = v_tilde(2)-w_tilde(1)*(-250:250);
@@ -280,6 +317,7 @@ hold off
 %%
 % * c)
 %%
+% In the original space
 v = V/S*v_tilde
 %%
 figure; hold on
@@ -302,7 +340,7 @@ hold off
 v_tls = V(:,end);
 %%
 figure; hold on
-scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
+scatter(data(:,1),data(:,2),'k+') 
 quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
 plot(tt(1,:),tt(2,:),'r--')
 quiver(0,0,v(1),v(2),1,'b','LineWidth',1)
@@ -314,7 +352,9 @@ axis equal
 % ylim([-.25,.4])
 hold off
 %%
-% Solutions are different. 
+% Solutions are different. But if we view the data cloud as a rectangle,
+% both solutions are approximately alighed with the short edge of the
+% rectangle. 
 %% 4 Principal Components
 load PCA.mat
 %%
@@ -334,7 +374,7 @@ ylabel('mean spike count')
 % * b)
 %%
 M_ = M - repmat(mean(M),50,1); % substract mean
-[U,S,~] = svd(M_);S = diag(S);
+[U,S,~] = svd(M_);S = diag(S); %SVD and extract singular values. 
 figure;bar(S)
 t=title('singular values of $\tilde{M}$');
 set(t,'Interpreter','latex')
@@ -351,7 +391,7 @@ leg = legend('first eigenvector of $\tilde{M}\tilde{M}^T$',...
     'third eigenvector of $\tilde{M}\tilde{M}^T$');
 set(leg,'Interpreter','latex')
 %%
-% first 3 eigenvectors looks like half integer sinusoids. 
+% first 3 eigenvectors looks like some period function (cos(t), sin(t) and -cos(2t)) 
 %%
 % the fourth eigenvector
 %%
@@ -363,6 +403,8 @@ legend('fourth eigenvector')
 % looks messy. 
 %%
 % * d)
+%%
+% Extract first 3 principle component of the data. 
 %%
 figure;
 plot3(S(1)*U(:,1),S(2)*U(:,2),S(3)*U(:,3),'Marker','o');
