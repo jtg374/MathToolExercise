@@ -277,7 +277,7 @@ load constrainedLS.mat
 %%
 % singular value decompose $D=USV^T$, keep only first 2 colomns of U and
 % first two rows of $S$, call it $\tilde{S}$.
-[U,S,V] = svd(data,'econ');
+[~,S,V] = svd(data,'econ');
 %%
 % let $\tilde{v} = \tilde{S}V^T \vec{v}$, and $\tilde{w} = \tilde{S}^{-1} V^T \vec{w}$
 w_tilde = S\V'*w;
@@ -302,17 +302,17 @@ w_tilde = S\V'*w;
 v_tilde = w_tilde/norm(w_tilde)^2
 %%
 figure; hold on
-scatter(U(:,1),U(:,2),'k+') % first two columns of U is just the transformed D
+data_tilde = (S*V'*data')'; % transform data in the same way as v
+scatter(data_tilde(:,1),data_tilde(:,2),'k+');
 quiver(0,0,w_tilde(1),w_tilde(2),1,'r','LineWidth',2)
-xx = v_tilde(1)+w_tilde(2)*(-250:250);
-yy = v_tilde(2)-w_tilde(1)*(-250:250);
-plot(xx,yy,'r--')
+cl_tilde = v_tilde + [w_tilde(2);-w_tilde(1)]*[-1000,1000]; % constraint line has a slope -w_tilde(1)/w_tilde(2)
+plot(cl_tilde(1,:),cl_tilde(2,:),'r--')
 quiver(0,0,v_tilde(1),v_tilde(2),1,'b')
 leg=legend('data','$\tilde{w}$','constraint line','$\tilde{v}$');
 set(leg,'Interpreter','latex')
 axis equal
-xlim([-10,15])
-ylim([-20,5])
+xlim([-40,40])
+ylim([-40,40])
 hold off
 %%
 % * c)
@@ -321,16 +321,18 @@ hold off
 v = V/S*v_tilde
 %%
 figure; hold on
+data_tilde = (S*V'*data')';
 scatter(data(:,1),data(:,2),'k+') % first two columns of U is just transformed D
 quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
-tt= w/norm(w)^2 + [w(2);-w(1)]*(-5:5);
-plot(tt(1,:),tt(2,:),'r--')
+cl = w/norm(w)^2 + [w(2);-w(1)]*[-1000,1000]; % constraint line has a slope -w(1)/w(2)
+% cl = V/S*cl_tilde; % the transformation to v is the same to all points on the constraint line
+plot(cl(1,:),cl(2,:),'r--')
 quiver(0,0,v(1),v(2),1,'b','LineWidth',2)
 leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$');
 set(leg,'Interpreter','latex')
 axis equal
-% xlim([-.25,.4])
-% ylim([-.25,.4])
+xlim([-3,3])
+ylim([-3,3])
 hold off
 %%
 % $\vec{v}$ is not perpendicular to constraint line in the original space,
@@ -342,14 +344,14 @@ v_tls = V(:,end);
 figure; hold on
 scatter(data(:,1),data(:,2),'k+') 
 quiver(0,0,w(1),w(2),1,'r','LineWidth',2)
-plot(tt(1,:),tt(2,:),'r--')
+plot(cl(1,:),cl(2,:),'r--')
 quiver(0,0,v(1),v(2),1,'b','LineWidth',1)
 quiver(0,0,v_tls(1),v_tls(2),1,'c','LineWidth',2)
 leg=legend('data','$\vec{w}$','constraint line','$\vec{v}$','$\vec{v}_{total\ least\ square}$');
 set(leg,'Interpreter','latex')
 axis equal
-% xlim([-.25,.4])
-% ylim([-.25,.4])
+xlim([-3,3])
+ylim([-3,3])
 hold off
 %%
 % Solutions are different. But if we view the data cloud as a rectangle,
