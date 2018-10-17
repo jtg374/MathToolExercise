@@ -89,6 +89,95 @@ figure;hold on
 plot(input);
 plot(output)
 
+%%
+% * c)
+%%
+% Fourier transform of System 2's impulse response
+impulseResponse = unknownSystem2(I(:,1));
+impulseResponseDFT = fft(impulseResponse);
+figure;
+ax1=subplot(2,1,1);
+bar((-N/2):(N/2-1),fftshift(abs(impulseResponseDFT)))
+ylabel('amplitude')
+ax2=subplot(2,1,2);
+bar((-N/2):(N/2-1),fftshift(angle(impulseResponseDFT)))
+ylabel('phase (rad)')
+linkaxes([ax1 ax2],'x');
+xlabel(sprintf('freq (2?/%d)',N))
+%%
+% Fourier transform of System 3's impulse response
+impulseResponse = unknownSystem3(I(:,1));
+impulseResponseDFT = fft(impulseResponse);
+figure
+ax1=subplot(2,1,1);
+bar((-N/2):(N/2-1),fftshift(abs(impulseResponseDFT)))
+ylabel('amplitude')
+ax2=subplot(2,1,2);
+bar((-N/2):(N/2-1),fftshift(angle(impulseResponseDFT)))
+ylabel('phase (rad)')
+linkaxes([ax1 ax2],'x')
+xlabel(sprintf('freq (2?/%d)',N))
+%% 2 Fourier transform of periodic signals
+%%
+% * a)
+%%
+N=2048;
+n = 1:N;
+sig = mod(n,32)/32; % generate a sawtooth
+figure;plot((1:N)/8192,sig);xlabel('time (s)');
+xlim([0 N/8192]);title('sawtooth signal')
+sound(sig,8192)
+%%
+% Duration is 2048/8192Hz = 0.25 seconds. 
+%%
+% Period is 32/8192Hz = 2^-8 seconds. freqency is 2^8=256 Hz, closest to
+% middle C (C4, 261.6Hz)
+%% * b)
+sigF = fft(sig);
+figure
+bar((-N/2):(N/2-1),fftshift(abs(sigF)))
+ylabel('amplitude')
+ticks=-1024:256:1023;
+xticks(ticks)
+xticklabels(ticks/N*8192)
+xlabel(sprintf('freq (Hz)'))
+
+%%
+% There are huge gaps between bars, i.e. sinusoids of many frequencies would
+% give zero response, unless the frequency is an integral multiple of
+% 256 Hz. 
+%%
+% Generally, the Fourier amplitude spectrum which has periodic peak
+% pattern indicates that in time domain, the signal is periodic with the
+% same period. 
+sig24 = mod(n,24)/24; % generate a new sawtooth of 24-sample period 
+% the frequency of this signal is 8192/24 = 1024/3 Hz
+sig24F = fft(sig24);
+figure
+bar((-N/2):(N/2-1),fftshift(abs(sig24F)))
+ylabel('amplitude')
+ticks=-1024:(2048/24*3):1023;
+xticks(ticks)
+xticklabels(ticks/N*8192)
+xlabel(sprintf('freq (Hz)'))
+%%
+% The spectrum indeed peaks at where the frequency is an integral multiple
+% of 1024/3 Hz
+%% * c)
+N=2048;
+sigG = (1+cos(n*2*pi*64/N)).^2;
+sigGF = fft(sigG);
+figure
+bar((-N/2):(N/2-1),fftshift(abs(sigGF)))
+ylabel('amplitude')
+ticks=-1024:256:1023;
+xticks(ticks)
+xticklabels(ticks/N*8192)
+xlabel(sprintf('freq (Hz)'))
+%%
+% This spectrum only has nonzero at frequency 0, 256 and 512 Hz. 
+%%
+% 
 
 %%
 close all
