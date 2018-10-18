@@ -178,6 +178,49 @@ xlabel(sprintf('freq (Hz)'))
 % This spectrum only has nonzero at frequency 0, 256 and 512 Hz. 
 %%
 % 
+%% 3 Gabor filter
+%%
+% * a)
+%%
+n = -12:12;
+sigma=3.5;
+omega=10*2*pi/64;
+gabor=exp(-(n/sigma).^2/2).*cos(omega*n);
+figure
+plot(n,gabor);title('gabor filter')
+%%
+gaborF=fft(gabor,64);
+figure
+plot(-32:31,fftshift(abs(gaborF)))
+%%
+% This is a bandpass filter that selectively filter frequency of 10. ?
+% determines the bandpass frequency and 1/? determines the width of the band.
+gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
+gaborWiderAt12F=fft(gaborWiderAt12,64);
+figure
+plot(-32:31,fftshift(abs(gaborWiderAt12F)))
+
+%%
+% * b )
+%%
+% f = 10*2?/64 will give the largest response of all sinusoid cos(fn). 
+%%
+% because the convolution at position 0 is
+%%
+% $$\sum_{n=-12}^12 gabor(-n)cos(fn)$$
+%%
+% is the real part of the f*64/2?'th Fourier coefficient. and since gabor
+% is evenly symmetric, thus the imagionary parts are all zero, the real
+% part is just the amplitude. 
+%% 
+% the max amplitude is at the position
+[~,ind] = max(abs(gaborF));
+ind-1
+%%
+% By inspection, the t
+%%
+% * c)
+%% 4 Deconvolution of the Hawmodynamic Response
 
 %%
 close all
