@@ -1,0 +1,11 @@
+function phaseDiff=checkSameFreqSinusoid(f,system)
+    t = (1:64)';
+    input = cos(f*t+rand()*2*pi)+1;
+    output = system(input);
+    output_ = output-mean(output); % substract mean
+    output_n = output_/max(abs(output_)); % and normalize
+    figure; hold on
+    plot(input)
+    plot(output_
+    phaseDiff = acos(output_n) - acos(input-1);
+    

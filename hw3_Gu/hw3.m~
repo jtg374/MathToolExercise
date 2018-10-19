@@ -110,7 +110,7 @@ end
 %%
 % * c)
 %%
-% System 1 does not have an unique impulse response. 
+% System 1 does not have a unique impulse response. 
 %%
 % Fourier transform of System 2's impulse response
 impulseResponse = unknownSystem2(I(:,1));
