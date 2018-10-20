@@ -12,4 +12,5 @@ function phaseDiff=checkSameFreqSinusoid(f,p,system,fig)
         xlabel('time')
     end
     phaseDiff = acos(dot(input,output)/(norm(input)*norm(output)));
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     

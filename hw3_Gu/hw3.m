@@ -77,7 +77,7 @@ all(sumOfOutput == unknownSystem3(sumOfInput))
 %%
 % * b) response to sinusoid
 %%
-% <include>checkSameFreqSinusoid.m</include>
+% <include>isSameFreqSinusoid.m</include>
 %%
 
 for sys = 1:3
@@ -85,28 +85,12 @@ for sys = 1:3
     disp system
     for f = [1,2,4,8]
         disp(['frequency: ',num2str(f),'*2*pi/64'])
-        for ii=1:3
-            inputPhase = rand()*2*pi;
-            draw=1;
-            if (ii==1 && f==2); draw=1; else; draw=0; end
-            phaseDiff(ii) = checkSameFreqSinusoid(f*2*pi/N,inputPhase,system,draw);
-            if draw
-                title(['system',num2str(sys)])
-            end
-        end
-        phaseDiff
-        if all((phaseDiff - phaseDiff(1))<0.000001) 
-            disp('pass') 
-        else 
-            disp('fail')
-        end
+        [amplitude, phaseShift] = isSameFreqSinusoid(f*2*pi/N,system,0)
     end
 end
 %%        
-% Only System 3 project sinusoids into sinuisoid of the same frequency. For
-% frequency {2?/N,4?/N,8?/N,16?/N}, the output's phase shifted
-% {0.8767,0.7394,0.8780,0.8303} radius
-
+% Only System 3 project sinusoids into sinuisoid of the same frequency. 
+isSameFreqSinusoid(2*2*pi/N,@unknownSystem3,1)
 %%
 % * c)
 %%
@@ -150,7 +134,7 @@ sound(sig,8192)
 %%
 % Duration is 2048/8192Hz = 0.25 seconds. 
 %%
-% Period is 32/8192Hz = 2^-8 seconds. freqency is 2^8=256 Hz, closest to
+% Period is 32/8192Hz = 2^-8 = 0.039 seconds. freqency is 2^8=256 Hz, closest to
 % middle C (C4, 261.6Hz)
 %% * b)
 sigF = fft(sig);
@@ -164,8 +148,7 @@ xlabel(sprintf('freq (Hz)'))
 
 %%
 % There are huge gaps between bars, i.e. sinusoids of many frequencies would
-% give zero response, unless the frequency is an integral multiple of
-% 256 Hz. 
+% give zero response, unless the frequency is a multiple of 256 Hz. 
 %%
 % Generally, the Fourier amplitude spectrum which has periodic peak
 % pattern indicates that in time domain, the signal is periodic with the
@@ -181,8 +164,7 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
 %%
-% The spectrum indeed peaks at where the frequency is an integral multiple
-% of 1024/3 Hz
+% The spectrum indeed peaks every time the frequency is a multiple of 1024/3 Hz
 %% * c)
 N=2048;
 sigG = (1+cos(n*2*pi*64/N)).^2;
@@ -197,7 +179,24 @@ xlabel(sprintf('freq (Hz)'))
 %%
 % This spectrum only has nonzero at frequency 0, 256 and 512 Hz. 
 %%
-% 
+% So it still has a period of 2^-8 second, or 32 samples. 
+%%
+figure; hold on
+nT = 1:32;
+plot(nT/8192,sig(nT));
+plot(nT/8192,sigG(nT));
+legend('f(n)','g(n')
+xlabel('time (s)')
+%%
+% the wave looks more smooth, as in the Dourier spectrum there is no high
+% frequency components, but is only a linear combination of 256 Hz and 512
+% Hz sinusoids and a DC shift. 
+%%
+sound(sigG)
+%%
+sound(sig)
+%%
+% The timbre of g(n) is brighter. 
 %% 3 Gabor filter
 %%
 % * a)
