@@ -19,6 +19,6 @@ function [amp,phase]=isSameFreqSinusoid(f,system)
     %% calculate amplitude and phase shift
     amp = sqrt(b(2)^2+b(3)^2);
     phase = atan2(b(3),b(2)) - inputPhase;
-    phase = mod(phase+pi,2*pi)-pi; % so that -pi<=phase<pi
+    phase = phase(
     
     

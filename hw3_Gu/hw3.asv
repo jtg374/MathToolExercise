@@ -292,15 +292,10 @@ n=1:64;
 input5  = cos( 5*2*pi/64*n);
 input10 = cos(10*2*pi/64*n);
 input15 = cos(15*2*pi/64*n);
-rLow = conv(input5 ,gabor); 
+rLow = conv(input5 ,gabor);
 rMed = conv(input10,gabor);
 rHih = conv(input15,gabor);
-ampLow = abs(fft(rLow,64)); 
-display(['low freq response amplitude: ',num2str(ampLow(5+1))])
-ampMed = abs(fft(rMed,64));
-display(['medium freq response amplitude: ',num2str(ampMed(10+1))])
-ampHih = abs(fft(rHih,64)); 
-display(['high freq response amplitude: ',num2str(ampHih(15+1))])
+ampLow = abs(fft(rLow,64))(5
 %% 4 Deconvolution of the Hawmodynamic Response
 %%
 %%
@@ -319,7 +314,7 @@ X = createConvMat(x,M);
 for ii = 1:5
     disp(['test filter ',num2str(ii)])
     h = rand(M,1);
-    if all(X*h == conv(x,h)); disp('X*h is equal to conv(x,h)'); else; disp('Fail'); end
+    if all(X*h == conv(x,h)); disp('X*h == conv(x,h)'); else; disp('Fail'); end
 end
 %%
 % Verified.
@@ -334,12 +329,8 @@ h_opt = (X'*X)\X'*r;
 figure; plot(h_opt); xlabel('time (s)'); legend('h')
 grid on
 %%
-% HRF rises to peak in 5 seconds and drops into negative then recover. The
-% positive peak is about 3 times the negative valley. The curve looks like
-% a 3/4 cycle sine wave multiplied by a decay. It takes about 15 second
-% for HRF to recover to baseline. 
+%
 %%
-% The estimated HRF fits the response well. 
 r_est = conv(x,h_opt);
 figure; hold on
 plot(r);plot(r_est);
@@ -349,14 +340,13 @@ xlabel('time (s)')
 % * c)
 %%
 M=15;
-hF = fft(h,M);
+hF = fft(h);
 hP = hF.*conj(hF);
 figure
-freqs = (0:M-1) - floor(M/2);
+freqs = (1:M) - ceil(M/2);
 freqs = freqs/M;
 plot(freqs,fftshift(hP))
 xlabel('freq (Hz)');ylabel('power')
-xticks(-.4:.2:.4)
 title('power spectrum of h')
 %%
 % It's a low pass filter, only frequencies lower than 0.05 Hz are passed. 
