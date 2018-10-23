@@ -6,7 +6,7 @@ close all; clear
 N=64;
 I = eye(64); % generate a series of impulse input
 %%
-% System 1 is not shift-invariant. The reponse gain grows with time. 
+% System 1 is *not* shift-invariant. The reponse gain grows with time. 
 figure; hold on; grid on
 positions = randperm(N,4);
 for p=positions
@@ -19,14 +19,14 @@ ylabel('response')
 title('Impulse response of system 1 at different positions')
 legend('Location','southeast')
 %%
-% System 1 is nonlinear
+% System 1 is *nonlinear*. 
 output1 = unknownSystem1(I(:,positions(1)));
 output2 = unknownSystem1(I(:,positions(2)));
 sumOfOutput = output1+output2;
 sumOfInput = I(:,positions(1))+I(:,positions(2));
 all(sumOfOutput == unknownSystem1(sumOfInput))
 %%
-% System 2 is shift-invariant
+% System 2 *is* shift-invariant
 figure; hold on; grid on
 positions = randperm(N,4);
 for p=positions
@@ -39,7 +39,7 @@ ylabel('response')
 title('Impulse response of system 2 at different positions')
 legend('Location','southeast')
 %%
-% System 2 is nonlinear because of a nonzero offset
+% System 2 is *nonlinear* because of a nonzero offset
 output1 = unknownSystem2(I(:,positions(1)));
 output2 = unknownSystem2(I(:,positions(2)));
 sumOfOutput = output1+output2;
@@ -53,7 +53,7 @@ xlabel('time');ylabel('response')
 legend('sum on output side','sum on input side','Location','southeast')
 title('nonlinearity of system 2')
 %%
-% System 3 is shift-invariant
+% System 3 *is* shift-invariant
 figure; hold on; grid on
 positions = randperm(N,4);
 for p=positions
@@ -66,7 +66,7 @@ ylabel('response')
 title('Impulse response of system 3 at different positions')
 legend('Location','southeast')
 %%
-% System 3 is possibly linear
+% System 3 *is* possibly linear
 positions = randi(N,1,4);
 g1=1;g2=1;
 output1 = unknownSystem3(I(:,positions(1)));
@@ -90,7 +90,7 @@ for sys = 1:2
     end
 end
 %%        
-% Only System 3 project sinusoids into sinuisoid of the same frequency. 
+% Only *System 3* project sinusoids into sinuisoid of the same frequency. 
 system = @unknownSystem3
 for f = [1,2,4,8]
     disp(['frequency: ',num2str(f),'*2*pi/64'])
@@ -107,10 +107,12 @@ figure
 ax1=subplot(2,1,1); hold on; grid on
 bar((-N/2):(N/2-1),fftshift(ampF))
 bar(freqs,ampF(freqs+1))
+legend('impulse response', 'output/input')
 ylabel('amplitude')
 ax2=subplot(2,1,2); hold on; grid on
 bar((-N/2):(N/2-1),fftshift(phaseF))
 bar(freqs,phaseF(freqs+1))
+legend('impulse response', 'output-input')
 ylabel('phase (rad)')
 linkaxes([ax1 ax2],'x')
 xlabel(sprintf('freq (cycle/%dsample)',N))
@@ -119,23 +121,25 @@ phaseShift = phaseF(freqs+1)
 %%
 % * c)
 %%
-% System 1 is neither linear nor shift-invariant, and it doesn't project
+% *System 1* is neither linear nor shift-invariant, and it doesn't project
 % siusoids into the sinusoid subspaces with same frequency. 
 %%
-% System 2 is nonlinear but shift-invariant, and it doesn't project
+% *System 2* is nonlinear but shift-invariant, and it doesn't project
 % siusoids into the sinusoid subspaces with same frequency. 
 %%
-% System 3 seems both linear and shift-invariant, and it projects
+% *System* 3 seems both linear and shift-invariant, and it projects
 % siusoids into the sinusoid subspaces with same frequency. 
 %%
-% Linearity and shift-invariance and indepedent properties so that they can
-% be tested seperately, but only if a system is both linear and
+% *Linearity* and *shift-invariance* and **indepedent properties** so that they can
+% be tested **seperately**, but only if a system is both linear and
 % shift-invariant, its response to sinuisoid would be a sinusoid of the
 % same frequency and the output gain and phase shift relative to input can
-% be predicted by the Fourier transform of the system's impulse reponse. So
+% be predicted by the Fourier transform of the system's impulse reponse.
+%%
+% So
 % if a system always output a sinusoid given any sinusoid input, with a
 % fixed gain and phase shift that do not vary with input strength and
-% phase, then this system is guarenteed to be a LSI system. 
+% phase, then this system is **guarenteed** to be a LSI system. 
 %% 2 Fourier transform of periodic signals
 %%
 % * a)
@@ -144,14 +148,16 @@ N=2048;
 n = 1:N;
 sig = mod(n,32)/32; % generate a sawtooth
 figure;plot((1:N)/8192,sig);xlabel('time (s)');
-xlim([0 N/8192]);title('sawtooth signal')
+xlim([0 N/8192]);title('a sawtooth signal')
+%%
 sound(sig,8192)
 %%
-% Duration is 2048/8192Hz = 0.25 seconds. 
+% *Duration* is 2048/8192Hz = 0.25 seconds. 
 %%
-% Period is 32/8192Hz = 2^-8 = 0.039 seconds. freqency is 2^8=256 Hz, closest to
+% *Period* is 32/8192Hz = 2^-8 = 0.039 seconds. freqency is 2^8=256 Hz, closest to
 % middle C (C4, 261.6Hz)
-%% * b)
+%%
+% * b)
 sigF = fft(sig);
 figure
 bar((-N/2):(N/2-1),fftshift(abs(sigF)))
@@ -160,19 +166,23 @@ ticks=-(N/2):256:(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
-title('Fourier amplitude spectrum of a sawtooth signal')
+title('Fourier amplitude spectrum of the sawtooth signal')
 
 %%
-% There are huge gaps between bars, i.e. sinusoids of many frequencies would
-% give zero response, unless the frequency is a multiple of 256 Hz. 
+% There are huge gaps between bars, only multiples of 256 Hz have nonzero amplitudes.  
 %%
-% Generally, the Fourier amplitude spectrum which has regular spaced peak
-% pattern indicates that in time domain, the signal is periodic with a
-% period that is the inverse of the spacing between peaks in the frequency
-% domain. 
+% Generally, the regular spaced peak
+% pattern in frequency domain
+% indicates a perodity in time domain.
+%%
+% period can be determined by the spacing between the peaks. 
+%%
+% For a sawtooth with a different period, 
 sig24 = mod(n,24)/24; % generate a new sawtooth of 24-sample period 
 % the frequency of this signal is 8192/24 = 1024/3 Hz
 sig24F = fft(sig24);
+%%
+% The spectrum also peaks regularly: 
 figure
 bar((-N/2):(N/2-1),fftshift(abs(sig24F)))
 ylabel('amplitude')
@@ -183,9 +193,12 @@ xlabel(sprintf('freq (Hz)'))
 title('Fourier amplitude spectrum of another sawtooth signal')
 
 %%
-% The spectrum indeed peaks every time the frequency is a multiple of
-% 1024/3. 
-%% * c)
+% The spectrum peaks every time the frequency is a multiple of
+% 1024/3 Hz. 
+%%
+% * c)
+%%
+% now for another periodic signal $(1+cos(2\pi*64*n/N)^2$
 N=2048;
 sigG = (1+cos(n*2*pi*64/N)).^2;
 sigGF = fft(sigG);
@@ -218,7 +231,7 @@ sound(sigG)
 %%
 sound(sig)
 %%
-% The timbre of g(n) is brighter. 
+% The timbre of g(n) sounds brighter. 
 %% 3 Gabor filter
 %%
 % * a)
@@ -229,40 +242,45 @@ omega=10*2*pi/64;
 gabor=exp(-(n/sigma).^2/2).*cos(omega*n);
 figure
 plot(n,gabor);title('gabor filter')
+xlabel('space')
+ylabel('response')
 %%
 gaborF=fft(gabor,64);
 figure
 plot(-32:31,fftshift(abs(gaborF)))
 title('Fourier amplitude spectrum of gabor')
-xlabel('spatial frequency (cycle/64 sample)')
+xlabel('spatial frequency k (cycle/64 sample)')
 ylabel('amplitude')
+grid on
 %%
-% This is a bandpass filter that selectively filter frequency of 10*2?/64
+% This is a *bandpass filter* that selectively filter frequency of 10*2pi/64
 % samples.
 % It looks like two gaussian functions centered at 10 and -10.
-% This shape is inherited from the gaussian function and the sinusoid. 
-% ? determines the bandpass frequency and 1/? determines the width
-% of the band.
-%% 
-% If I let ?=12*2?/64 and ?=1
+% This shape results from the convolution of Gaussian function's spectrum
+% (which is another Gaussian) and sinusoid function (impulse at k=+/-10 ). 
+%%
+% omega determines the bandpass frequency and 1/sigma determines the width
+% of the band. If I let omega=12*2pi/64 and sigma=1
 gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
 gaborWiderAt12F=fft(gaborWiderAt12,64);
 figure
 plot(-32:31,fftshift(abs(gaborWiderAt12F)))
 title('Fourier amplitude spectrum of another gabor')
-xlabel('spatial frequency (cycle/64 sample)')
+xlabel('spatial frequency k (cycle/64 sample)')
 ylabel('amplitude')
-
+grid on
+%%
+% I get two wider Gaussian centered at k=+/- 12
 %%
 % * b )
 %%
-% f = 10*2?/64 will give the largest response among all sinusoid cos(fn). 
+% Among all sinusoid cos(fn*2pi/64), f = 10 will give the largest response. 
 %%
-% because the convolution at position 0 is
+% because the convolution at position 0
 %%
-% $$\sum_{n=-12}^12 gabor(-n)cos(fn)$$
+% $$\sum_{n=-12}^{12} gabor(-n)cos(2\pi f n/64)$$
 %%
-% is the real part of the f*64/2?'th Fourier coefficient. and since gabor
+% is the real part of the f'th Fourier coefficient. and since gabor
 % is evenly symmetric, thus the imagionary parts are all zero, the real
 % part is just the amplitude. 
 %% 
@@ -270,11 +288,8 @@ ylabel('amplitude')
 [Fmax,ind] = max(abs(gaborF));
 ind-1
 %%
-% The period of this sinusoid is 2?/f samples
+% The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples
 64/10
-%%
-% By eye inspection, this is roughly the distance between peaks in the
-% filter itself. 
 figure; hold on
 plot(n,gabor);title('gabor filter')
 plot([6.4,6.4],[-1 1],'b--')
@@ -283,21 +298,31 @@ plot([0,0],[-1 1],'b--')
 plot([6.4,6.4]*-1,[-1 1],'b--')
 plot([6.4,6.4]*-2,[-1 1],'b--')
 xticks(-12.8:6.4:12.8)
-%% 
-% By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64
-% cycle/sample will give about 25% of the maximal amplitude
+xlabel('space')
+ylabel('response')
+%%
+% By eye inspection, this is roughly the distance between peaks in the
+% filter itself. 
 %%
 gaborF=fft(gabor,64);
-figure; hold on
+figure; hold on; grid on
 plot(-32:31,fftshift(abs(gaborF)))
+plot([-32,31],[Fmax Fmax],'b--')
 plot([-32,31],[Fmax Fmax]*0.25,'b--')
 plot([5 5],[0 Fmax],'b--')
 plot([15 15],[0 Fmax],'b--')
 xticks(-35:10:35)
 title('Fourier amplitude spectrum of gabor')
-xlabel('spatial frequency (cycle/64sample)')
+xlabel('spatial frequency (cycle/64 sample)')
+%% 
+% By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64
+% cycle/sample will give about 25% of the maximal amplitude
 %%
 % * c)
+%%
+% Indeed, these two sinusoids gives roughly 1/4 maximal response: 
+%%
+%
 %%
 n=1:64;
 input5  = cos( 5*2*pi/64*n);
@@ -312,21 +337,24 @@ ampMed = abs(fft(rMed,64));
 display(['medium freq response amplitude: ',num2str(ampMed(10+1))])
 ampHih = abs(fft(rHih,64)); 
 display(['high freq response amplitude: ',num2str(ampHih(15+1))])
-%% 4 Deconvolution of the Hawmodynamic Response
+%% 4 Deconvolution of the Haemodynamic Response
 %%
 %%
 load hrfDeconv.mat;
 figure;hold on
 plot(r);stem(x);
-legend('r','x')
+legend('r(t)','x(t)')
 xlabel('time (s)')
+title('measured activity and true activity')
+%%
+% To convolve x with h, we can trun x into X and do Xh: 
 %%
 % <include>createConvMat.m</include>
 %%
 M = 15;
 X = createConvMat(x,M);
 %%
-% Verify the matrix
+% Verify the matrix X
 for ii = 1:5
     disp(['test filter ',num2str(ii)])
     h = rand(M,1);
@@ -337,25 +365,30 @@ end
 %%
 figure;imagesc(X);colorbar;title('conv matrix')
 %%
-% a step-like structure
+% X has a step-like structure. Every column is a shifted version of
+% another. 
 %%
 % * b)
 %%
 h_opt = (X'*X)\X'*r;
-figure; plot(h_opt); xlabel('time (s)'); legend('h')
+figure; plot(h_opt); xlabel('time (s)'); legend('h(t)')
+title('Estimated Haemodynamic Response')
 grid on
 %%
-% HRF rises to peak in 5 seconds and drops into negative then recover. The
-% positive peak is about 3 times the negative valley. The curve looks like
-% a 3/4 cycle sine wave multiplied by a decay. It takes about 15 second
+% The HRF curve looks like a 3/4 cycle sine wave multiplied by a decay. 
+%%
+% It rises to peak in 5 seconds and drops into negative then recover. The
+% positive peak is about 3 times the negative valley. It takes about 15 second
 % for HRF to recover to baseline. 
 %%
-% The estimated HRF fits the response well. 
 r_est = conv(x,h_opt);
 figure; hold on
 plot(r);plot(r_est);
-legend('r','r_{est}')
+legend('r(t)','r_{est}(t)')
 xlabel('time (s)')
+ylabel('response')
+%%
+% The estimated HRF fits the response well. 
 %%
 % * c)
 %%
@@ -368,29 +401,30 @@ freqs = freqs/M;
 plot(freqs,fftshift(hP))
 xlabel('freq (Hz)');ylabel('power')
 xticks(-.4:.2:.4)
-title('power spectrum of h')
+title('power spectrum of h(t)')
 %%
-% It's a low pass filter, only frequencies lower than 0.05 Hz are passed. 
+% h(t) is a low pass filter, only frequencies lower than 0.05 Hz are passed. 
 %% 5 Sampling and aliasing
 load myMeasurements.mat
 %%
 % * a)
 %%
-p=4; % subsampling period
+p=4; % subsample period
 figure; hold on
 plot(time/100,sig,'ko-')
 xlabel('time (s)')
 DS = mod(time,p)==0;
 sigDS = sig(DS);
 plot(time(DS)/100,sigDS,'r*-')
+legend('original signal','subsampled signal')
 %%
 % The reduced version signal looks like another perodic signal. It doesn't provide a good
 % summary of the original signal. 
 %%
-% subsampling operation is linear but not shift-invariant, because it's
+% subsampling operation *is linear* but *not shift-invariant*, because it's
 % essentially pairwise multiplication with another signal where every
 % fourth value is 1 and otherwise 0. This operation is additive but if we
-% shift the signal in a way that is not a multiple of subsampling
+% shift the signal with a timestep that is not a multiple of subsampling
 % frequency, we get a completely different signal. 
 %%
 % * b)
@@ -400,18 +434,18 @@ sigF = fft(sig);
 sigDSUS = sig.*DS;
 sigDSF = fft(sigDSUS);
 figure; hold on
-plot((-N/2):(N/2-1),fftshift(abs(sigF)))
-plot((-N/2):(N/2-1),fftshift(abs(sigDSF)))
+plot((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
+plot((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
 % plot((-N/2):(N/2-1),fftshift(abs(fft(DS))))
-plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],'k--')
-legend('original signal','downsampled then upsampled signal','1/2 downsampling frequency')
+plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],'b--')
+legend('original signal','subsampled then upsampled signal','1/2 subsampling frequency')
 ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel('frequency (Hz)')
 ylabel('Fourier amplitude')
 %%
-% Downsampling basically copys the origianl spectrum (without DC component) four times and places 
-% them centered at every multiple of 1/2 downsampling frequency. 
+% subsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 and places 
+% them centered at every multiple of 1/2 subsampling frequency. 
 %%
-% close all
+close all
