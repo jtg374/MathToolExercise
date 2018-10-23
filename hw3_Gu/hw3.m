@@ -113,7 +113,7 @@ bar((-N/2):(N/2-1),fftshift(phaseF))
 bar(freqs,phaseF(freqs+1))
 ylabel('phase (rad)')
 linkaxes([ax1 ax2],'x')
-xlabel(sprintf('freq (2?/%d rad/sample)',N))
+xlabel(sprintf('freq (cycle/%dsample)',N))
 amplitude = ampF(freqs+1)
 phaseShift = phaseF(freqs+1)
 %%
@@ -160,14 +160,16 @@ ticks=-(N/2):256:(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
+title('Fourier amplitude spectrum of a sawtooth signal')
 
 %%
 % There are huge gaps between bars, i.e. sinusoids of many frequencies would
 % give zero response, unless the frequency is a multiple of 256 Hz. 
 %%
-% Generally, the Fourier amplitude spectrum which has periodic peak
-% pattern indicates that in time domain, the signal is periodic with the
-% same period. 
+% Generally, the Fourier amplitude spectrum which has regular spaced peak
+% pattern indicates that in time domain, the signal is periodic with a
+% period that is the inverse of the spacing between peaks in the frequency
+% domain. 
 sig24 = mod(n,24)/24; % generate a new sawtooth of 24-sample period 
 % the frequency of this signal is 8192/24 = 1024/3 Hz
 sig24F = fft(sig24);
@@ -178,8 +180,11 @@ ticks=-1024:(2048/24*3):1023;
 xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
+title('Fourier amplitude spectrum of another sawtooth signal')
+
 %%
-% The spectrum indeed peaks every time the frequency is a multiple of 1024/3 Hz
+% The spectrum indeed peaks every time the frequency is a multiple of
+% 1024/3. 
 %% * c)
 N=2048;
 sigG = (1+cos(n*2*pi*64/N)).^2;
@@ -191,6 +196,7 @@ ticks=-1024:256:1023;
 xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
+title('Fourier amplitude spectrum of another periodic signal')
 %%
 % This spectrum only has nonzero at frequency 0, 256 and 512 Hz. 
 %%
@@ -202,8 +208,9 @@ plot(nT/8192,sig(nT));
 plot(nT/8192,sigG(nT));
 legend('f(n)','g(n')
 xlabel('time (s)')
+title('one period of two signals')
 %%
-% the wave looks more smooth, as in the Dourier spectrum there is no high
+% the wave looks more smooth, as in the Fourier spectrum there is no high
 % frequency components, but is only a linear combination of 256 Hz and 512
 % Hz sinusoids and a DC shift. 
 %%
@@ -227,7 +234,8 @@ gaborF=fft(gabor,64);
 figure
 plot(-32:31,fftshift(abs(gaborF)))
 title('Fourier amplitude spectrum of gabor')
-xlabel('spatial frequency (1/64 cycle/sample)')
+xlabel('spatial frequency (cycle/64 sample)')
+ylabel('amplitude')
 %%
 % This is a bandpass filter that selectively filter frequency of 10*2?/64
 % samples.
@@ -236,11 +244,14 @@ xlabel('spatial frequency (1/64 cycle/sample)')
 % ? determines the bandpass frequency and 1/? determines the width
 % of the band.
 %% 
-% If I let ?=12**2?/64 and ?=1
+% If I let ?=12*2?/64 and ?=1
 gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
 gaborWiderAt12F=fft(gaborWiderAt12,64);
 figure
 plot(-32:31,fftshift(abs(gaborWiderAt12F)))
+title('Fourier amplitude spectrum of another gabor')
+xlabel('spatial frequency (cycle/64 sample)')
+ylabel('amplitude')
 
 %%
 % * b )
@@ -284,7 +295,7 @@ plot([5 5],[0 Fmax],'b--')
 plot([15 15],[0 Fmax],'b--')
 xticks(-35:10:35)
 title('Fourier amplitude spectrum of gabor')
-xlabel('spatial frequency (1/64 cycle/sample)')
+xlabel('spatial frequency (cycle/64sample)')
 %%
 % * c)
 %%
@@ -360,5 +371,47 @@ xticks(-.4:.2:.4)
 title('power spectrum of h')
 %%
 % It's a low pass filter, only frequencies lower than 0.05 Hz are passed. 
+%% 5 Sampling and aliasing
+load myMeasurements.mat
 %%
-close all
+% * a)
+%%
+p=4; % subsampling period
+figure; hold on
+plot(time/100,sig,'ko-')
+xlabel('time (s)')
+DS = mod(time,p)==0;
+sigDS = sig(DS);
+plot(time(DS)/100,sigDS,'r*-')
+%%
+% The reduced version signal looks like another perodic signal. It doesn't provide a good
+% summary of the original signal. 
+%%
+% subsampling operation is linear but not shift-invariant, because it's
+% essentially pairwise multiplication with another signal where every
+% fourth value is 1 and otherwise 0. This operation is additive but if we
+% shift the signal in a way that is not a multiple of subsampling
+% frequency, we get a completely different signal. 
+%%
+% * b)
+%%
+N = length(time);
+sigF = fft(sig);
+sigDSUS = sig.*DS;
+sigDSF = fft(sigDSUS);
+figure; hold on
+plot((-N/2):(N/2-1),fftshift(abs(sigF)))
+plot((-N/2):(N/2-1),fftshift(abs(sigDSF)))
+% plot((-N/2):(N/2-1),fftshift(abs(fft(DS))))
+plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],'k--')
+legend('original signal','downsampled then upsampled signal','1/2 downsampling frequency')
+ticks = (-N/2):(N/10):(N/2-1);
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('Fourier amplitude')
+%%
+% Downsampling basically copys the origianl spectrum (without DC component) four times and places 
+% them centered at every multiple of 1/2 downsampling frequency. 
+%%
+% close all
