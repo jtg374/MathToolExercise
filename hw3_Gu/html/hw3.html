@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>hw3</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-23"><meta name="DC.source" content="hw3.m"><style type="text/css">
+      --><title>hw3</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-10-25"><meta name="DC.source" content="hw3.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,100 +66,133 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 LSI system characterization</a></li><li><a href="#23">2 Fourier transform of periodic signals</a></li><li><a href="#45">3 Gabor filter</a></li><li><a href="#66">4 Deconvolution of the Haemodynamic Response</a></li><li><a href="#85">5 Sampling and aliasing</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 LSI system characterization</a></li><li><a href="#27">2 Fourier transform of periodic signals</a></li><li><a href="#47">3 Gabor filter</a></li><li><a href="#70">4 Deconvolution of the Haemodynamic Response</a></li><li><a href="#89">5 Sampling and aliasing</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear
 </pre><h2 id="2">1 LSI system characterization</h2><div><ul><li>a) check linearity and shift-invariance</li></ul></div><pre class="codeinput">N=64;
 I = eye(64); <span class="comment">% generate a series of impulse input</span>
-</pre><p>System 1 is <b>not</b> shift-invariant. The reponse gain grows with time.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
-positions = randperm(N,4);
-<span class="keyword">for</span> p=positions
+</pre><p>System 1 is <b>not</b> shift-invariant. The reponse gain changes with time.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+positions = [1 2 4 8 62];
+<span class="keyword">for</span> p=positions+1
     output = unknownSystem1(I(:,p));
     line = plot(output);
-    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p)]);
+    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p-1)]);
 <span class="keyword">end</span>
 xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 1 at different positions'</span>)
-legend(<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
 </pre><img vspace="5" hspace="5" src="hw3_01.png" alt=""> <p>System 1 is <b>nonlinear</b>.</p><pre class="codeinput">output1 = unknownSystem1(I(:,positions(1)));
 output2 = unknownSystem1(I(:,positions(2)));
 sumOfOutput = output1+output2;
 sumOfInput = I(:,positions(1))+I(:,positions(2));
-all(sumOfOutput == unknownSystem1(sumOfInput))
-</pre><pre class="codeoutput">
-ans =
-
-  logical
-
-   0
-
+<span class="keyword">if</span> all(sumOfOutput == unknownSystem1(sumOfInput))
+    disp(<span class="string">'System 1 is possibly linear'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'System 1 is nonlinear'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">System 1 is nonlinear
 </pre><p>System 2 <b>is</b> shift-invariant</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
-positions = randperm(N,4);
-<span class="keyword">for</span> p=positions
+<span class="comment">%positions = randperm(N,4);</span>
+positions = [1 2 4 8];
+<span class="keyword">for</span> p=positions+1
     output = unknownSystem2(I(:,p));
     line = plot(output);
-    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p)]);
+    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p-1)]);
 <span class="keyword">end</span>
 xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 2 at different positions'</span>)
-legend(<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_02.png" alt=""> <p>System 2 is <b>nonlinear</b> because of a nonzero offset</p><pre class="codeinput">output1 = unknownSystem2(I(:,positions(1)));
+legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_02.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure
+figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+<span class="keyword">for</span> p=positions+54
+    output = unknownSystem2(I(:,p));
+    line = plot(output);
+    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p-1)]);
+<span class="keyword">end</span>
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'response'</span>)
+title(<span class="string">'Impulse response of system 2 at different positions'</span>)
+legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_03.png" alt=""> <img vspace="5" hspace="5" src="hw3_04.png" alt=""> <p>System 2 is <b>nonlinear</b> because of a nonzero offset</p><pre class="codeinput">output1 = unknownSystem2(I(:,positions(4)));
 output2 = unknownSystem2(I(:,positions(2)));
 sumOfOutput = output1+output2;
-sumOfInput = I(:,positions(1))+I(:,positions(2));
-all(sumOfOutput == unknownSystem2(sumOfInput))
-</pre><pre class="codeoutput">
-ans =
-
-  logical
-
-   0
-
+sumOfInput = I(:,positions(4))+I(:,positions(2));
+<span class="keyword">if</span> all(sumOfOutput == unknownSystem2(sumOfInput))
+    disp(<span class="string">'System 2 is possibly linear'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'System 2 is nonlinear'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">System 2 is nonlinear
 </pre><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 plot(sumOfOutput)
 plot(unknownSystem2(sumOfInput))
 xlabel(<span class="string">'time'</span>);ylabel(<span class="string">'response'</span>)
-legend(<span class="string">'sum on output side'</span>,<span class="string">'sum on input side'</span>,<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+legend(<span class="string">'sum on output side'</span>,<span class="string">'sum on input side'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>)
 title(<span class="string">'nonlinearity of system 2'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_03.png" alt=""> <p>System 3 <b>is</b> shift-invariant</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
-positions = randperm(N,4);
-<span class="keyword">for</span> p=positions
+</pre><img vspace="5" hspace="5" src="hw3_05.png" alt=""> <p>System 3 <b>is</b> shift-invariant, circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+<span class="comment">% positions = randperm(N,4)</span>
+positions = [1 2 4 8];
+<span class="keyword">for</span> p=positions+1
     output = unknownSystem3(I(:,p));
     line = plot(output);
-    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p)]);
+    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p-1)]);
 <span class="keyword">end</span>
 xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 3 at different positions'</span>)
-legend(<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_04.png" alt=""> <p>System 3 <b>is</b> possibly linear</p><pre class="codeinput">positions = randi(N,1,4);
+legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_06.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure
+figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+<span class="keyword">for</span> p=positions+54
+    output = unknownSystem3(I(:,p));
+    line = plot(output);
+    set(line,<span class="string">'Displayname'</span>,[<span class="string">'impulse response at '</span>,num2str(p+1)]);
+<span class="keyword">end</span>
+xlabel(<span class="string">'time'</span>)
+ylabel(<span class="string">'response'</span>)
+title(<span class="string">'Impulse response of system 3 at different positions'</span>)
+legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_07.png" alt=""> <img vspace="5" hspace="5" src="hw3_08.png" alt=""> <p>System 3 <b>is</b> possibly linear</p><pre class="codeinput">positions = randi(N,1,4);
 g1=1;g2=1;
 output1 = unknownSystem3(I(:,positions(1)));
 output2 = unknownSystem3(I(:,positions(2)));
 sumOfOutput = g1*output1+g2*output2;
 sumOfInput = g1*I(:,positions(1))+g2*I(:,positions(2));
-all(sumOfOutput == unknownSystem3(sumOfInput))
-</pre><pre class="codeoutput">
-ans =
-
-  logical
-
-   1
-
+<span class="keyword">if</span> all(sumOfOutput == unknownSystem3(sumOfInput))
+    disp(<span class="string">'System 3 is possibly linear'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'System 3 is nonlinear'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">System 3 is possibly linear
 </pre><div><ul><li>b) response to sinusoid</li></ul></div><pre class="language-matlab">
-<span class="keyword">function</span> [amp,phase]=isSameFreqSinusoid(f,system)
-    N=64;t = (1:N)';
+<span class="keyword">function</span> [amp,phaseDiff]=isSameFreqSinusoid(f,system)
+    <span class="comment">% The following equation test whether the output is of the same</span>
+    <span class="comment">% frequency with the input. The test uses linear regression, which is</span>
+    <span class="comment">% equivalent with calculating the Fourier coefficients of the output</span>
+    <span class="comment">% corresponding to the input frequency term and the DC term, and check</span>
+    <span class="comment">% if the regression is complete.</span>
+    N=64;t = (0:(N-1))';
 <span class="comment">    %% generate input with desired frequency and random phase</span>
     inputPhase = randi(N,1)*2*pi/N;
-    input = cos(f*t-inputPhase)+1;
+    input = cos(f*t + inputPhase)+1;
 <span class="comment">    %% compute output</span>
     output = system(input);
 <span class="comment">    %% generate orthonormal basis of the subspace</span>
-    X = [ones(N,1),cos(f*t),sin(f*t)];
+    X = [ones(N,1),cos(f*t),-sin(f*t)]; <span class="comment">% -sin because of conjugate in complex inner products</span>
 <span class="comment">    %% linear regression</span>
-    b = X'*X\X'*output;
+    <span class="comment">% The SVD method gives a slightly different pseudoinverse matrix and</span>
+    <span class="comment">% the error is at the same order as using the backslash method in</span>
+    <span class="comment">% MATLAB. I use backslash instead for concisement</span>
+    b = (X'*X)\X'*output; <span class="comment">% standard linear regression operation (projection of r to X's subspace, analogous to vector projection)</span>
+<span class="comment">%     [U,S,V] = svd(X);</span>
+<span class="comment">%     Si = zeros(size(S'));</span>
+<span class="comment">%     for ii = 1:min(size(X))</span>
+<span class="comment">%         Si(ii,ii) = 1./S(ii,ii);</span>
+<span class="comment">%     end</span>
+<span class="comment">%     b = V*Si*U'*output;</span>
+<span class="comment">%     X*b-output</span>
 <span class="comment">    %% examine if regression is complete</span>
-    result = all(abs(X*b-output)&lt;1e-10);
+    result = all(abs(X*b-output)&lt;1e-10); <span class="comment">% to avoid floating number error, equivalent to using round and ==</span>
     <span class="keyword">if</span> result 
         disp(<span class="string">'output is in the same subspace'</span>);
     <span class="keyword">else</span>
@@ -167,8 +200,9 @@ ans =
     <span class="keyword">end</span>
 <span class="comment">    %% calculate amplitude and phase shift</span>
     amp = sqrt(b(2)^2+b(3)^2);
-    phase = atan2(b(3),b(2)) - inputPhase;
-    phase = mod(phase+pi,2*pi)-pi; <span class="comment">% so that -pi&lt;=phase&lt;pi</span>
+    phase = atan2(b(3),b(2));
+    phaseDiff = phase - inputPhase;
+    phaseDiff = mod(phaseDiff+pi,2*pi)-pi; <span class="comment">% so that -pi&lt;=phaseDiff&lt;pi</span>
     
     
 
@@ -213,9 +247,10 @@ output is outside the input subspace
 frequency: 8*2*pi/64
 output is outside the input subspace
 </pre><p>Only <b>System 3</b> project sinusoids into sinuisoid of the same frequency.</p><pre class="codeinput">system = @unknownSystem3
-<span class="keyword">for</span> f = [1,2,4,8]
+freqs = [1,2,4,8];
+<span class="keyword">for</span> f = freqs
     disp([<span class="string">'frequency: '</span>,num2str(f),<span class="string">'*2*pi/64'</span>])
-    [amplitude,phaseShift]=isSameFreqSinusoid(f*2*pi/N,@unknownSystem3)
+    [amplitude(f),phaseShift(f)]=isSameFreqSinusoid(f*2*pi/N,@unknownSystem3);
 <span class="keyword">end</span>
 </pre><pre class="codeoutput">
 system =
@@ -226,93 +261,46 @@ system =
 
 frequency: 1*2*pi/64
 output is in the same subspace
-
-amplitude =
-
-   12.5537
-
-
-phaseShift =
-
-    0.9417
-
 frequency: 2*2*pi/64
 output is in the same subspace
-
-amplitude =
-
-    6.0516
-
-
-phaseShift =
-
-    1.8765
-
 frequency: 4*2*pi/64
 output is in the same subspace
-
-amplitude =
-
-    3.3691
-
-
-phaseShift =
-
-    0.6406
-
 frequency: 8*2*pi/64
 output is in the same subspace
-
-amplitude =
-
-    1.6074
-
-
-phaseShift =
-
-    1.1866
-
-</pre><p>This is predicted by the Fourier transfrom of system's impulse response</p><pre class="codeinput">impulseResponse = unknownSystem3(I(:,1));
+</pre><p>The amplitude and phase of the output is predicted by the Fourier transfrom of system's impulse response</p><pre class="codeinput">impulseResponse = unknownSystem3(I(:,1));
 impulseResponseDFT = fft(impulseResponse);
 ampF = abs(impulseResponseDFT); phaseF = angle(impulseResponseDFT);
-freqs = [1,2,4,8];
 figure
 ax1=subplot(2,1,1); hold <span class="string">on</span>; grid <span class="string">on</span>
 bar((-N/2):(N/2-1),fftshift(ampF))
-bar(freqs,ampF(freqs+1))
+bar(freqs,amplitude(freqs))
 legend(<span class="string">'impulse response'</span>, <span class="string">'output/input'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 ax2=subplot(2,1,2); hold <span class="string">on</span>; grid <span class="string">on</span>
 bar((-N/2):(N/2-1),fftshift(phaseF))
-bar(freqs,phaseF(freqs+1))
+bar(freqs,phaseShift(freqs))
 legend(<span class="string">'impulse response'</span>, <span class="string">'output-input'</span>)
 ylabel(<span class="string">'phase (rad)'</span>)
 linkaxes([ax1 ax2],<span class="string">'x'</span>)
 xlabel(sprintf(<span class="string">'freq (cycle/%dsample)'</span>,N))
-amplitude = ampF(freqs+1)
-phaseShift = phaseF(freqs+1)
-</pre><pre class="codeoutput">
-amplitude =
-
-   12.5537
-    6.0516
-    3.3691
-    1.6074
-
-
-phaseShift =
-
-   -0.9417
-   -1.8765
-   -0.6406
-   -1.1866
-
-</pre><img vspace="5" hspace="5" src="hw3_05.png" alt=""> <div><ul><li>c)</li></ul></div><p><b>System 1</b> is neither linear nor shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System 2</b> is nonlinear but shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System</b> 3 seems both linear and shift-invariant, and it projects siusoids into the sinusoid subspaces with same frequency.</p><p><b>Linearity</b> and <b>shift-invariance</b> and <b>*indepedent properties</b>* so that they can be tested <b>*seperately</b>*, but only if a system is both linear and shift-invariant, its response to sinuisoid would be a sinusoid of the same frequency and the output gain and phase shift relative to input can be predicted by the Fourier transform of the system's impulse reponse.</p><p>So if a system always output a sinusoid given any sinusoid input, with a fixed gain and phase shift that do not vary with input strength and phase, then this system is <b>*guarenteed</b>* to be a LSI system.</p><h2 id="23">2 Fourier transform of periodic signals</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">N=2048;
+</pre><img vspace="5" hspace="5" src="hw3_09.png" alt=""> <pre class="codeinput"><span class="keyword">if</span> all(abs(amplitude(freqs) - ampF(freqs+1)')&lt;1e-7)
+    disp(<span class="string">'Amplitudes matches!'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'Amplitudes not match'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Amplitudes matches!
+</pre><pre class="codeinput"><span class="keyword">if</span> all(abs(phaseShift(freqs) - phaseF(freqs+1)')&lt;1e-7)
+    disp(<span class="string">'Phases matches!'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'Phases not match'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Phases matches!
+</pre><div><ul><li>c)</li></ul></div><p><b>System 1</b> is neither linear nor shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System 2</b> is nonlinear but shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System</b> 3 seems both linear and shift-invariant, and it projects siusoids into the sinusoid subspaces with same frequency.</p><p><b>Linearity</b> and <b>shift-invariance</b> and <b>*indepedent properties</b>* so that they can be tested <b>*seperately</b>*, but only if a system is both linear and shift-invariant, its response to sinuisoid would be a sinusoid of the same frequency and the output gain and phase shift relative to input can be predicted by the Fourier transform of the system's impulse reponse.</p><p>So if a system always output a sinusoid given any sinusoid input, with a fixed gain and phase shift that do not vary with input strength and phase, then this system is <b>*guarenteed</b>* to be a LSI system.</p><h2 id="27">2 Fourier transform of periodic signals</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">N=2048;
 n = 1:N;
 sig = mod(n,32)/32; <span class="comment">% generate a sawtooth</span>
 figure;plot((1:N)/8192,sig);xlabel(<span class="string">'time (s)'</span>);
 xlim([0 N/8192]);title(<span class="string">'a sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_06.png" alt=""> <pre class="codeinput">sound(sig,8192)
+</pre><img vspace="5" hspace="5" src="hw3_10.png" alt=""> <pre class="codeinput">sound(sig,8192)
 </pre><p><b>Duration</b> is 2048/8192Hz = 0.25 seconds.</p><p><b>Period</b> is 32/8192Hz = 2^-8 = 0.039 seconds. freqency is 2^8=256 Hz, closest to middle C (C4, 261.6Hz)</p><div><ul><li>b)</li></ul></div><pre class="codeinput">sigF = fft(sig);
 figure
 bar((-N/2):(N/2-1),fftshift(abs(sigF)))
@@ -322,7 +310,7 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of the sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_07.png" alt=""> <p>There are huge gaps between bars, only multiples of 256 Hz have nonzero amplitudes.</p><p>Generally, the regular spaced peak pattern in frequency domain indicates a perodity in time domain.</p><p>period can be determined by the spacing between the peaks.</p><p>For a sawtooth with a different period,</p><pre class="codeinput">sig24 = mod(n,24)/24; <span class="comment">% generate a new sawtooth of 24-sample period</span>
+</pre><img vspace="5" hspace="5" src="hw3_11.png" alt=""> <p>There are huge gaps between bars, only multiples of 256 Hz have nonzero amplitudes.</p><p>Generally, the regular spaced peak pattern in frequency domain indicates a perodity in time domain.</p><p>period can be determined by the inverse of spacing between the peaks. For the spectrum above, spacing is 256Hz and period is (1/256) seconds.</p><p>For a sawtooth with a different period,</p><pre class="codeinput">sig24 = mod(n,24)/24; <span class="comment">% generate a new sawtooth of 24-sample period</span>
 <span class="comment">% the frequency of this signal is 8192/24 = 1024/3 Hz</span>
 sig24F = fft(sig24);
 </pre><p>The spectrum also peaks regularly:</p><pre class="codeinput">figure
@@ -333,7 +321,7 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of another sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_08.png" alt=""> <p>The spectrum peaks every time the frequency is a multiple of 1024/3 Hz.</p><div><ul><li>c)</li></ul></div><p>now for another periodic signal <img src="hw3_eq00649005139556846024.png" alt="$(1+cos(2\pi*64*n/N)^2$" style="width:154px;height:16px;"></p><pre class="codeinput">N=2048;
+</pre><img vspace="5" hspace="5" src="hw3_12.png" alt=""> <p>The spectrum peaks every time the frequency is a multiple of 1024/3 Hz. It has a period of 3/1024 seconds.</p><div><ul><li>c)</li></ul></div><p>now for another periodic signal <img src="hw3_eq00649005139556846024.png" alt="$(1+cos(2\pi*64*n/N)^2$" style="width:154px;height:16px;"></p><pre class="codeinput">N=2048;
 sigG = (1+cos(n*2*pi*64/N)).^2;
 sigGF = fft(sigG);
 figure
@@ -344,16 +332,14 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of another periodic signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_09.png" alt=""> <p>This spectrum only has nonzero at frequency 0, 256 and 512 Hz.</p><p>So it still has a period of 2^-8 second, or 32 samples.</p><pre class="codeinput">figure; hold <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_13.png" alt=""> <p>This spectrum is only nonzero at frequency 0, 256 and 512 Hz.</p><p>So it still has a period of 2^-8 second, or 32 samples.</p><pre class="codeinput">figure; hold <span class="string">on</span>
 nT = 1:32;
 plot(nT/8192,sig(nT));
 plot(nT/8192,sigG(nT));
 legend(<span class="string">'f(n)'</span>,<span class="string">'g(n'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 title(<span class="string">'one period of two signals'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_10.png" alt=""> <p>the wave looks more smooth, as in the Fourier spectrum there is no high frequency components, but is only a linear combination of 256 Hz and 512 Hz sinusoids and a DC shift.</p><pre class="codeinput">sound(sigG)
-</pre><pre class="codeinput">sound(sig)
-</pre><p>The timbre of g(n) sounds brighter.</p><h2 id="45">3 Gabor filter</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">n = -12:12;
+</pre><img vspace="5" hspace="5" src="hw3_14.png" alt=""> <p>the wave looks more smooth, as in the Fourier spectrum there is no high frequency components, but is only a linear combination of 256 Hz and 512 Hz sinusoids and a DC shift.</p><p>And the timbre of g(n) sounds brighter.</p><h2 id="47">3 Gabor filter</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">n = -12:12;
 sigma=3.5;
 omega=10*2*pi/64;
 gabor=exp(-(n/sigma).^2/2).*cos(omega*n);
@@ -361,14 +347,14 @@ figure
 plot(n,gabor);title(<span class="string">'gabor filter'</span>)
 xlabel(<span class="string">'space'</span>)
 ylabel(<span class="string">'response'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_11.png" alt=""> <pre class="codeinput">gaborF=fft(gabor,64);
+</pre><img vspace="5" hspace="5" src="hw3_15.png" alt=""> <pre class="codeinput">gaborF=fft(gabor,64);
 figure
 plot(-32:31,fftshift(abs(gaborF)))
 title(<span class="string">'Fourier amplitude spectrum of gabor'</span>)
 xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_12.png" alt=""> <p>This is a <b>bandpass filter</b> that selectively filter frequency of 10*2pi/64 samples. It looks like two gaussian functions centered at 10 and -10. This shape results from the convolution of Gaussian function's spectrum (which is another Gaussian) and sinusoid function (impulse at k=+/-10 ).</p><p>omega determines the bandpass frequency and 1/sigma determines the width of the band. If I let omega=12*2pi/64 and sigma=1</p><pre class="codeinput">gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
+</pre><img vspace="5" hspace="5" src="hw3_16.png" alt=""> <p>This is a <b>bandpass filter</b> that selectively filter frequency of 10*2pi/64 samples. It looks like two gaussian functions centered at 10 and -10. This shape results from the convolution of Gaussian function's spectrum (which is another Gaussian) and sinusoid function (impulse at k=+/-10 ).</p><p>omega determines the bandpass frequency and 1/sigma determines the width of the band. If I let omega=12*2pi/64 and sigma=1</p><pre class="codeinput">gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
 gaborWiderAt12F=fft(gaborWiderAt12,64);
 figure
 plot(-32:31,fftshift(abs(gaborWiderAt12F)))
@@ -376,14 +362,19 @@ title(<span class="string">'Fourier amplitude spectrum of another gabor'</span>)
 xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_13.png" alt=""> <p>I get two wider Gaussian centered at k=+/- 12</p><div><ul><li>b )</li></ul></div><p>Among all sinusoid cos(fn*2pi/64), f = 10 will give the largest response.</p><p>because the convolution at position 0</p><p><img src="hw3_eq03287783137606965153.png" alt="$$\sum_{n=-12}^{12} gabor(-n)cos(2\pi f n/64)$$" style="width:189px;height:43px;"></p><p>is the real part of the f'th Fourier coefficient. and since gabor is evenly symmetric, thus the imagionary parts are all zero, the real part is just the amplitude.</p><p>the max amplitude is at the position</p><pre class="codeinput">[Fmax,ind] = max(abs(gaborF));
-ind-1
-</pre><pre class="codeoutput">
-ans =
+</pre><img vspace="5" hspace="5" src="hw3_17.png" alt=""> <p>I get two wider Gaussian centered at k=+/- 12</p><div><ul><li>b )</li></ul></div><p>Among all sinusoid <img src="hw3_eq18109780525297858785.png" alt="$cos(2pifn/64)$" style="width:90px;height:15px;">, f = 10 will give the largest response.</p><p>because the convolution at position 0</p><p><img src="hw3_eq03287783137606965153.png" alt="$$\sum_{n=-12}^{12} gabor(-n)cos(2\pi f n/64)$$" style="width:189px;height:43px;"></p><p>is the real part of the f'th Fourier coefficient. and since gabor is evenly symmetric, thus the imagionary parts are all zero, the real part is just the amplitude.</p><p>Gabor is the product of a Gaussian function and a sinusoid in space domain so the spectrum in the frequency domain is the convolution of Gaussian's spectrum and two impulse at corresponding sinusoid frequency (positive and negative). Since Gaussian's spectrum peaks at 0, Gabor's spectrum should peak at corresponding sinusoid frequency as well.</p><p>the max amplitude is at the position f = 10</p><pre class="codeinput">[Fmax,ind] = max(abs(gaborF));
+disp(ind-1)
+</pre><pre class="codeoutput">    10
 
-    10
-
-</pre><p>The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples</p><pre class="codeinput">64/10
+</pre><pre class="codeinput">figure; hold <span class="string">on</span>
+plot(-32:31,fftshift(abs(gaborF)))
+plot(ind-1,Fmax,<span class="string">'r*'</span>)
+plot(1-ind,Fmax,<span class="string">'r*'</span>)
+title(<span class="string">'peak position of Gabor''s spectrum'</span>)
+xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_18.png" alt=""> <p>The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples</p><pre class="codeinput">64/10
 figure; hold <span class="string">on</span>
 plot(n,gabor);title(<span class="string">'gabor filter'</span>)
 plot([6.4,6.4],[-1 1],<span class="string">'b--'</span>)
@@ -399,7 +390,7 @@ ans =
 
     6.4000
 
-</pre><img vspace="5" hspace="5" src="hw3_14.png" alt=""> <p>By eye inspection, this is roughly the distance between peaks in the filter itself.</p><pre class="codeinput">gaborF=fft(gabor,64);
+</pre><img vspace="5" hspace="5" src="hw3_19.png" alt=""> <p>By eye inspection, this is roughly the distance between peaks in the filter itself.</p><pre class="codeinput">gaborF=fft(gabor,64);
 figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 plot(-32:31,fftshift(abs(gaborF)))
 plot([-32,31],[Fmax Fmax],<span class="string">'b--'</span>)
@@ -409,7 +400,7 @@ plot([15 15],[0 Fmax],<span class="string">'b--'</span>)
 xticks(-35:10:35)
 title(<span class="string">'Fourier amplitude spectrum of gabor'</span>)
 xlabel(<span class="string">'spatial frequency (cycle/64 sample)'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_15.png" alt=""> <p>By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64 cycle/sample will give about 25% of the maximal amplitude</p><div><ul><li>c)</li></ul></div><p>Indeed, these two sinusoids gives roughly 1/4 maximal response:</p><pre class="codeinput">n=1:64;
+</pre><img vspace="5" hspace="5" src="hw3_20.png" alt=""> <p>By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64 cycle/sample will give about 25% of the maximal amplitude</p><div><ul><li>c)</li></ul></div><p>Indeed, these two sinusoids gives roughly 1/4 maximal response:</p><pre class="codeinput">n=1:64;
 input5  = cos( 5*2*pi/64*n);
 input10 = cos(10*2*pi/64*n);
 input15 = cos(15*2*pi/64*n);
@@ -425,13 +416,13 @@ display([<span class="string">'high freq response amplitude: '</span>,num2str(am
 </pre><pre class="codeoutput">low freq response amplitude: 26.4826
 medium freq response amplitude: 113.6463
 high freq response amplitude: 25.7612
-</pre><h2 id="66">4 Deconvolution of the Haemodynamic Response</h2><pre class="codeinput">load <span class="string">hrfDeconv.mat</span>;
+</pre><h2 id="70">4 Deconvolution of the Haemodynamic Response</h2><pre class="codeinput">load <span class="string">hrfDeconv.mat</span>;
 figure;hold <span class="string">on</span>
 plot(r);stem(x);
 legend(<span class="string">'r(t)'</span>,<span class="string">'x(t)'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 title(<span class="string">'measured activity and true activity'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_16.png" alt=""> <p>To convolve x with h, we can trun x into X and do Xh:</p><pre class="language-matlab">
+</pre><img vspace="5" hspace="5" src="hw3_21.png" alt=""> <p>To convolve x with h, we can trun x into X and do Xh:</p><pre class="language-matlab">
 <span class="keyword">function</span> X=createConvMat(x,M)
     <span class="comment">% size(x) should be [N,1]</span>
     xPad = [x;zeros(M-1,1)];
@@ -457,17 +448,26 @@ X*h is equal to conv(x,h)
 test filter 5
 X*h is equal to conv(x,h)
 </pre><p>Verified.</p><pre class="codeinput">figure;imagesc(X);colorbar;title(<span class="string">'conv matrix'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_17.png" alt=""> <p>X has a step-like structure. Every column is a shifted version of another.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">h_opt = (X'*X)\X'*r;
+</pre><img vspace="5" hspace="5" src="hw3_22.png" alt=""> <p>X has a step-like structure. Every column is a shifted version of another.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">h_opt = (X'*X)\X'*r; <span class="comment">% standard linear regression operation (projection of r to X's subspace, analogous to vector projection)</span>
+<span class="comment">%     [U,S,V] = svd(X);</span>
+<span class="comment">%     Si = zeros(size(S'));</span>
+<span class="comment">%     for ii = 1:min(size(X))</span>
+<span class="comment">%         Si(ii,ii) = 1./S(ii,ii);</span>
+<span class="comment">%     end</span>
+<span class="comment">%     h_opt = V*Si*U'*r;</span>
+    <span class="comment">% The SVD method gives a slightly different pseudoinverse matrix and</span>
+    <span class="comment">% the error is at the same order as using the backslash method in</span>
+    <span class="comment">% MATLAB. I use backslash instead for concisement</span>
 figure; plot(h_opt); xlabel(<span class="string">'time (s)'</span>); legend(<span class="string">'h(t)'</span>)
 title(<span class="string">'Estimated Haemodynamic Response'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_18.png" alt=""> <p>The HRF curve looks like a 3/4 cycle sine wave multiplied by a decay.</p><p>It rises to peak in 5 seconds and drops into negative then recover. The positive peak is about 3 times the negative valley. It takes about 15 second for HRF to recover to baseline.</p><pre class="codeinput">r_est = conv(x,h_opt);
+</pre><img vspace="5" hspace="5" src="hw3_23.png" alt=""> <p>The HRF curve looks like a 3/4 cycle sine wave multiplied by a decay.</p><p>It rises to peak in 5 seconds and drops into negative then recover. The positive peak is about 3 times the negative valley. It takes about 15 second for HRF to recover to baseline.</p><pre class="codeinput">r_est = conv(x,h_opt);
 figure; hold <span class="string">on</span>
 plot(r);plot(r_est);
 legend(<span class="string">'r(t)'</span>,<span class="string">'r_{est}(t)'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 ylabel(<span class="string">'response'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_19.png" alt=""> <p>The estimated HRF fits the response well.</p><div><ul><li>c)</li></ul></div><pre class="codeinput">M=15;
+</pre><img vspace="5" hspace="5" src="hw3_24.png" alt=""> <p>The estimated HRF fits the response well.</p><div><ul><li>c)</li></ul></div><pre class="codeinput">M=15;
 hF = fft(h,M);
 hP = hF.*conj(hF);
 figure
@@ -477,7 +477,7 @@ plot(freqs,fftshift(hP))
 xlabel(<span class="string">'freq (Hz)'</span>);ylabel(<span class="string">'power'</span>)
 xticks(-.4:.2:.4)
 title(<span class="string">'power spectrum of h(t)'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_20.png" alt=""> <p>h(t) is a low pass filter, only frequencies lower than 0.05 Hz are passed.</p><h2 id="85">5 Sampling and aliasing</h2><pre class="codeinput">load <span class="string">myMeasurements.mat</span>
+</pre><img vspace="5" hspace="5" src="hw3_25.png" alt=""> <p>h(t) is a low pass filter, only frequencies lower than 0.05 Hz are passed.</p><h2 id="89">5 Sampling and aliasing</h2><pre class="codeinput">load <span class="string">myMeasurements.mat</span>
 </pre><div><ul><li>a)</li></ul></div><pre class="codeinput">p=4; <span class="comment">% subsample period</span>
 figure; hold <span class="string">on</span>
 plot(time/100,sig,<span class="string">'ko-'</span>)
@@ -486,7 +486,7 @@ DS = mod(time,p)==0;
 sigDS = sig(DS);
 plot(time(DS)/100,sigDS,<span class="string">'r*-'</span>)
 legend(<span class="string">'original signal'</span>,<span class="string">'subsampled signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_21.png" alt=""> <p>The reduced version signal looks like another perodic signal. It doesn't provide a good summary of the original signal.</p><p>subsampling operation <b>is linear</b> but <b>not shift-invariant</b>, because it's essentially pairwise multiplication with another signal where every fourth value is 1 and otherwise 0. This operation is additive but if we shift the signal with a timestep that is not a multiple of subsampling frequency, we get a completely different signal.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">N = length(time);
+</pre><img vspace="5" hspace="5" src="hw3_26.png" alt=""> <p>The reduced version signal looks like another perodic signal. It doesn't provide a good summary of the original signal.</p><p>subsampling operation <b>is linear</b> but <b>not shift-invariant</b>, because it's essentially pairwise multiplication with another signal where every fourth value is 1 and otherwise 0. This operation is additive but if we shift the signal with a timestep that is not a multiple of subsampling frequency, we get a completely different signal.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">N = length(time);
 sigF = fft(sig);
 sigDSUS = sig.*DS;
 sigDSF = fft(sigDSUS);
@@ -501,7 +501,7 @@ xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel(<span class="string">'frequency (Hz)'</span>)
 ylabel(<span class="string">'Fourier amplitude'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_22.png" alt=""> <p>subsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 and places them centered at every multiple of 1/2 subsampling frequency.</p><pre class="codeinput">close <span class="string">all</span>
+</pre><img vspace="5" hspace="5" src="hw3_27.png" alt=""> <p>subsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 and places them centered at every multiple of 1/2 subsampling frequency.</p><pre class="codeinput">close <span class="string">all</span>
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 close all; clear
@@ -512,65 +512,105 @@ close all; clear
 N=64;
 I = eye(64); % generate a series of impulse input
 %%
-% System 1 is *not* shift-invariant. The reponse gain grows with time. 
+% System 1 is *not* shift-invariant. The reponse gain changes with time. 
 figure; hold on; grid on
-positions = randperm(N,4);
-for p=positions
+positions = [1 2 4 8 62];
+for p=positions+1
     output = unknownSystem1(I(:,p));
     line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p)]);
+    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
 end
 xlabel('time')
 ylabel('response')
 title('Impulse response of system 1 at different positions')
-legend('Location','southeast')
+legend('Location','north')
 %%
 % System 1 is *nonlinear*. 
 output1 = unknownSystem1(I(:,positions(1)));
 output2 = unknownSystem1(I(:,positions(2)));
 sumOfOutput = output1+output2;
 sumOfInput = I(:,positions(1))+I(:,positions(2));
-all(sumOfOutput == unknownSystem1(sumOfInput))
+if all(sumOfOutput == unknownSystem1(sumOfInput))
+    disp('System 1 is possibly linear')
+else
+    disp('System 1 is nonlinear')
+end
+    
 %%
 % System 2 *is* shift-invariant
 figure; hold on; grid on
-positions = randperm(N,4);
-for p=positions
+%positions = randperm(N,4);
+positions = [1 2 4 8];
+for p=positions+1
     output = unknownSystem2(I(:,p));
     line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p)]);
+    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
 end
 xlabel('time')
 ylabel('response')
 title('Impulse response of system 2 at different positions')
-legend('Location','southeast')
+legend('Location','north')
+%% 
+% circular boundary handling also holds for very late impulse. 
+figure
+figure; hold on; grid on
+for p=positions+54
+    output = unknownSystem2(I(:,p));
+    line = plot(output);
+    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
+end
+xlabel('time')
+ylabel('response')
+title('Impulse response of system 2 at different positions')
+legend('Location','north')
+
 %%
 % System 2 is *nonlinear* because of a nonzero offset
-output1 = unknownSystem2(I(:,positions(1)));
+output1 = unknownSystem2(I(:,positions(4)));
 output2 = unknownSystem2(I(:,positions(2)));
 sumOfOutput = output1+output2;
-sumOfInput = I(:,positions(1))+I(:,positions(2));
-all(sumOfOutput == unknownSystem2(sumOfInput))
+sumOfInput = I(:,positions(4))+I(:,positions(2));
+if all(sumOfOutput == unknownSystem2(sumOfInput))
+    disp('System 2 is possibly linear')
+else
+    disp('System 2 is nonlinear')
+end
+
 %%
 figure; hold on; grid on
 plot(sumOfOutput)
 plot(unknownSystem2(sumOfInput))
 xlabel('time');ylabel('response')
-legend('sum on output side','sum on input side','Location','southeast')
+legend('sum on output side','sum on input side','Location','northeast')
 title('nonlinearity of system 2')
 %%
-% System 3 *is* shift-invariant
+% System 3 *is* shift-invariant, circular boundary handling also holds for very late impulse.
 figure; hold on; grid on
-positions = randperm(N,4);
-for p=positions
+% positions = randperm(N,4)
+positions = [1 2 4 8];
+for p=positions+1
     output = unknownSystem3(I(:,p));
     line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p)]);
+    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
 end
 xlabel('time')
 ylabel('response')
 title('Impulse response of system 3 at different positions')
-legend('Location','southeast')
+legend('Location','north')
+%% 
+% circular boundary handling also holds for very late impulse. 
+figure
+figure; hold on; grid on
+for p=positions+54
+    output = unknownSystem3(I(:,p));
+    line = plot(output);
+    set(line,'Displayname',['impulse response at ',num2str(p+1)]);
+end
+xlabel('time')
+ylabel('response')
+title('Impulse response of system 3 at different positions')
+legend('Location','north')
+
 %%
 % System 3 *is* possibly linear
 positions = randi(N,1,4);
@@ -579,7 +619,11 @@ output1 = unknownSystem3(I(:,positions(1)));
 output2 = unknownSystem3(I(:,positions(2)));
 sumOfOutput = g1*output1+g2*output2;
 sumOfInput = g1*I(:,positions(1))+g2*I(:,positions(2));
-all(sumOfOutput == unknownSystem3(sumOfInput))
+if all(sumOfOutput == unknownSystem3(sumOfInput))
+    disp('System 3 is possibly linear')
+else
+    disp('System 3 is nonlinear')
+end
 
 %%
 % * b) response to sinusoid
@@ -598,32 +642,43 @@ end
 %%        
 % Only *System 3* project sinusoids into sinuisoid of the same frequency. 
 system = @unknownSystem3
-for f = [1,2,4,8]
+freqs = [1,2,4,8];
+for f = freqs
     disp(['frequency: ',num2str(f),'*2*pi/64'])
-    [amplitude,phaseShift]=isSameFreqSinusoid(f*2*pi/N,@unknownSystem3)
+    [amplitude(f),phaseShift(f)]=isSameFreqSinusoid(f*2*pi/N,@unknownSystem3);
 end    
     
 %%
-% This is predicted by the Fourier transfrom of system's impulse response
+% The amplitude and phase of the output is predicted by the Fourier transfrom of system's impulse response
 impulseResponse = unknownSystem3(I(:,1));
 impulseResponseDFT = fft(impulseResponse);
 ampF = abs(impulseResponseDFT); phaseF = angle(impulseResponseDFT);
-freqs = [1,2,4,8];
 figure
 ax1=subplot(2,1,1); hold on; grid on
 bar((-N/2):(N/2-1),fftshift(ampF))
-bar(freqs,ampF(freqs+1))
+bar(freqs,amplitude(freqs))
 legend('impulse response', 'output/input')
 ylabel('amplitude')
 ax2=subplot(2,1,2); hold on; grid on
 bar((-N/2):(N/2-1),fftshift(phaseF))
-bar(freqs,phaseF(freqs+1))
+bar(freqs,phaseShift(freqs))
 legend('impulse response', 'output-input')
 ylabel('phase (rad)')
 linkaxes([ax1 ax2],'x')
 xlabel(sprintf('freq (cycle/%dsample)',N))
-amplitude = ampF(freqs+1)
-phaseShift = phaseF(freqs+1)
+%%
+if all(abs(amplitude(freqs) - ampF(freqs+1)')<1e-7)
+    disp('Amplitudes matches!')
+else
+    disp('Amplitudes not match')
+end
+%%
+if all(abs(phaseShift(freqs) - phaseF(freqs+1)')<1e-7)
+    disp('Phases matches!')
+else
+    disp('Phases not match')
+end
+
 %%
 % * c)
 %%
@@ -681,7 +736,8 @@ title('Fourier amplitude spectrum of the sawtooth signal')
 % pattern in frequency domain
 % indicates a perodity in time domain.
 %%
-% period can be determined by the spacing between the peaks. 
+% period can be determined by the inverse of spacing between the peaks. 
+% For the spectrum above, spacing is 256Hz and period is (1/256) seconds. 
 %%
 % For a sawtooth with a different period, 
 sig24 = mod(n,24)/24; % generate a new sawtooth of 24-sample period 
@@ -700,7 +756,7 @@ title('Fourier amplitude spectrum of another sawtooth signal')
 
 %%
 % The spectrum peaks every time the frequency is a multiple of
-% 1024/3 Hz. 
+% 1024/3 Hz. It has a period of 3/1024 seconds. 
 %%
 % * c)
 %%
@@ -717,7 +773,7 @@ xticklabels(ticks/N*8192)
 xlabel(sprintf('freq (Hz)'))
 title('Fourier amplitude spectrum of another periodic signal')
 %%
-% This spectrum only has nonzero at frequency 0, 256 and 512 Hz. 
+% This spectrum is only nonzero at frequency 0, 256 and 512 Hz. 
 %%
 % So it still has a period of 2^-8 second, or 32 samples. 
 %%
@@ -732,12 +788,9 @@ title('one period of two signals')
 % the wave looks more smooth, as in the Fourier spectrum there is no high
 % frequency components, but is only a linear combination of 256 Hz and 512
 % Hz sinusoids and a DC shift. 
+
 %%
-sound(sigG)
-%%
-sound(sig)
-%%
-% The timbre of g(n) sounds brighter. 
+% And the timbre of g(n) sounds brighter. 
 %% 3 Gabor filter
 %%
 % * a)
@@ -780,7 +833,7 @@ grid on
 %%
 % * b )
 %%
-% Among all sinusoid cos(fn*2pi/64), f = 10 will give the largest response. 
+% Among all sinusoid $cos(2pifn/64)$, f = 10 will give the largest response. 
 %%
 % because the convolution at position 0
 %%
@@ -789,10 +842,26 @@ grid on
 % is the real part of the f'th Fourier coefficient. and since gabor
 % is evenly symmetric, thus the imagionary parts are all zero, the real
 % part is just the amplitude. 
+%%
+% Gabor is the product of a Gaussian function and a sinusoid in space
+% domain so the spectrum in the frequency domain is the convolution of Gaussian's spectrum and two
+% impulse at corresponding sinusoid frequency (positive and negative). Since Gaussian's spectrum
+% peaks at 0, Gabor's spectrum should peak at corresponding sinusoid
+% frequency as well. 
 %% 
-% the max amplitude is at the position
+% the max amplitude is at the position f = 10
 [Fmax,ind] = max(abs(gaborF));
-ind-1
+disp(ind-1)
+%%
+figure; hold on
+plot(-32:31,fftshift(abs(gaborF)))
+plot(ind-1,Fmax,'r*')
+plot(1-ind,Fmax,'r*')
+title('peak position of Gabor''s spectrum')
+xlabel('spatial frequency k (cycle/64 sample)')
+ylabel('amplitude')
+grid on
+
 %%
 % The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples
 64/10
@@ -876,7 +945,16 @@ figure;imagesc(X);colorbar;title('conv matrix')
 %%
 % * b)
 %%
-h_opt = (X'*X)\X'*r;
+h_opt = (X'*X)\X'*r; % standard linear regression operation (projection of r to X's subspace, analogous to vector projection)
+%     [U,S,V] = svd(X);
+%     Si = zeros(size(S'));
+%     for ii = 1:min(size(X))
+%         Si(ii,ii) = 1./S(ii,ii);
+%     end
+%     h_opt = V*Si*U'*r;
+    % The SVD method gives a slightly different pseudoinverse matrix and
+    % the error is at the same order as using the backslash method in
+    % MATLAB. I use backslash instead for concisement
 figure; plot(h_opt); xlabel('time (s)'); legend('h(t)')
 title('Estimated Haemodynamic Response')
 grid on
