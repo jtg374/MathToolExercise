@@ -46,7 +46,6 @@ title('Impulse response of system 2 at different positions')
 legend('Location','north')
 %% 
 % circular boundary handling also holds for very late impulse. 
-figure
 figure; hold on; grid on
 for p=positions+54
     output = unknownSystem2(I(:,p));
@@ -93,7 +92,6 @@ title('Impulse response of system 3 at different positions')
 legend('Location','north')
 %% 
 % circular boundary handling also holds for very late impulse. 
-figure
 figure; hold on; grid on
 for p=positions+54
     output = unknownSystem3(I(:,p));
@@ -185,8 +183,8 @@ end
 % *System* 3 seems both linear and shift-invariant, and it projects
 % siusoids into the sinusoid subspaces with same frequency. 
 %%
-% *Linearity* and *shift-invariance* and **indepedent properties** so that they can
-% be tested **seperately**, but only if a system is both linear and
+% *Linearity* and *shift-invariance* and _indepedent properties_ so that they can
+% be tested _seperately_, but only if a system is both linear and
 % shift-invariant, its response to sinuisoid would be a sinusoid of the
 % same frequency and the output gain and phase shift relative to input can
 % be predicted by the Fourier transform of the system's impulse reponse.
@@ -194,7 +192,7 @@ end
 % So
 % if a system always output a sinusoid given any sinusoid input, with a
 % fixed gain and phase shift that do not vary with input strength and
-% phase, then this system is **guarenteed** to be a LSI system. 
+% phase, then this system is _guarenteed_ to be a LSI system. 
 %% 2 Fourier transform of periodic signals
 %%
 % * a)
@@ -202,8 +200,10 @@ end
 N=2048;
 n = 1:N;
 sig = mod(n,32)/32; % generate a sawtooth
-figure;plot((1:N)/8192,sig);xlabel('time (s)');
-xlim([0 N/8192]);title('a sawtooth signal')
+figure('pos',[10,400,900,300]);
+plot((1:N)/8192,sig);xlabel('time (s)');
+xlim([0 N/8192]);ylim([-.5,1.5])
+title('a sawtooth signal')
 %%
 sound(sig,8192)
 %%
@@ -327,7 +327,7 @@ grid on
 %%
 % * b )
 %%
-% Among all sinusoid $cos(2pifn/64)$, f = 10 will give the largest response. 
+% Among all sinusoid $cos(2\pi f n/64)$, f = 10 will give the largest response. 
 %%
 % because the convolution at position 0
 %%
@@ -500,7 +500,7 @@ legend('original signal','subsampled signal')
 % summary of the original signal. 
 %%
 % subsampling operation *is linear* but *not shift-invariant*, because it's
-% essentially pairwise multiplication with another signal where every
+% essentially pairwise multiplication with another signal DS where every
 % fourth value is 1 and otherwise 0. This operation is additive but if we
 % shift the signal with a timestep that is not a multiple of subsampling
 % frequency, we get a completely different signal. 
@@ -512,11 +512,9 @@ sigF = fft(sig);
 sigDSUS = sig.*DS;
 sigDSF = fft(sigDSUS);
 figure; hold on
-plot((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
-plot((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
-% plot((-N/2):(N/2-1),fftshift(abs(fft(DS))))
-plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],'b--')
-legend('original signal','subsampled then upsampled signal','1/2 subsampling frequency')
+bar((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
+bar((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
+legend('original signal','subsampled then upsampled signal')
 ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
@@ -528,12 +526,36 @@ ylabel('Fourier amplitude')
 % side by side with each other. 
 %% 
 % This has something to do with the vector DS, which is also a period
-% signal with period 4. The spectrum of DS are just spikes spaced by N/p * original sampling freq,
-% where N is signal length. 
+% signal with period 4. The Fourier amplitude spectrum of DS are just
+% impulses spaced by original_sampling_freq/p,
 %%
 figure; hold on
 for p = 2:4
     DS = mod(time,p)==0;
-    plot((-N/2):(N/2-1),fftshift(abs(fft(DS))),'DisplayName',[])
+    bar((-N/2):(N/2-1),fftshift(abs(fft(DS)/N)),'DisplayName',['p = ',num2str(p)])
+end
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('Amplitude normalized by signal length N')
+ylim([0 1])
+title('Fourier amplitude spectrum of DS')
+legend()
+%%
+% pointwise multiply DS with any signal in time domain is
+% convolving signal's spectrum with these spikes in the frequency domain.
+%%
+figure
+DS = mod(time,4)==0;
+SpectrumConv = cconv(sigF,fft(DS),N);
+bar((-N/2):(N/2-1),fftshift(abs(SpectrumConv)))
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+title('(Circular) Convolution of two Fourier amplitude spectrum')
+%%
+% There is a scaling factor of N^2 compared to the downsampled signal's
+% spectrum because 
 %%
 close all

@@ -102,8 +102,7 @@ xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 2 at different positions'</span>)
 legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_02.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure
-figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_02.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 <span class="keyword">for</span> p=positions+54
     output = unknownSystem2(I(:,p));
     line = plot(output);
@@ -113,7 +112,7 @@ xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 2 at different positions'</span>)
 legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_03.png" alt=""> <img vspace="5" hspace="5" src="hw3_04.png" alt=""> <p>System 2 is <b>nonlinear</b> because of a nonzero offset</p><pre class="codeinput">output1 = unknownSystem2(I(:,positions(4)));
+</pre><img vspace="5" hspace="5" src="hw3_03.png" alt=""> <p>System 2 is <b>nonlinear</b> because of a nonzero offset</p><pre class="codeinput">output1 = unknownSystem2(I(:,positions(4)));
 output2 = unknownSystem2(I(:,positions(2)));
 sumOfOutput = output1+output2;
 sumOfInput = I(:,positions(4))+I(:,positions(2));
@@ -129,7 +128,7 @@ plot(unknownSystem2(sumOfInput))
 xlabel(<span class="string">'time'</span>);ylabel(<span class="string">'response'</span>)
 legend(<span class="string">'sum on output side'</span>,<span class="string">'sum on input side'</span>,<span class="string">'Location'</span>,<span class="string">'northeast'</span>)
 title(<span class="string">'nonlinearity of system 2'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_05.png" alt=""> <p>System 3 <b>is</b> shift-invariant, circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_04.png" alt=""> <p>System 3 <b>is</b> shift-invariant, circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 <span class="comment">% positions = randperm(N,4)</span>
 positions = [1 2 4 8];
 <span class="keyword">for</span> p=positions+1
@@ -141,8 +140,7 @@ xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 3 at different positions'</span>)
 legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_06.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure
-figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_05.png" alt=""> <p>circular boundary handling also holds for very late impulse.</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 <span class="keyword">for</span> p=positions+54
     output = unknownSystem3(I(:,p));
     line = plot(output);
@@ -152,7 +150,7 @@ xlabel(<span class="string">'time'</span>)
 ylabel(<span class="string">'response'</span>)
 title(<span class="string">'Impulse response of system 3 at different positions'</span>)
 legend(<span class="string">'Location'</span>,<span class="string">'north'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_07.png" alt=""> <img vspace="5" hspace="5" src="hw3_08.png" alt=""> <p>System 3 <b>is</b> possibly linear</p><pre class="codeinput">positions = randi(N,1,4);
+</pre><img vspace="5" hspace="5" src="hw3_06.png" alt=""> <p>System 3 <b>is</b> possibly linear</p><pre class="codeinput">positions = randi(N,1,4);
 g1=1;g2=1;
 output1 = unknownSystem3(I(:,positions(1)));
 output2 = unknownSystem3(I(:,positions(2)));
@@ -283,7 +281,7 @@ legend(<span class="string">'impulse response'</span>, <span class="string">'out
 ylabel(<span class="string">'phase (rad)'</span>)
 linkaxes([ax1 ax2],<span class="string">'x'</span>)
 xlabel(sprintf(<span class="string">'freq (cycle/%dsample)'</span>,N))
-</pre><img vspace="5" hspace="5" src="hw3_09.png" alt=""> <pre class="codeinput"><span class="keyword">if</span> all(abs(amplitude(freqs) - ampF(freqs+1)')&lt;1e-7)
+</pre><img vspace="5" hspace="5" src="hw3_07.png" alt=""> <pre class="codeinput"><span class="keyword">if</span> all(abs(amplitude(freqs) - ampF(freqs+1)')&lt;1e-7)
     disp(<span class="string">'Amplitudes matches!'</span>)
 <span class="keyword">else</span>
     disp(<span class="string">'Amplitudes not match'</span>)
@@ -295,12 +293,14 @@ xlabel(sprintf(<span class="string">'freq (cycle/%dsample)'</span>,N))
     disp(<span class="string">'Phases not match'</span>)
 <span class="keyword">end</span>
 </pre><pre class="codeoutput">Phases matches!
-</pre><div><ul><li>c)</li></ul></div><p><b>System 1</b> is neither linear nor shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System 2</b> is nonlinear but shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System</b> 3 seems both linear and shift-invariant, and it projects siusoids into the sinusoid subspaces with same frequency.</p><p><b>Linearity</b> and <b>shift-invariance</b> and <b>*indepedent properties</b>* so that they can be tested <b>*seperately</b>*, but only if a system is both linear and shift-invariant, its response to sinuisoid would be a sinusoid of the same frequency and the output gain and phase shift relative to input can be predicted by the Fourier transform of the system's impulse reponse.</p><p>So if a system always output a sinusoid given any sinusoid input, with a fixed gain and phase shift that do not vary with input strength and phase, then this system is <b>*guarenteed</b>* to be a LSI system.</p><h2 id="27">2 Fourier transform of periodic signals</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">N=2048;
+</pre><div><ul><li>c)</li></ul></div><p><b>System 1</b> is neither linear nor shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System 2</b> is nonlinear but shift-invariant, and it doesn't project siusoids into the sinusoid subspaces with same frequency.</p><p><b>System</b> 3 seems both linear and shift-invariant, and it projects siusoids into the sinusoid subspaces with same frequency.</p><p><b>Linearity</b> and <b>shift-invariance</b> and <i>indepedent properties</i> so that they can be tested <i>seperately</i>, but only if a system is both linear and shift-invariant, its response to sinuisoid would be a sinusoid of the same frequency and the output gain and phase shift relative to input can be predicted by the Fourier transform of the system's impulse reponse.</p><p>So if a system always output a sinusoid given any sinusoid input, with a fixed gain and phase shift that do not vary with input strength and phase, then this system is <i>guarenteed</i> to be a LSI system.</p><h2 id="27">2 Fourier transform of periodic signals</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">N=2048;
 n = 1:N;
 sig = mod(n,32)/32; <span class="comment">% generate a sawtooth</span>
-figure;plot((1:N)/8192,sig);xlabel(<span class="string">'time (s)'</span>);
-xlim([0 N/8192]);title(<span class="string">'a sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_10.png" alt=""> <pre class="codeinput">sound(sig,8192)
+figure(<span class="string">'pos'</span>,[10,400,900,300]);
+plot((1:N)/8192,sig);xlabel(<span class="string">'time (s)'</span>);
+xlim([0 N/8192]);ylim([-.5,1.5])
+title(<span class="string">'a sawtooth signal'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_08.png" alt=""> <pre class="codeinput">sound(sig,8192)
 </pre><p><b>Duration</b> is 2048/8192Hz = 0.25 seconds.</p><p><b>Period</b> is 32/8192Hz = 2^-8 = 0.039 seconds. freqency is 2^8=256 Hz, closest to middle C (C4, 261.6Hz)</p><div><ul><li>b)</li></ul></div><pre class="codeinput">sigF = fft(sig);
 figure
 bar((-N/2):(N/2-1),fftshift(abs(sigF)))
@@ -310,7 +310,7 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of the sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_11.png" alt=""> <p>There are huge gaps between bars, only multiples of 256 Hz have nonzero amplitudes.</p><p>Generally, the regular spaced peak pattern in frequency domain indicates a perodity in time domain.</p><p>period can be determined by the inverse of spacing between the peaks. For the spectrum above, spacing is 256Hz and period is (1/256) seconds.</p><p>For a sawtooth with a different period,</p><pre class="codeinput">sig24 = mod(n,24)/24; <span class="comment">% generate a new sawtooth of 24-sample period</span>
+</pre><img vspace="5" hspace="5" src="hw3_09.png" alt=""> <p>There are huge gaps between bars, only multiples of 256 Hz have nonzero amplitudes.</p><p>Generally, the regular spaced peak pattern in frequency domain indicates a perodity in time domain.</p><p>period can be determined by the inverse of spacing between the peaks. For the spectrum above, spacing is 256Hz and period is (1/256) seconds.</p><p>For a sawtooth with a different period,</p><pre class="codeinput">sig24 = mod(n,24)/24; <span class="comment">% generate a new sawtooth of 24-sample period</span>
 <span class="comment">% the frequency of this signal is 8192/24 = 1024/3 Hz</span>
 sig24F = fft(sig24);
 </pre><p>The spectrum also peaks regularly:</p><pre class="codeinput">figure
@@ -321,7 +321,7 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of another sawtooth signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_12.png" alt=""> <p>The spectrum peaks every time the frequency is a multiple of 1024/3 Hz. It has a period of 3/1024 seconds.</p><div><ul><li>c)</li></ul></div><p>now for another periodic signal <img src="hw3_eq00649005139556846024.png" alt="$(1+cos(2\pi*64*n/N)^2$" style="width:154px;height:16px;"></p><pre class="codeinput">N=2048;
+</pre><img vspace="5" hspace="5" src="hw3_10.png" alt=""> <p>The spectrum peaks every time the frequency is a multiple of 1024/3 Hz. It has a period of 3/1024 seconds.</p><div><ul><li>c)</li></ul></div><p>now for another periodic signal <img src="hw3_eq00649005139556846024.png" alt="$(1+cos(2\pi*64*n/N)^2$" style="width:154px;height:16px;"></p><pre class="codeinput">N=2048;
 sigG = (1+cos(n*2*pi*64/N)).^2;
 sigGF = fft(sigG);
 figure
@@ -332,14 +332,14 @@ xticks(ticks)
 xticklabels(ticks/N*8192)
 xlabel(sprintf(<span class="string">'freq (Hz)'</span>))
 title(<span class="string">'Fourier amplitude spectrum of another periodic signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_13.png" alt=""> <p>This spectrum is only nonzero at frequency 0, 256 and 512 Hz.</p><p>So it still has a period of 2^-8 second, or 32 samples.</p><pre class="codeinput">figure; hold <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="hw3_11.png" alt=""> <p>This spectrum is only nonzero at frequency 0, 256 and 512 Hz.</p><p>So it still has a period of 2^-8 second, or 32 samples.</p><pre class="codeinput">figure; hold <span class="string">on</span>
 nT = 1:32;
 plot(nT/8192,sig(nT));
 plot(nT/8192,sigG(nT));
 legend(<span class="string">'f(n)'</span>,<span class="string">'g(n'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 title(<span class="string">'one period of two signals'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_14.png" alt=""> <p>the wave looks more smooth, as in the Fourier spectrum there is no high frequency components, but is only a linear combination of 256 Hz and 512 Hz sinusoids and a DC shift.</p><p>And the timbre of g(n) sounds brighter.</p><h2 id="47">3 Gabor filter</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">n = -12:12;
+</pre><img vspace="5" hspace="5" src="hw3_12.png" alt=""> <p>the wave looks more smooth, as in the Fourier spectrum there is no high frequency components, but is only a linear combination of 256 Hz and 512 Hz sinusoids and a DC shift.</p><p>And the timbre of g(n) sounds brighter.</p><h2 id="47">3 Gabor filter</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">n = -12:12;
 sigma=3.5;
 omega=10*2*pi/64;
 gabor=exp(-(n/sigma).^2/2).*cos(omega*n);
@@ -347,14 +347,14 @@ figure
 plot(n,gabor);title(<span class="string">'gabor filter'</span>)
 xlabel(<span class="string">'space'</span>)
 ylabel(<span class="string">'response'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_15.png" alt=""> <pre class="codeinput">gaborF=fft(gabor,64);
+</pre><img vspace="5" hspace="5" src="hw3_13.png" alt=""> <pre class="codeinput">gaborF=fft(gabor,64);
 figure
 plot(-32:31,fftshift(abs(gaborF)))
 title(<span class="string">'Fourier amplitude spectrum of gabor'</span>)
 xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_16.png" alt=""> <p>This is a <b>bandpass filter</b> that selectively filter frequency of 10*2pi/64 samples. It looks like two gaussian functions centered at 10 and -10. This shape results from the convolution of Gaussian function's spectrum (which is another Gaussian) and sinusoid function (impulse at k=+/-10 ).</p><p>omega determines the bandpass frequency and 1/sigma determines the width of the band. If I let omega=12*2pi/64 and sigma=1</p><pre class="codeinput">gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
+</pre><img vspace="5" hspace="5" src="hw3_14.png" alt=""> <p>This is a <b>bandpass filter</b> that selectively filter frequency of 10*2pi/64 samples. It looks like two gaussian functions centered at 10 and -10. This shape results from the convolution of Gaussian function's spectrum (which is another Gaussian) and sinusoid function (impulse at k=+/-10 ).</p><p>omega determines the bandpass frequency and 1/sigma determines the width of the band. If I let omega=12*2pi/64 and sigma=1</p><pre class="codeinput">gaborWiderAt12 = exp(-(n).^2/2).*cos(omega*1.2*n);
 gaborWiderAt12F=fft(gaborWiderAt12,64);
 figure
 plot(-32:31,fftshift(abs(gaborWiderAt12F)))
@@ -362,7 +362,7 @@ title(<span class="string">'Fourier amplitude spectrum of another gabor'</span>)
 xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_17.png" alt=""> <p>I get two wider Gaussian centered at k=+/- 12</p><div><ul><li>b )</li></ul></div><p>Among all sinusoid <img src="hw3_eq18109780525297858785.png" alt="$cos(2pifn/64)$" style="width:90px;height:15px;">, f = 10 will give the largest response.</p><p>because the convolution at position 0</p><p><img src="hw3_eq03287783137606965153.png" alt="$$\sum_{n=-12}^{12} gabor(-n)cos(2\pi f n/64)$$" style="width:189px;height:43px;"></p><p>is the real part of the f'th Fourier coefficient. and since gabor is evenly symmetric, thus the imagionary parts are all zero, the real part is just the amplitude.</p><p>Gabor is the product of a Gaussian function and a sinusoid in space domain so the spectrum in the frequency domain is the convolution of Gaussian's spectrum and two impulse at corresponding sinusoid frequency (positive and negative). Since Gaussian's spectrum peaks at 0, Gabor's spectrum should peak at corresponding sinusoid frequency as well.</p><p>the max amplitude is at the position f = 10</p><pre class="codeinput">[Fmax,ind] = max(abs(gaborF));
+</pre><img vspace="5" hspace="5" src="hw3_15.png" alt=""> <p>I get two wider Gaussian centered at k=+/- 12</p><div><ul><li>b )</li></ul></div><p>Among all sinusoid <img src="hw3_eq10772019201634497518.png" alt="$cos(2\pi f n/64)$" style="width:86px;height:15px;">, f = 10 will give the largest response.</p><p>because the convolution at position 0</p><p><img src="hw3_eq03287783137606965153.png" alt="$$\sum_{n=-12}^{12} gabor(-n)cos(2\pi f n/64)$$" style="width:189px;height:43px;"></p><p>is the real part of the f'th Fourier coefficient. and since gabor is evenly symmetric, thus the imagionary parts are all zero, the real part is just the amplitude.</p><p>Gabor is the product of a Gaussian function and a sinusoid in space domain so the spectrum in the frequency domain is the convolution of Gaussian's spectrum and two impulse at corresponding sinusoid frequency (positive and negative). Since Gaussian's spectrum peaks at 0, Gabor's spectrum should peak at corresponding sinusoid frequency as well.</p><p>the max amplitude is at the position f = 10</p><pre class="codeinput">[Fmax,ind] = max(abs(gaborF));
 disp(ind-1)
 </pre><pre class="codeoutput">    10
 
@@ -374,7 +374,7 @@ title(<span class="string">'peak position of Gabor''s spectrum'</span>)
 xlabel(<span class="string">'spatial frequency k (cycle/64 sample)'</span>)
 ylabel(<span class="string">'amplitude'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_18.png" alt=""> <p>The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples</p><pre class="codeinput">64/10
+</pre><img vspace="5" hspace="5" src="hw3_16.png" alt=""> <p>The period of this sinusoid is 2pi/(f*2pi/64)=64/f samples</p><pre class="codeinput">64/10
 figure; hold <span class="string">on</span>
 plot(n,gabor);title(<span class="string">'gabor filter'</span>)
 plot([6.4,6.4],[-1 1],<span class="string">'b--'</span>)
@@ -390,7 +390,7 @@ ans =
 
     6.4000
 
-</pre><img vspace="5" hspace="5" src="hw3_19.png" alt=""> <p>By eye inspection, this is roughly the distance between peaks in the filter itself.</p><pre class="codeinput">gaborF=fft(gabor,64);
+</pre><img vspace="5" hspace="5" src="hw3_17.png" alt=""> <p>By eye inspection, this is roughly the distance between peaks in the filter itself.</p><pre class="codeinput">gaborF=fft(gabor,64);
 figure; hold <span class="string">on</span>; grid <span class="string">on</span>
 plot(-32:31,fftshift(abs(gaborF)))
 plot([-32,31],[Fmax Fmax],<span class="string">'b--'</span>)
@@ -400,7 +400,7 @@ plot([15 15],[0 Fmax],<span class="string">'b--'</span>)
 xticks(-35:10:35)
 title(<span class="string">'Fourier amplitude spectrum of gabor'</span>)
 xlabel(<span class="string">'spatial frequency (cycle/64 sample)'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_20.png" alt=""> <p>By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64 cycle/sample will give about 25% of the maximal amplitude</p><div><ul><li>c)</li></ul></div><p>Indeed, these two sinusoids gives roughly 1/4 maximal response:</p><pre class="codeinput">n=1:64;
+</pre><img vspace="5" hspace="5" src="hw3_18.png" alt=""> <p>By eye inspection, sinusoids of frequency 5/64 cycle/sample and 15/64 cycle/sample will give about 25% of the maximal amplitude</p><div><ul><li>c)</li></ul></div><p>Indeed, these two sinusoids gives roughly 1/4 maximal response:</p><pre class="codeinput">n=1:64;
 input5  = cos( 5*2*pi/64*n);
 input10 = cos(10*2*pi/64*n);
 input15 = cos(15*2*pi/64*n);
@@ -422,7 +422,7 @@ plot(r);stem(x);
 legend(<span class="string">'r(t)'</span>,<span class="string">'x(t)'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 title(<span class="string">'measured activity and true activity'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_21.png" alt=""> <p>To convolve x with h, we can trun x into X and do Xh:</p><pre class="language-matlab">
+</pre><img vspace="5" hspace="5" src="hw3_19.png" alt=""> <p>To convolve x with h, we can trun x into X and do Xh:</p><pre class="language-matlab">
 <span class="keyword">function</span> X=createConvMat(x,M)
     <span class="comment">% size(x) should be [N,1]</span>
     xPad = [x;zeros(M-1,1)];
@@ -448,7 +448,7 @@ X*h is equal to conv(x,h)
 test filter 5
 X*h is equal to conv(x,h)
 </pre><p>Verified.</p><pre class="codeinput">figure;imagesc(X);colorbar;title(<span class="string">'conv matrix'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_22.png" alt=""> <p>X has a step-like structure. Every column is a shifted version of another.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">h_opt = (X'*X)\X'*r; <span class="comment">% standard linear regression operation (projection of r to X's subspace, analogous to vector projection)</span>
+</pre><img vspace="5" hspace="5" src="hw3_20.png" alt=""> <p>X has a step-like structure. Every column is a shifted version of another.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">h_opt = (X'*X)\X'*r; <span class="comment">% standard linear regression operation (projection of r to X's subspace, analogous to vector projection)</span>
 <span class="comment">%     [U,S,V] = svd(X);</span>
 <span class="comment">%     Si = zeros(size(S'));</span>
 <span class="comment">%     for ii = 1:min(size(X))</span>
@@ -461,13 +461,13 @@ X*h is equal to conv(x,h)
 figure; plot(h_opt); xlabel(<span class="string">'time (s)'</span>); legend(<span class="string">'h(t)'</span>)
 title(<span class="string">'Estimated Haemodynamic Response'</span>)
 grid <span class="string">on</span>
-</pre><img vspace="5" hspace="5" src="hw3_23.png" alt=""> <p>The HRF curve looks like a 3/4 cycle sine wave multiplied by a decay.</p><p>It rises to peak in 5 seconds and drops into negative then recover. The positive peak is about 3 times the negative valley. It takes about 15 second for HRF to recover to baseline.</p><pre class="codeinput">r_est = conv(x,h_opt);
+</pre><img vspace="5" hspace="5" src="hw3_21.png" alt=""> <p>The HRF curve looks like a 3/4 cycle sine wave multiplied by a decay.</p><p>It rises to peak in 5 seconds and drops into negative then recover. The positive peak is about 3 times the negative valley. It takes about 15 second for HRF to recover to baseline.</p><pre class="codeinput">r_est = conv(x,h_opt);
 figure; hold <span class="string">on</span>
 plot(r);plot(r_est);
 legend(<span class="string">'r(t)'</span>,<span class="string">'r_{est}(t)'</span>)
 xlabel(<span class="string">'time (s)'</span>)
 ylabel(<span class="string">'response'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_24.png" alt=""> <p>The estimated HRF fits the response well.</p><div><ul><li>c)</li></ul></div><pre class="codeinput">M=15;
+</pre><img vspace="5" hspace="5" src="hw3_22.png" alt=""> <p>The estimated HRF fits the response well.</p><div><ul><li>c)</li></ul></div><pre class="codeinput">M=15;
 hF = fft(h,M);
 hP = hF.*conj(hF);
 figure
@@ -477,7 +477,7 @@ plot(freqs,fftshift(hP))
 xlabel(<span class="string">'freq (Hz)'</span>);ylabel(<span class="string">'power'</span>)
 xticks(-.4:.2:.4)
 title(<span class="string">'power spectrum of h(t)'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_25.png" alt=""> <p>h(t) is a low pass filter, only frequencies lower than 0.05 Hz are passed.</p><h2 id="89">5 Sampling and aliasing</h2><pre class="codeinput">load <span class="string">myMeasurements.mat</span>
+</pre><img vspace="5" hspace="5" src="hw3_23.png" alt=""> <p>h(t) is a low pass filter, only frequencies lower than 0.05 Hz are passed.</p><h2 id="89">5 Sampling and aliasing</h2><pre class="codeinput">load <span class="string">myMeasurements.mat</span>
 </pre><div><ul><li>a)</li></ul></div><pre class="codeinput">p=4; <span class="comment">% subsample period</span>
 figure; hold <span class="string">on</span>
 plot(time/100,sig,<span class="string">'ko-'</span>)
@@ -486,22 +486,41 @@ DS = mod(time,p)==0;
 sigDS = sig(DS);
 plot(time(DS)/100,sigDS,<span class="string">'r*-'</span>)
 legend(<span class="string">'original signal'</span>,<span class="string">'subsampled signal'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_26.png" alt=""> <p>The reduced version signal looks like another perodic signal. It doesn't provide a good summary of the original signal.</p><p>subsampling operation <b>is linear</b> but <b>not shift-invariant</b>, because it's essentially pairwise multiplication with another signal where every fourth value is 1 and otherwise 0. This operation is additive but if we shift the signal with a timestep that is not a multiple of subsampling frequency, we get a completely different signal.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">N = length(time);
+</pre><img vspace="5" hspace="5" src="hw3_24.png" alt=""> <p>The reduced version signal looks like another perodic signal. It doesn't provide a good summary of the original signal.</p><p>subsampling operation <b>is linear</b> but <b>not shift-invariant</b>, because it's essentially pairwise multiplication with another signal DS where every fourth value is 1 and otherwise 0. This operation is additive but if we shift the signal with a timestep that is not a multiple of subsampling frequency, we get a completely different signal.</p><div><ul><li>b)</li></ul></div><pre class="codeinput">N = length(time);
 sigF = fft(sig);
 sigDSUS = sig.*DS;
 sigDSF = fft(sigDSUS);
 figure; hold <span class="string">on</span>
-plot((-N/2):(N/2-1),fftshift(abs(sigF)),<span class="string">'k'</span>)
-plot((-N/2):(N/2-1),fftshift(abs(sigDSF)),<span class="string">'r'</span>)
-<span class="comment">% plot((-N/2):(N/2-1),fftshift(abs(fft(DS))))</span>
-plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],<span class="string">'b--'</span>)
-legend(<span class="string">'original signal'</span>,<span class="string">'subsampled then upsampled signal'</span>,<span class="string">'1/2 subsampling frequency'</span>)
+bar((-N/2):(N/2-1),fftshift(abs(sigF)),<span class="string">'k'</span>)
+bar((-N/2):(N/2-1),fftshift(abs(sigDSF)),<span class="string">'r'</span>)
+legend(<span class="string">'original signal'</span>,<span class="string">'subsampled then upsampled signal'</span>)
 ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel(<span class="string">'frequency (Hz)'</span>)
 ylabel(<span class="string">'Fourier amplitude'</span>)
-</pre><img vspace="5" hspace="5" src="hw3_27.png" alt=""> <p>subsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 and places them centered at every multiple of 1/2 subsampling frequency.</p><pre class="codeinput">close <span class="string">all</span>
+</pre><img vspace="5" hspace="5" src="hw3_25.png" alt=""> <p>subsampling followed by upsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 both vertically and horizontally and places side by side with each other.</p><p>This has something to do with the vector DS, which is also a period signal with period 4. The Fourier amplitude spectrum of DS are just impulses spaced by original_sampling_freq/p,</p><pre class="codeinput">figure; hold <span class="string">on</span>
+<span class="keyword">for</span> p = 2:4
+    DS = mod(time,p)==0;
+    bar((-N/2):(N/2-1),fftshift(abs(fft(DS)/N)),<span class="string">'DisplayName'</span>,[<span class="string">'p = '</span>,num2str(p)])
+<span class="keyword">end</span>
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'Amplitude normalized by signal length N'</span>)
+ylim([0 1])
+title(<span class="string">'Fourier amplitude spectrum of DS'</span>)
+legend()
+</pre><img vspace="5" hspace="5" src="hw3_26.png" alt=""> <p>pointwise multiply DS with any signal in time domain is convolving signal's spectrum with these spikes in the frequency domain.</p><pre class="codeinput">figure
+DS = mod(time,4)==0;
+SpectrumConv = cconv(sigF,fft(DS),N);
+bar((-N/2):(N/2-1),fftshift(abs(SpectrumConv)))
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel(<span class="string">'frequency (Hz)'</span>)
+ylabel(<span class="string">'amplitude'</span>)
+title(<span class="string">'(Circular) Convolution of two Fourier amplitude spectrum'</span>)
+</pre><img vspace="5" hspace="5" src="hw3_27.png" alt=""> <p>There is a scaling factor of N^2 compared to the downsampled signal's spectrum because DST is not orthonormal.</p><pre class="codeinput">close <span class="string">all</span>
 </pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 close all; clear
@@ -552,7 +571,6 @@ title('Impulse response of system 2 at different positions')
 legend('Location','north')
 %% 
 % circular boundary handling also holds for very late impulse. 
-figure
 figure; hold on; grid on
 for p=positions+54
     output = unknownSystem2(I(:,p));
@@ -599,7 +617,6 @@ title('Impulse response of system 3 at different positions')
 legend('Location','north')
 %% 
 % circular boundary handling also holds for very late impulse. 
-figure
 figure; hold on; grid on
 for p=positions+54
     output = unknownSystem3(I(:,p));
@@ -691,8 +708,8 @@ end
 % *System* 3 seems both linear and shift-invariant, and it projects
 % siusoids into the sinusoid subspaces with same frequency. 
 %%
-% *Linearity* and *shift-invariance* and **indepedent properties** so that they can
-% be tested **seperately**, but only if a system is both linear and
+% *Linearity* and *shift-invariance* and _indepedent properties_ so that they can
+% be tested _seperately_, but only if a system is both linear and
 % shift-invariant, its response to sinuisoid would be a sinusoid of the
 % same frequency and the output gain and phase shift relative to input can
 % be predicted by the Fourier transform of the system's impulse reponse.
@@ -700,7 +717,7 @@ end
 % So
 % if a system always output a sinusoid given any sinusoid input, with a
 % fixed gain and phase shift that do not vary with input strength and
-% phase, then this system is **guarenteed** to be a LSI system. 
+% phase, then this system is _guarenteed_ to be a LSI system. 
 %% 2 Fourier transform of periodic signals
 %%
 % * a)
@@ -708,8 +725,10 @@ end
 N=2048;
 n = 1:N;
 sig = mod(n,32)/32; % generate a sawtooth
-figure;plot((1:N)/8192,sig);xlabel('time (s)');
-xlim([0 N/8192]);title('a sawtooth signal')
+figure('pos',[10,400,900,300]);
+plot((1:N)/8192,sig);xlabel('time (s)');
+xlim([0 N/8192]);ylim([-.5,1.5])
+title('a sawtooth signal')
 %%
 sound(sig,8192)
 %%
@@ -833,7 +852,7 @@ grid on
 %%
 % * b )
 %%
-% Among all sinusoid $cos(2pifn/64)$, f = 10 will give the largest response. 
+% Among all sinusoid $cos(2\pi f n/64)$, f = 10 will give the largest response. 
 %%
 % because the convolution at position 0
 %%
@@ -1006,7 +1025,7 @@ legend('original signal','subsampled signal')
 % summary of the original signal. 
 %%
 % subsampling operation *is linear* but *not shift-invariant*, because it's
-% essentially pairwise multiplication with another signal where every
+% essentially pairwise multiplication with another signal DS where every
 % fourth value is 1 and otherwise 0. This operation is additive but if we
 % shift the signal with a timestep that is not a multiple of subsampling
 % frequency, we get a completely different signal. 
@@ -1018,19 +1037,51 @@ sigF = fft(sig);
 sigDSUS = sig.*DS;
 sigDSF = fft(sigDSUS);
 figure; hold on
-plot((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
-plot((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
-% plot((-N/2):(N/2-1),fftshift(abs(fft(DS))))
-plot([-N/p/2,-N/p/2,N/p/2,N/p/2],[0 120 120 0],'bREPLACE_WITH_DASH_DASH')
-legend('original signal','subsampled then upsampled signal','1/2 subsampling frequency')
+bar((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
+bar((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
+legend('original signal','subsampled then upsampled signal')
 ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel('frequency (Hz)')
 ylabel('Fourier amplitude')
 %%
-% subsampling basically copys the origianl spectrum (without DC component) four times, scales them by 1/4 and places 
-% them centered at every multiple of 1/2 subsampling frequency. 
+% subsampling followed by upsampling basically copys the origianl spectrum (without DC component) four times,
+% scales them by 1/4 both vertically and horizontally and places 
+% side by side with each other. 
+%% 
+% This has something to do with the vector DS, which is also a period
+% signal with period 4. The Fourier amplitude spectrum of DS are just
+% impulses spaced by original_sampling_freq/p,
+%%
+figure; hold on
+for p = 2:4
+    DS = mod(time,p)==0;
+    bar((-N/2):(N/2-1),fftshift(abs(fft(DS)/N)),'DisplayName',['p = ',num2str(p)])
+end
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('Amplitude normalized by signal length N')
+ylim([0 1])
+title('Fourier amplitude spectrum of DS')
+legend()
+%%
+% pointwise multiply DS with any signal in time domain is
+% convolving signal's spectrum with these spikes in the frequency domain.
+%%
+figure
+DS = mod(time,4)==0;
+SpectrumConv = cconv(sigF,fft(DS),N);
+bar((-N/2):(N/2-1),fftshift(abs(SpectrumConv)))
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('amplitude')
+title('(Circular) Convolution of two Fourier amplitude spectrum')
+%%
+% There is a scaling factor of N^2 compared to the downsampled signal's
+% spectrum because DST is not orthonormal. 
 %%
 close all
 ##### SOURCE END #####
