@@ -1,0 +1,863 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>hw4</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-11-13"><meta name="DC.source" content="hw4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">1 Bayes rule and eye color</a></li><li><a href="#72">2 Poisson neurons</a></li><li><a href="#88">3 Central Limit Theorem</a></li><li><a href="#101">4 Multi-dimensional Gaussians</a></li></ul></div><pre class="codeinput">close <span class="string">all</span>; clear;
+</pre><h2 id="2">1 Bayes rule and eye color</h2><p>Let blue eye gene = b, brown eye gene = B. given Father has blue eyes, he must be</p><p><img src="hw4_eq06916027256745077025.png" alt="$$ P(Father = bb) = 1 $$" style="width:127px;height:15px;"></p><p>given mother has brown eyes, She must carry a B. we assume</p><p><img src="hw4_eq09705474141714595757.png" alt="$$ P(Mother = BB) = P(Mother = Bb) = 1/2 $$" style="width:288px;height:15px;"></p><p>because we have no knowledge about the other allele.</p><div><ul><li>a)</li></ul></div><p>The probability that Mother has a b gene given the child has a brown eye is</p><p><img src="hw4_eq02627377279708305376.png" alt="$$ P(mother = Bb | First Child = brown) $$" style="width:244px;height:15px;"></p><p><img src="hw4_eq17176154502690592621.png" alt="$$ = \frac{ P(First Child = brown | mother = Bb ) P(mother = Bb) }{ P(First Child = brown)} $$" style="width:370px;height:35px;"></p><p><img src="hw4_eq15597543465825114909.png" alt="$$ = \frac{P(First Child = brown | mother = Bb ) * 1/2 }{ P(First Child = brown) }$$" style="width:298px;height:35px;"></p><p>The two terms assuming knowledge about mother but not about the child.</p><p>Assuming we don't know what eye color the child has, but know that the mother is a Bb. Given Father is bb, we know that the child has half chance of getting either eye colors</p><p><img src="hw4_eq05606128272895223515.png" alt="$$ P(First Child = brown | Mother = Bb) = P(First Child = Bb | Father = bb, Mother = Bb) = 1/2 $$" style="width:620px;height:15px;"></p><p>If we assume the mother doesn't carry a b gene, then the child will always be a brown eye.</p><p><img src="hw4_eq06105638268856002130.png" alt="$$ P(First Child = brown | Mother = BB) = P(First Child = Bb | Father = bb, Mother = BB) = 1 $$" style="width:616px;height:15px;"></p><p>Combine them together, we get</p><p><img src="hw4_eq11883420443621270624.png" alt="$$ P(First Child = brown) = P(First Child = Bb | Father = bb) $$" style="width:391px;height:15px;"></p><p><img src="hw4_eq16263360827467288971.png" alt="$$ = P(First Child = Bb | Mother = Bb, Father = bb) * P(Mother = Bb | Father = bb) $$" style="width:533px;height:15px;"></p><p><img src="hw4_eq12619474861024876252.png" alt="$$ + P(First Child = Bb | Mother = BB, Father = bb) * P(Mother = BB | Father = bb) $$" style="width:540px;height:15px;"></p><p><img src="hw4_eq15959972360707312244.png" alt="$$ = 1/2 * 1/2 + 1 * 1/2 = 3/4 $$" style="width:175px;height:15px;"></p><p>Thus</p><p><img src="hw4_eq02627377279708305376.png" alt="$$ P(mother = Bb | First Child = brown) $$" style="width:244px;height:15px;"></p><p><img src="hw4_eq08185160676941648880.png" alt="$$ = \frac{1/2 * 1/2 }{ 3/4 }  = 1/3 $$" style="width:117px;height:35px;"></p><p>given the Child and Mother have brown eyes and the Father has blue eyes, The probability that the Mother carries a b gene is 1/3.</p><div><ul><li>b)</li></ul></div><p>We know the Father is bb, because Children must carry a b from Father. If They have brown eyes, They must be Bb.</p><p><img src="hw4_eq07891364494353265322.png" alt="$$ P(mother = Bb | Second Child = brown, First Child = brown) $$" style="width:394px;height:15px;"></p><p><img src="hw4_eq11408247848265810400.png" alt="$$ = P(mother = Bb | Second Child = Bb, First Child = Bb, Father = bb) $$" style="width:450px;height:15px;"></p><p>Using Bayes rule, It equals</p><p><img src="hw4_eq14408830510215654784.png" alt="$$\frac{ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) P(mother = Bb | First Child = Bb, Father = bb) }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$" style="width:652px;height:31px;"></p><p>The genotype of the first child won't affect the second, so</p><p><img src="hw4_eq02086042293871357773.png" alt="$$ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) = P(Second Child = Bb | mother = Bb, Father = bb ) = 1/2 $$" style="width:656px;height:12px;"></p><p>So</p><p><img src="hw4_eq07891364494353265322.png" alt="$$ P(mother = Bb | Second Child = brown, First Child = brown) $$" style="width:394px;height:15px;"></p><p><img src="hw4_eq05158033464258143453.png" alt="$$ = \frac{1/2 * 1/3 }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$" style="width:362px;height:35px;"></p><p>The demoninator</p><p><img src="hw4_eq03707849816922347472.png" alt="$$ P(Second Child = Bb | First Child = Bb, Father = bb)  $$" style="width:344px;height:15px;"></p><p><img src="hw4_eq12627120757415164173.png" alt="$$ = P(Second Child = Bb | Mother = Bb, First Child = Bb, Father = bb) * P(Mother = Bb | First Child = Bb, Father = bb) $$" style="width:654px;height:13px;"></p><p><img src="hw4_eq04245296890460237871.png" alt="$$ + P(Second Child = Bb | Mother = BB, First Child = Bb, Father = bb) * P(Mother = BB | First Child = Bb, Father = bb) $$" style="width:654px;height:13px;"></p><p><img src="hw4_eq11862872519762371979.png" alt="$$ = P(Second Child = Bb | Mother = Bb, Father = bb) * P(Mother = Bb | First Child = Bb, Father = bb) $$" style="width:661px;height:15px;"></p><p><img src="hw4_eq06279588279301668084.png" alt="$$ + P(Second Child = Bb | Mother = BB, Father = bb) * (1 - P(Mother = Bb | First Child = Bb, Father = bb) ) $$" style="width:650px;height:14px;"></p><p><img src="hw4_eq16011786955847152929.png" alt="$$ = 1/2 * 1/3 + 1 * 2/3 = 5/6 $$" style="width:175px;height:15px;"></p><p>So</p><p><img src="hw4_eq14572186659345403523.png" alt="$$ P(mother = Bb | First Child = brown, second Child = brown) $$" style="width:391px;height:15px;"></p><p><img src="hw4_eq07587906966443099556.png" alt="$$ = 1/2 * 1/3 / (5/3)  = 1/5 $$" style="width:155px;height:15px;"></p><div><ul><li>c)</li></ul></div><p>let</p><p><img src="hw4_eq04447379545074734914.png" alt="$$ P_{N} = P(mother = Bb | N children = Bb, Father = bb) $$" style="width:341px;height:15px;"></p><p>It equals</p><p><img src="hw4_eq17126561401656149242.png" alt="$$ \frac{P(mother = Bb | N-1 children = Bb, Father = bb) P(Nth child = Bb | Mother = Bb, Father = bb) }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$" style="width:627px;height:35px;"></p><p><img src="hw4_eq13500545507428634199.png" alt="$$ \frac{ P_{N-1} * 1/2 }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$" style="width:341px;height:35px;"></p><p>The denominator</p><p><img src="hw4_eq05305339888831920204.png" alt="$$ P(Nth child = Bb | N-1 children = Bb, Father = bb) $$" style="width:339px;height:15px;"></p><p><img src="hw4_eq05272277563775438512.png" alt="$$ = P(Nth child = Bb | Mother = Bb, Father = bb) * P( Mother = Bb | N-1 children = Bb, Father = bb) $$" style="width:657px;height:15px;"></p><p><img src="hw4_eq08770705546425196399.png" alt="$$ + P(Nth child = Bb | Mother = BB, Father = bb) * P( Mother = BB | N-1 children = Bb, Father = bb) $$" style="width:664px;height:15px;"></p><p><img src="hw4_eq00775665832618336372.png" alt="$$ = 1/2 * P_{N-1} + (1 - P_{N-1}) = 1 - 1/2 * P_{N-1} $$" style="width:283px;height:15px;"></p><p>Thus</p><p><img src="hw4_eq12770287635678025320.png" alt="$$ P_{N} = 1/2 P_{N-1} / (1 - 1/2 P_{N-1}) $$" style="width:191px;height:15px;"></p><p>Invert both sides</p><p><img src="hw4_eq06412172959021900073.png" alt="$$ 1/P_{N} = 2/P_{N-1} - 1 $$" style="width:124px;height:15px;"></p><p>Move terms</p><p><img src="hw4_eq17789656560112331884.png" alt="$$ 1/P_{N} - 1 = 2 ( 1/P_{N-1} - 1 ) $$" style="width:168px;height:15px;"></p><p>Thus</p><p><img src="hw4_eq00690809154762861707.png" alt="$$ p_{N} = 1/(1+(1/P_1 - 1)*2^(N-1)) $$" style="width:225px;height:18px;"></p><p>Given</p><p><img src="hw4_eq01507753028304917908.png" alt="$$ p_1 = 1/3 $$" style="width:55px;height:15px;"></p><p>So</p><p><img src="hw4_eq05016481365032124209.png" alt="$$ p_{N} = 1/(1+2^N) $$" style="width:105px;height:17px;"></p><h2 id="72">2 Poisson neurons</h2><div><ul><li>a)</li></ul></div><pre class="language-matlab">
+<span class="keyword">function</span> sample = randp(pdf,num)
+    cdf = cumsum(pdf); <span class="comment">% cumulitive probability function, set partition points between [0 1)</span>
+    sample = rand(num,1); <span class="comment">% uniform random numbers</span>
+    <span class="keyword">for</span> ii = 1:num
+        sample(ii) = sum(cdf&lt;sample(ii)); <span class="comment">% transform according to partition points</span>
+    <span class="keyword">end</span>
+
+</pre><pre class="codeinput">k = 0:20;
+mu = 5; <span class="comment">% mean rate over the interval</span>
+p = (mu.^k * exp(-mu))./factorial(k); <span class="comment">% PDF for infinite length</span>
+p = p/sum(p); <span class="comment">% normalize</span>
+</pre><p>Plot the histogram</p><pre class="codeinput">h = zeros(21,4); <span class="comment">% allocate space for histogram</span>
+<span class="keyword">for</span> m=2:5
+    N=10^m; <span class="comment">% sample size</span>
+    samples = randp(p,N); <span class="comment">% generate N samples</span>
+    h(:,m-1) = hist(samples,k)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+line=plot(k,p);
+handle = bar(k,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 samples'</span>; label{2} = <span class="string">'10^3 samples'</span>; label{3} = <span class="string">'10^4 samples'</span>; label{4} = <span class="string">'10^5 samples'</span>;
+legend([line,handle],[<span class="string">'PDF'</span>,label]);
+xlabel(<span class="string">'spike counts'</span>)
+ylabel(<span class="string">'freq'</span>)
+title(<span class="string">'spike count distribution for different sample number'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_01.png" alt=""> <p>As we can see, as sample number increase, distribution becomes closer to p</p><pre class="codeinput"><span class="keyword">for</span> m = 2:5
+    SE(m-1) = sum((h(:,m-1)-p').^2);
+<span class="keyword">end</span>
+figure; plot(2:5,SE,<span class="string">'b-*'</span>)
+xlabel(<span class="string">'log(#sample)'</span>)
+ylabel(<span class="string">'squared difference'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_02.png" alt=""> <div><ul><li>b)</li></ul></div><p>For two neurons</p><pre class="codeinput">mu1 = 2; <span class="comment">% rate of the second neuron</span>
+q = (mu1.^k * exp(-mu1))./factorial(k);
+q = q/sum(q); <span class="comment">% PDF of the spike count of neuron 2</span>
+</pre><pre class="codeinput">pq = conv(p,q)'; <span class="comment">% PDF of the sum of spikes</span>
+h = zeros(41,4);
+<span class="keyword">for</span> m=2:5
+    N=10^m;
+    samples = randp(pq,N);
+    h(:,m-1) = hist(samples,0:40)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+line = plot(0:40,pq);
+handle = bar(0:40,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 samples'</span>; label{2} = <span class="string">'10^3 samples'</span>; label{3} = <span class="string">'10^4 samples'</span>; label{4} = <span class="string">'10^5 samples'</span>;
+xlabel(<span class="string">'sum of spike count'</span>)
+ylabel(<span class="string">'freq'</span>)
+legend([line,handle],[<span class="string">'PDF'</span>,label]);
+title(<span class="string">'spike count summation distribution for different sample number'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_03.png" alt=""> <p>Again, as sample size increase, the distribution becomes closer to the PDF</p><pre class="codeinput"><span class="keyword">for</span> m = 2:5
+    SE(m-1) = sum((h(:,m-1)-pq).^2);
+<span class="keyword">end</span>
+figure; plot(2:5,SE,<span class="string">'b-*'</span>)
+xlabel(<span class="string">'log(#sample)'</span>)
+ylabel(<span class="string">'squared difference'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_04.png" alt=""> <div><ul><li>c)</li></ul></div><p>For a third neuron whose rate equals the sum of two, the spike count histogram is the same</p><pre class="codeinput">k = 0:40;
+mu2 = 7;
+r = (mu2.^k * exp(-mu2))./factorial(k);
+r = r/sum(r);
+<span class="keyword">if</span> all(abs(r'-pq)&lt;1e-5)
+    disp(<span class="string">'two distributions are the same'</span>)
+<span class="keyword">else</span>
+    disp(<span class="string">'two distributions are different'</span>)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">two distributions are the same
+</pre><p>If we record a new spike train I can't tell whether the spikes came from one or two neurons just by looking at their distribution of spike counts.</p><h2 id="88">3 Central Limit Theorem</h2><div><ul><li>a)</li></ul></div><pre class="codeinput">h = zeros(21,4 );
+<span class="keyword">for</span> m=2:5
+    N=10^m;
+    samples = rand(N,2);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 sets'</span>; label{2} = <span class="string">'10^3 sets'</span>; label{3} = <span class="string">'10^4 sets'</span>; label{4} = <span class="string">'10^5 sets'</span>;
+legend(handle,label)
+title(<span class="string">'distibution of the average of 2 samples'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_05.png" alt=""> <p>As the sample size increase, the distribution becomes more like a triangular shape. This is the result of convoluting two uniform distributions (triangles) and scale the x axis by 2</p><div><ul><li>b)</li></ul></div><pre class="codeinput">h = zeros(21,4);
+<span class="keyword">for</span> m=2:5
+    N=10^m;
+    samples = rand(N,3);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 sets'</span>; label{2} = <span class="string">'10^3 sets'</span>; label{3} = <span class="string">'10^4 sets'</span>; label{4} = <span class="string">'10^5 sets'</span>;
+legend(handle,label)
+title(<span class="string">'distibution of the average of 3 samples'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_06.png" alt=""> <pre class="codeinput">h = zeros(21,4 );
+<span class="keyword">for</span> m=2:5
+    N=10^m;
+    samples = rand(N,4);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 sets'</span>; label{2} = <span class="string">'10^3 sets'</span>; label{3} = <span class="string">'10^4 sets'</span>; label{4} = <span class="string">'10^5 sets'</span>;
+legend(handle,label)
+title(<span class="string">'distibution of the average of 4 samples'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_07.png" alt=""> <pre class="codeinput">h = zeros(21,4);
+<span class="keyword">for</span> m=2:5
+    N=10^m;
+    samples = rand(N,5);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+<span class="keyword">end</span>
+figure; hold <span class="string">on</span>
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = <span class="string">'10^2 sets'</span>; label{2} = <span class="string">'10^3 sets'</span>; label{3} = <span class="string">'10^4 sets'</span>; label{4} = <span class="string">'10^5 sets'</span>;
+legend(handle,label)
+title(<span class="string">'distibution of the average of 5 samples'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_08.png" alt=""> <p>The Distribution becomes closer to normal distribution as the sample size increase. I can't judge how much it looks like a normal distribution by simply looking at it.</p><div><ul><li>c)</li></ul></div><p>A normal distribution should fit a unity line in normplot.</p><pre class="codeinput">figure
+N = 1000;
+samples = randn(N,1);
+normplot(samples)
+</pre><img vspace="5" hspace="5" src="hw4_09.png" alt=""> <p>For small sample size, the normplot is far from a unity line at both tails of the distribution. As sample size increase, it's closer and closer. Also the slope gets steeper, reflecting a reduction of variance. By a dozen of samples, it's hard to tell it apart from a normal distribution.</p><pre class="codeinput">clear <span class="string">handle</span>
+N = 100000;
+figure; hold <span class="string">on</span>
+n = 2;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,1) = normplot(samples);
+set(handle(1,1),<span class="string">'Marker'</span>,<span class="string">'.'</span>)
+n = 3;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,2) = normplot(samples);
+set(handle(1,2),<span class="string">'Marker'</span>,<span class="string">'+'</span>)
+n = 5;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,3) = normplot(samples);
+set(handle(1,3),<span class="string">'Marker'</span>,<span class="string">'o'</span>)
+n = 8;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,4) = normplot(samples);
+set(handle(1,4),<span class="string">'Marker'</span>,<span class="string">'x'</span>)
+n = 13;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,5) = normplot(samples);
+set(handle(1,5),<span class="string">'Marker'</span>,<span class="string">'s'</span>)
+n = 21;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,6) = normplot(samples);
+set(handle(1,6),<span class="string">'Marker'</span>,<span class="string">'*'</span>)
+xlim([0 1])
+legend(handle(1,:),{<span class="string">'2'</span>,<span class="string">'3'</span>,<span class="string">'5'</span>,<span class="string">'8'</span>,<span class="string">'13'</span>,<span class="string">'21 samples'</span>},<span class="string">'Location'</span>,<span class="string">'northwest'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_10.png" alt=""> <h2 id="101">4 Multi-dimensional Gaussians</h2><div><ul><li>a)</li></ul></div><pre class="language-matlab">
+<span class="keyword">function</span> samples = ndRandn(mean,cov,num)
+    <span class="keyword">if</span> nargin&lt;3
+        num = 1;
+    <span class="keyword">end</span>
+    N = length(mean);
+    <span class="keyword">if</span> size(cov,1) ~= N || size(cov,2) ~=N
+        disp(<span class="string">'ERROR: covariance matrix size doesn''t match mean vector'</span>)
+    <span class="keyword">end</span>
+    [U,S,~] = svd(cov);
+    cov_sqrt = U*sqrt(S);
+    samples = mean + cov_sqrt * randn([length(mean),num]);
+
+</pre><div><ul><li>b)</li></ul></div><p>If the 2-D Gaussian Distribution has mean m and covaiance S, then the marginal distribution has mean</p><p><img src="hw4_eq00715552520427875504.png" alt="$$ \hat{u}^T m $$" style="width:29px;height:14px;"></p><p>and variance <img src="hw4_eq15189013225506943298.png" alt="$$ \hat{u}^T S \hat{u} $$" style="width:35px;height:14px;"></p><p>generate 10000 pairs of samples, we can see sample statistics is close to theoretical ones</p><pre class="codeinput">N = 10000;
+m = [10,30]';
+covar = [81,16;16,144];
+samples = ndRandn(m,covar,N);
+m_s = mean(samples,2);
+cov_s = (samples-m_s)*(samples-m_s)'/1000;
+disp(<span class="string">'theoretical mean:'</span>)
+disp(m)
+disp(<span class="string">'sample mean:'</span>)
+disp(m_s)
+disp(<span class="string">'theoretical covariance:'</span>)
+disp(covar)
+disp(<span class="string">'sample covariance:'</span>)
+disp(cov_s)
+</pre><pre class="codeoutput">theoretical mean:
+    10
+    30
+
+sample mean:
+    9.9331
+   30.0961
+
+theoretical covariance:
+    81    16
+    16   144
+
+sample covariance:
+   1.0e+03 *
+
+    0.7996    0.1668
+    0.1668    1.4447
+
+</pre><p>project the sample to get marginal distributions</p><pre class="codeinput">theta = (0:47)*2*pi/48;
+us = [cos(theta);sin(theta)]; <span class="comment">% generate a circle of unit vectors</span>
+samples_p = us'*samples; <span class="comment">% project samples along unit vectors</span>
+mean_p = mean(samples_p,2);
+var_p = var(samples_p,0,2); <span class="comment">% calculate mean and variance of projected samples</span>
+</pre><p>and compare with theoretical prediction</p><pre class="codeinput">figure;
+subplot(2,1,1);hold <span class="string">on</span>
+title(<span class="string">'comparation of sample stats and prediction'</span>)
+stem(theta,mean_p);
+stem(theta,us'*m);
+ylabel(<span class="string">'mean'</span>)
+legend(<span class="string">'sample mean'</span>, <span class="string">'predicted mean'</span>)
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi])
+subplot(2,1,2);hold <span class="string">on</span>
+stem(theta,var_p);
+stem(theta,diag(us'*covar*us))
+ylabel(<span class="string">'variance'</span>)
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi])
+xlabel(<span class="string">'projection direction / rad'</span>)
+legend(<span class="string">'sample variance'</span>, <span class="string">'predicted variance'</span>,<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_11.png" alt=""> <p>They match.</p><div><ul><li>c)</li></ul></div><p>Now we transform a unit circle to a ellipse in the same way we transform a standard indepedent multi-dimensional Gaussian samples to Gaussian with desired mean and covariance</p><pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+[U,S,~] = svd(covar);
+cov_sqrt = U*sqrt(S);
+eus = 2*cov_sqrt*[us,us(:,1)]; <span class="comment">% ellipse w/o adding mean</span>
+plot(eus(1,:)+m_s(1),eus(2,:)+m_s(2))
+scatter(samples(1,:),samples(2,:),<span class="string">'MarkerEdgeAlpha'</span>,.2)
+legend(<span class="string">'ellipse'</span>,<span class="string">'data'</span>)
+axis <span class="string">equal</span>
+</pre><img vspace="5" hspace="5" src="hw4_12.png" alt=""> <p>This ellipse largely captures the shape of the data cloud.</p><div><ul><li>d)</li></ul></div><p>The largest variance is along the direction of the first eigenvector of covariance matrix</p><pre class="codeinput">u = U(:,1); <span class="comment">% first eigenvector/sigular vector for symmetric matrix</span>
+angle = atan2(u(2),u(1));
+angle = mod(angle,2*pi);
+angle2 = mod(angle+pi,2*pi);
+var_pu = norm(u'*cov_sqrt)^2;
+</pre><pre class="codeinput">figure; hold <span class="string">on</span>
+plot(theta,var_p);
+plot(theta,diag(us'*covar*us))
+stem([angle,angle2],[var_pu,var_pu],<span class="string">'r*'</span>)
+ylabel(<span class="string">'variance'</span>)
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi])
+xlabel(<span class="string">'projection angle / rad'</span>)
+legend(<span class="string">'sample variance'</span>, <span class="string">'predicted variance'</span>,<span class="string">'predicted maxima'</span>,<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_13.png" alt=""> <pre class="codeinput">figure; hold <span class="string">on</span>; grid <span class="string">on</span>
+[U,S,~] = svd(covar);
+cov_sqrt = U*sqrt(S);
+eus = 2*cov_sqrt*[us,us(:,1)]; <span class="comment">% ellipse w/o adding mean</span>
+plot(eus(1,:)+m(1),eus(2,:)+m(2))
+scatter(samples(1,:),samples(2,:),<span class="string">'MarkerEdgeAlpha'</span>,.2)
+quiver(m(1),m(2),u(1),u(2),20,<span class="string">'Color'</span>,<span class="string">'b'</span>)
+axis <span class="string">equal</span>
+legend(<span class="string">'ellipse'</span>,<span class="string">'data'</span>,<span class="string">'direction where we can get largest variance'</span>,<span class="string">'Location'</span>,<span class="string">'southeast'</span>)
+</pre><img vspace="5" hspace="5" src="hw4_14.png" alt=""> <pre class="codeinput">close <span class="string">all</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+close all; clear;
+%% 1 Bayes rule and eye color
+%%
+% Let blue eye gene = b, brown eye gene = B. given Father has blue eyes, he
+% must be
+%%
+% 
+% $$ P(Father = bb) = 1 $$
+% 
+%%
+% given mother has brown eyes, She must carry a B. we assume
+%%
+% 
+% $$ P(Mother = BB) = P(Mother = Bb) = 1/2 $$
+% 
+%%
+% because we have no knowledge about the other allele. 
+%%
+% * a)
+%%
+% The probability that Mother has a b gene given the child has a brown eye
+% is
+%%
+% 
+% $$ P(mother = Bb | First Child = brown) $$
+%
+%%
+% 
+% $$ = \frac{ P(First Child = brown | mother = Bb ) P(mother = Bb) }{ P(First Child = brown)} $$
+%
+%%
+%
+% $$ = \frac{P(First Child = brown | mother = Bb ) * 1/2 }{ P(First Child = brown) }$$ 
+%
+%%
+% The two terms assuming knowledge about mother but not about the child.
+%%
+% Assuming we don't know what eye color the child has, but know that the
+% mother is a Bb. Given Father is bb, we know that the child has half
+% chance of getting either eye colors
+%%
+% 
+% $$ P(First Child = brown | Mother = Bb) = P(First Child = Bb | Father = bb, Mother = Bb) = 1/2 $$
+%
+%%
+% If we assume the mother doesn't carry a b gene, then the child will
+% always be a brown eye. 
+%%
+% 
+% $$ P(First Child = brown | Mother = BB) = P(First Child = Bb | Father = bb, Mother = BB) = 1 $$
+%
+%%
+% Combine them together, we get
+%%
+% 
+% $$ P(First Child = brown) = P(First Child = Bb | Father = bb) $$
+%
+%%
+% 
+% $$ = P(First Child = Bb | Mother = Bb, Father = bb) * P(Mother = Bb | Father = bb) $$
+% 
+%%
+% 
+% $$ + P(First Child = Bb | Mother = BB, Father = bb) * P(Mother = BB | Father = bb) $$
+% 
+%%
+% $$ = 1/2 * 1/2 + 1 * 1/2 = 3/4 $$
+%%
+% Thus
+%%
+% 
+% $$ P(mother = Bb | First Child = brown) $$
+% 
+%%
+% 
+% $$ = \frac{1/2 * 1/2 }{ 3/4 }  = 1/3 $$
+% 
+%%
+% given the Child and Mother have brown eyes and the Father has blue
+% eyes, The probability that the Mother carries a b gene is 1/3. 
+%%
+% * b)
+%%
+% We know the Father is bb, because Children must carry a b from Father. If They have brown eyes, They
+% must be Bb. 
+%%
+% 
+% $$ P(mother = Bb | Second Child = brown, First Child = brown) $$
+%
+%%
+% 
+% $$ = P(mother = Bb | Second Child = Bb, First Child = Bb, Father = bb) $$
+%
+%%
+% Using Bayes rule, It equals
+%%
+% 
+% $$\frac{ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) P(mother = Bb | First Child = Bb, Father = bb) }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$
+%
+%%
+% The genotype of the first child won't affect the second, so
+%%
+%
+% $$ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) = P(Second Child = Bb | mother = Bb, Father = bb ) = 1/2 $$
+%
+%%
+% So 
+%%
+%%
+% 
+% $$ P(mother = Bb | Second Child = brown, First Child = brown) $$
+%
+%%
+%
+% $$ = \frac{1/2 * 1/3 }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$
+%
+%%
+% The demoninator
+%%
+% 
+% $$ P(Second Child = Bb | First Child = Bb, Father = bb)  $$
+%
+%%
+% 
+% $$ = P(Second Child = Bb | Mother = Bb, First Child = Bb, Father = bb) * P(Mother = Bb | First Child = Bb, Father = bb) $$
+% 
+%%
+% 
+% $$ + P(Second Child = Bb | Mother = BB, First Child = Bb, Father = bb) * P(Mother = BB | First Child = Bb, Father = bb) $$
+% 
+%%
+% 
+% $$ = P(Second Child = Bb | Mother = Bb, Father = bb) * P(Mother = Bb | First Child = Bb, Father = bb) $$
+% 
+%%
+% 
+% $$ + P(Second Child = Bb | Mother = BB, Father = bb) * (1 - P(Mother = Bb | First Child = Bb, Father = bb) ) $$
+% 
+%%
+% $$ = 1/2 * 1/3 + 1 * 2/3 = 5/6 $$
+%%
+% So
+%%
+% 
+% $$ P(mother = Bb | First Child = brown, second Child = brown) $$
+% 
+%%
+% 
+% $$ = 1/2 * 1/3 / (5/3)  = 1/5 $$
+% 
+%%
+% * c)
+%%
+% let 
+%%
+%
+% $$ P_{N} = P(mother = Bb | N children = Bb, Father = bb) $$
+%
+%%
+% It equals 
+%%
+%
+% $$ \frac{P(mother = Bb | N-1 children = Bb, Father = bb) P(Nth child = Bb | Mother = Bb, Father = bb) }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$
+%
+%%
+%
+% $$ \frac{ P_{N-1} * 1/2 }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$
+%%
+% The denominator
+%%
+% 
+% $$ P(Nth child = Bb | N-1 children = Bb, Father = bb) $$
+% 
+%%
+%
+% $$ = P(Nth child = Bb | Mother = Bb, Father = bb) * P( Mother = Bb | N-1 children = Bb, Father = bb) $$
+%
+%%
+%
+% $$ + P(Nth child = Bb | Mother = BB, Father = bb) * P( Mother = BB | N-1 children = Bb, Father = bb) $$
+%
+%%
+%
+% $$ = 1/2 * P_{N-1} + (1 - P_{N-1}) = 1 - 1/2 * P_{N-1} $$
+%
+%%
+% Thus 
+%%
+%
+% $$ P_{N} = 1/2 P_{N-1} / (1 - 1/2 P_{N-1}) $$
+%
+%%
+% Invert both sides
+%%
+% $$ 1/P_{N} = 2/P_{N-1} - 1 $$
+%%
+% Move terms
+%%
+% $$ 1/P_{N} - 1 = 2 ( 1/P_{N-1} - 1 ) $$
+%%
+% Thus
+%%
+% $$ p_{N} = 1/(1+(1/P_1 - 1)*2^(N-1)) $$
+%%
+% Given
+%%
+% $$ p_1 = 1/3 $$
+%%
+% So
+%%
+% $$ p_{N} = 1/(1+2^N) $$
+
+%% 2 Poisson neurons
+%% 
+% * a)
+%%
+% <include>randp.m</include>
+%%
+k = 0:20;
+mu = 5; % mean rate over the interval
+p = (mu.^k * exp(-mu))./factorial(k); % PDF for infinite length
+p = p/sum(p); % normalize
+%%
+% Plot the histogram
+h = zeros(21,4); % allocate space for histogram
+for m=2:5
+    N=10^m; % sample size
+    samples = randp(p,N); % generate N samples
+    h(:,m-1) = hist(samples,k)/N;
+end
+figure; hold on
+line=plot(k,p);
+handle = bar(k,h);
+label = cell(1,4);
+label{1} = '10^2 samples'; label{2} = '10^3 samples'; label{3} = '10^4 samples'; label{4} = '10^5 samples';
+legend([line,handle],['PDF',label]);
+xlabel('spike counts')
+ylabel('freq')
+title('spike count distribution for different sample number')
+%%
+% As we can see, as sample number increase, distribution becomes closer to
+% p
+%%
+for m = 2:5
+    SE(m-1) = sum((h(:,m-1)-p').^2);
+end
+figure; plot(2:5,SE,'b-*')
+xlabel('log(#sample)')
+ylabel('squared difference')
+%%
+% * b)
+%%
+% For two neurons
+mu1 = 2; % rate of the second neuron
+q = (mu1.^k * exp(-mu1))./factorial(k);
+q = q/sum(q); % PDF of the spike count of neuron 2
+%%
+pq = conv(p,q)'; % PDF of the sum of spikes
+h = zeros(41,4);
+for m=2:5
+    N=10^m;
+    samples = randp(pq,N);
+    h(:,m-1) = hist(samples,0:40)/N;
+end
+figure; hold on
+line = plot(0:40,pq);
+handle = bar(0:40,h);
+label = cell(1,4);
+label{1} = '10^2 samples'; label{2} = '10^3 samples'; label{3} = '10^4 samples'; label{4} = '10^5 samples';
+xlabel('sum of spike count')
+ylabel('freq')
+legend([line,handle],['PDF',label]);
+title('spike count summation distribution for different sample number')
+%%
+% Again, as sample size increase, the distribution becomes closer to the
+% PDF
+%%
+for m = 2:5
+    SE(m-1) = sum((h(:,m-1)-pq).^2);
+end
+figure; plot(2:5,SE,'b-*')
+xlabel('log(#sample)')
+ylabel('squared difference')
+%%
+% * c)
+%%
+% For a third neuron whose rate equals the sum of two, the spike count
+% histogram is the same
+%%
+k = 0:40;
+mu2 = 7; 
+r = (mu2.^k * exp(-mu2))./factorial(k);
+r = r/sum(r);
+if all(abs(r'-pq)<1e-5)
+    disp('two distributions are the same')
+else
+    disp('two distributions are different')
+end
+%%
+% If we record a new spike train I can't tell whether the spikes came from
+% one or two neurons just by looking at their distribution of spike counts.
+%% 3 Central Limit Theorem
+%%
+% * a)
+h = zeros(21,4 );
+for m=2:5
+    N=10^m;
+    samples = rand(N,2);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+end
+figure; hold on
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = '10^2 sets'; label{2} = '10^3 sets'; label{3} = '10^4 sets'; label{4} = '10^5 sets';
+legend(handle,label)
+title('distibution of the average of 2 samples')
+%%
+% As the sample size increase, the distribution becomes more like a
+% triangular shape. This is the result of convoluting two uniform
+% distributions (triangles) and scale the x axis by 2
+%%
+% * b)
+%%
+h = zeros(21,4);
+for m=2:5
+    N=10^m;
+    samples = rand(N,3);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+end
+figure; hold on
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = '10^2 sets'; label{2} = '10^3 sets'; label{3} = '10^4 sets'; label{4} = '10^5 sets';
+legend(handle,label)
+title('distibution of the average of 3 samples')
+%%
+h = zeros(21,4 );
+for m=2:5
+    N=10^m;
+    samples = rand(N,4);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+end
+figure; hold on
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = '10^2 sets'; label{2} = '10^3 sets'; label{3} = '10^4 sets'; label{4} = '10^5 sets';
+legend(handle,label)
+title('distibution of the average of 4 samples')
+%%
+h = zeros(21,4);
+for m=2:5
+    N=10^m;
+    samples = rand(N,5);
+    samples = mean(samples,2);
+    h(:,m-1) = hist(samples,0:0.05:1)/N;
+end
+figure; hold on
+handle = bar(0:0.05:1,h);
+label = cell(1,4);
+label{1} = '10^2 sets'; label{2} = '10^3 sets'; label{3} = '10^4 sets'; label{4} = '10^5 sets';
+legend(handle,label)
+title('distibution of the average of 5 samples')
+%%
+% The Distribution becomes closer to normal distribution as the sample size
+% increase. I can't judge how much it looks like a normal distribution by
+% simply looking at it. 
+%%
+% * c)
+%%
+% A normal distribution should fit a unity line in normplot. 
+figure
+N = 1000;
+samples = randn(N,1);
+normplot(samples)
+%%
+% For small sample size, the normplot is far from a unity line at both
+% tails of the distribution. As sample size increase, it's closer and
+% closer. Also the slope gets steeper, reflecting a reduction of variance. 
+% By a dozen of samples, it's hard to tell it apart from a normal
+% distribution. 
+%%
+clear handle
+N = 100000;
+figure; hold on
+n = 2;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,1) = normplot(samples);
+set(handle(1,1),'Marker','.')
+n = 3;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,2) = normplot(samples);
+set(handle(1,2),'Marker','+')
+n = 5;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,3) = normplot(samples);
+set(handle(1,3),'Marker','o')
+n = 8;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,4) = normplot(samples);
+set(handle(1,4),'Marker','x')
+n = 13;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,5) = normplot(samples);
+set(handle(1,5),'Marker','s')
+n = 21;
+samples = rand(N,n);
+samples = mean(samples,2);
+handle(:,6) = normplot(samples);
+set(handle(1,6),'Marker','*')
+xlim([0 1])
+legend(handle(1,:),{'2','3','5','8','13','21 samples'},'Location','northwest')
+%%
+%% 4 Multi-dimensional Gaussians
+%%
+% * a)
+%%
+% <include> ndRandn.m </include>
+%%
+% * b)
+%%
+% If the 2-D Gaussian Distribution has mean m and covaiance S, then the
+% marginal distribution has mean 
+%%
+% $$ \hat{u}^T m $$
+%%
+% and variance
+% $$ \hat{u}^T S \hat{u} $$
+%%
+% generate 10000 pairs of samples, we can see sample statistics is close to theoretical ones
+N = 10000;
+m = [10,30]';
+covar = [81,16;16,144];
+samples = ndRandn(m,covar,N);
+m_s = mean(samples,2);
+cov_s = (samples-m_s)*(samples-m_s)'/1000;
+disp('theoretical mean:')
+disp(m)
+disp('sample mean:')
+disp(m_s)
+disp('theoretical covariance:')
+disp(covar)
+disp('sample covariance:')
+disp(cov_s)
+%%
+% project the sample to get marginal distributions
+%%
+theta = (0:47)*2*pi/48;
+us = [cos(theta);sin(theta)]; % generate a circle of unit vectors
+samples_p = us'*samples; % project samples along unit vectors
+mean_p = mean(samples_p,2); 
+var_p = var(samples_p,0,2); % calculate mean and variance of projected samples
+%%
+% and compare with theoretical prediction
+%%
+figure; 
+subplot(2,1,1);hold on
+title('comparation of sample stats and prediction')
+stem(theta,mean_p);
+stem(theta,us'*m);
+ylabel('mean')
+legend('sample mean', 'predicted mean')
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi])
+subplot(2,1,2);hold on
+stem(theta,var_p);
+stem(theta,diag(us'*covar*us))
+ylabel('variance')
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi])
+xlabel('projection direction / rad')
+legend('sample variance', 'predicted variance','Location','southeast')
+%%
+% They match. 
+%%
+% * c)
+%%
+% Now we transform a unit circle to a ellipse in the same way we transform a standard
+% indepedent multi-dimensional Gaussian samples to Gaussian with desired
+% mean and covariance
+%%
+figure; hold on; grid on
+[U,S,~] = svd(covar);
+cov_sqrt = U*sqrt(S);
+eus = 2*cov_sqrt*[us,us(:,1)]; % ellipse w/o adding mean
+plot(eus(1,:)+m_s(1),eus(2,:)+m_s(2))
+scatter(samples(1,:),samples(2,:),'MarkerEdgeAlpha',.2)
+legend('ellipse','data')
+axis equal
+%%
+% This ellipse largely captures the shape of the data cloud. 
+%%
+% * d)
+%%
+% The largest variance is along the direction of the first eigenvector of
+% covariance matrix
+%%
+u = U(:,1); % first eigenvector/sigular vector for symmetric matrix
+angle = atan2(u(2),u(1)); 
+angle = mod(angle,2*pi);
+angle2 = mod(angle+pi,2*pi);
+var_pu = norm(u'*cov_sqrt)^2;
+%%
+figure; hold on
+plot(theta,var_p);
+plot(theta,diag(us'*covar*us))
+stem([angle,angle2],[var_pu,var_pu],'r*')
+ylabel('variance')
+xticks((0:3)*2*pi/4)
+xlim([0,2*pi]) 
+xlabel('projection angle / rad')
+legend('sample variance', 'predicted variance','predicted maxima','Location','southeast')
+%%
+figure; hold on; grid on
+[U,S,~] = svd(covar);
+cov_sqrt = U*sqrt(S);
+eus = 2*cov_sqrt*[us,us(:,1)]; % ellipse w/o adding mean
+plot(eus(1,:)+m(1),eus(2,:)+m(2))
+scatter(samples(1,:),samples(2,:),'MarkerEdgeAlpha',.2)
+quiver(m(1),m(2),u(1),u(2),20,'Color','b')
+axis equal
+legend('ellipse','data','direction where we can get largest variance','Location','southeast')
+%%
+close all
+
+##### SOURCE END #####
+--></body></html>

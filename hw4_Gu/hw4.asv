@@ -18,23 +18,39 @@ close all; clear;
 %%
 % * a)
 %%
+% The probability that Mother has a b gene given the child has a brown eye
+% is
+%%
 % 
 % $$ P(mother = Bb | First Child = brown) $$
 %
 %%
 % 
-% $$ = P(First Child = brown | mother = Bb ) P(mother = Bb) / P(First Child = brown) $$
+% $$ = \frac{ P(First Child = brown | mother = Bb ) P(mother = Bb) }{ P(First Child = brown)} $$
 %
 %%
 %
-% $$ = P(First Child = brown | mother = Bb ) * 1/2 / P(First Child = brown) 
+% $$ = \frac{P(First Child = brown | mother = Bb ) * 1/2 }{ P(First Child = brown) }$$ 
 %
 %%
-% because Children must carry a b from Father. 
+% The two terms assuming knowledge about mother but not about the child.
+%%
+% Assuming we don't know what eye color the child has, but know that the
+% mother is a Bb. Given Father is bb, we know that the child has half
+% chance of getting either eye colors
 %%
 % 
 % $$ P(First Child = brown | Mother = Bb) = P(First Child = Bb | Father = bb, Mother = Bb) = 1/2 $$
 %
+%%
+% If we assume the mother doesn't carry a b gene, then the child will
+% always be a brown eye. 
+%%
+% 
+% $$ P(First Child = brown | Mother = BB) = P(First Child = Bb | Father = bb, Mother = BB) = 1 $$
+%
+%%
+% Combine them together, we get
 %%
 % 
 % $$ P(First Child = brown) = P(First Child = Bb | Father = bb) $$
@@ -50,15 +66,23 @@ close all; clear;
 %%
 % $$ = 1/2 * 1/2 + 1 * 1/2 = 3/4 $$
 %%
+% Thus
+%%
 % 
 % $$ P(mother = Bb | First Child = brown) $$
 % 
 %%
 % 
-% $$ = 1/2 * 1/2 / (3/4)  = 1/3 $$
+% $$ = \frac{1/2 * 1/2 }{ 3/4 }  = 1/3 $$
 % 
 %%
+% given the Child and Mother have brown eyes and the Father has blue
+% eyes, The probability that the Mother carries a b gene is 1/3. 
+%%
 % * b)
+%%
+% We know the Father is bb, because Children must carry a b from Father. If They have brown eyes, They
+% must be Bb. 
 %%
 % 
 % $$ P(mother = Bb | Second Child = brown, First Child = brown) $$
@@ -68,17 +92,30 @@ close all; clear;
 % $$ = P(mother = Bb | Second Child = Bb, First Child = Bb, Father = bb) $$
 %
 %%
-% 
-% $$ = P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) P(mother = Bb) / P(Second Child = Bb | First Child = Bb, Father = bb) $$
-%
+% Using Bayes rule, It equals
 %%
 % 
-% $$ = P(Second Child = Bb | mother = Bb, Father = bb ) P(mother = Bb) / P(Second Child = Bb | First Child = Bb, Father = bb) $$
+% $$\frac{ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) P(mother = Bb | First Child = Bb, Father = bb) }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$
+%
+%%
+% The genotype of the first child won't affect the second, so
+%%
+%
+% $$ P(Second Child = Bb | mother = Bb, First Child = Bb, Father = bb ) = P(Second Child = Bb | mother = Bb, Father = bb ) = 1/2 $$
+%
+%%
+% So 
+%%
+%%
+% 
+% $$ P(mother = Bb | Second Child = brown, First Child = brown) $$
 %
 %%
 %
-% $$ = 1/2 * 1/3 / P(Second Child = Bb | First Child = Bb, Father = bb) $$
+% $$ = \frac{1/2 * 1/3 }{ P(Second Child = Bb | First Child = Bb, Father = bb) } $$
 %
+%%
+% The demoninator
 %%
 % 
 % $$ P(Second Child = Bb | First Child = Bb, Father = bb)  $$
@@ -100,7 +137,9 @@ close all; clear;
 % $$ + P(Second Child = Bb | Mother = BB, Father = bb) * (1 - P(Mother = Bb | First Child = Bb, Father = bb) ) $$
 % 
 %%
-% $$ = 1/2 * 1/3 + 1 * 2/3 = 5/6
+% $$ = 1/2 * 1/3 + 1 * 2/3 = 5/6 $$
+%%
+% So
 %%
 % 
 % $$ P(mother = Bb | First Child = brown, second Child = brown) $$
@@ -118,13 +157,16 @@ close all; clear;
 % $$ P_{N} = P(mother = Bb | N children = Bb, Father = bb) $$
 %
 %%
+% It equals 
+%%
 %
-% $$ = P(mother = Bb | N-1 children = Bb, Father = bb) P(Nth child = Bb | Mother = Bb, Father = bb) / P(Nth child = Bb | N-1 children = Bb, Father = bb) $$
+% $$ \frac{P(mother = Bb | N-1 children = Bb, Father = bb) P(Nth child = Bb | Mother = Bb, Father = bb) }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$
 %
 %%
 %
-% $$ = P_{N-1} * 1/2 / P(Nth child = Bb | N-1 children = Bb, Father = bb) $$
-%
+% $$ \frac{ P_{N-1} * 1/2 }{ P(Nth child = Bb | N-1 children = Bb, Father = bb) }$$
+%%
+% The denominator
 %%
 % 
 % $$ P(Nth child = Bb | N-1 children = Bb, Father = bb) $$
@@ -139,34 +181,47 @@ close all; clear;
 %
 %%
 %
-% $$ = 1/2 P_{N-1} + (1 - P_{N-1}) = 1 - 1/2 P_{N-1} $$
+% $$ = 1/2 * P_{N-1} + (1 - P_{N-1}) = 1 - 1/2 * P_{N-1} $$
 %
+%%
+% Thus 
 %%
 %
 % $$ P_{N} = 1/2 P_{N-1} / (1 - 1/2 P_{N-1}) $$
 %
 %%
-% $$ 1/P_{N} = 2/P_{N-1} - 1
+% Invert both sides
 %%
-% $$ 1/P_{N} - 1 = 2 ( 1/P_{N-1} - 1 )
+% $$ 1/P_{N} = 2/P_{N-1} - 1 $$
+%%
+% Move terms
+%%
+% $$ 1/P_{N} - 1 = 2 ( 1/P_{N-1} - 1 ) $$
+%%
+% Thus
 %%
 % $$ p_{N} = 1/(1+(1/P_1 - 1)*2^(N-1)) $$
-%% 
+%%
+% Given
+%%
 % $$ p_1 = 1/3 $$
 %%
-% $$ p_{N} = 1/(1+2^N)
+% So
+%%
+% $$ p_{N} = 1/(1+2^N) $$
 
 %% 2 Poisson neurons
 %% 
 % * a)
+%%
+% <include>randp.m</include>
 %%
 k = 0:20;
 mu = 5; % mean rate over the interval
 p = (mu.^k * exp(-mu))./factorial(k); % PDF for infinite length
 p = p/sum(p); % normalize
 %%
-% <include>randp.m</include>
-%%
+% Plot the histogram
 h = zeros(21,4); % allocate space for histogram
 for m=2:5
     N=10^m; % sample size
@@ -194,6 +249,8 @@ xlabel('log(#sample)')
 ylabel('squared difference')
 %%
 % * b)
+%%
+% For two neurons
 mu1 = 2; % rate of the second neuron
 q = (mu1.^k * exp(-mu1))./factorial(k);
 q = q/sum(q); % PDF of the spike count of neuron 2
@@ -226,6 +283,8 @@ xlabel('log(#sample)')
 ylabel('squared difference')
 %%
 % * c)
+%%
+% 
 %%
 k = 0:40;
 mu2 = 7; 
@@ -375,8 +434,8 @@ legend(handle(1,:),{'2','3','5','8','13','21 samples'},'Location','northwest')
 %%
 % generate 10000 pairs of samples
 N = 10000;
-m = [1,3]';
-covar = [9,4;4,16];
+m = [10,30]';
+covar = [81,16;16,144];
 samples = ndRandn(m,covar,N);
 m_s = mean(samples,2);
 cov_s = (samples-m_s)*(samples-m_s)'/1000;
@@ -430,18 +489,20 @@ eus = 2*cov_sqrt*[us,us(:,1)]; % ellipse w/o adding mean
 plot(eus(1,:)+m_s(1),eus(2,:)+m_s(2),'LineWidth',2)
 scatter(samples(1,:),samples(2,:))
 legend('ellipse','data')
+axis equal
 %%
 % This ellipse largely captures the shape of the data cloud. 
 %%
 % * d)
 %%
-% The largest variance is along the direction of the first eigenvector
+% The largest variance is along the direction of the first eigenvector of
+% covariance matrix
 %%
 u = U(:,1); % first eigenvector/sigular vector for symmetric matrix
 angle = atan2(u(2),u(1)); 
 angle = mod(angle,2*pi);
 angle2 = mod(angle+pi,2*pi);
-var_pu = var(u'*samples,0,2);
+var_pu = norm(u'*cov_sqrt)^2;
 %%
 figure; hold on
 plot(theta,var_p);
@@ -457,9 +518,10 @@ figure; hold on; grid on
 [U,S,~] = svd(covar);
 cov_sqrt = U*sqrt(S);
 eus = 2*cov_sqrt*[us,us(:,1)]; % ellipse w/o adding mean
-plot(eus(1,:)+m_s(1),eus(2,:)+m_s(2),'LineWidth',2)
+plot(eus(1,:)+m(1),eus(2,:)+m(2),'LineWidth',2)
 scatter(samples(1,:),samples(2,:))
-% uu = cov_sqrt*u;
-quiver(m_(1),m(2),u(1),u(2),10,'Color','b')
-legend('ellipse','data','direction where we can get largest variance')
-
+quiver(m(1),m(2),u(1),u(2),20,'Color','b')
+axis equal
+legend('ellipse','data','direction where we can get largest variance','Location','southeast')
+%%
+close all
