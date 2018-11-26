@@ -275,6 +275,8 @@ disp(1-larger_is_l)
 %%
 % $$ P(language | activation) = \frac{P(activation | language )P( language )}{P(activation)} $$
 %%
+% where
+%%
 % $$ P(activation) = P(activation | language) P(language) + P(activation |
 % no language) P (no language) = \frac{1}{2}(x_l + x_{nl})$$
 %%
@@ -288,7 +290,16 @@ disp(1-larger_is_l)
 CP = xl./(xl+xnl); % conditional probability of P(language | activation) given xl xnl
 CP(isnan(CP)) = 0;
 EP = posterior_nl'*CP*posterior_l; % expected probability of P(language | activation)
-
+%%
+% the expectation probability that observing activation in Broca’s area
+% implies engagement of language processes is: 
+%%
+disp(EP)
+%%
+% is not much larger than 0.5, the prior probability that a contrast engage
+% language. So Poldrack is right. 
+%%
+close all
 %%
 %% 3 Bayesian estimation
 %%
@@ -300,7 +311,7 @@ x = 0:dx:100;
 % Nikhil prefers to be near the center of the
 % shopping mall at location 50. He has a prior Gaussian distribution
 % centered on 50 with variance 40.
-priorpdf = exp((x-50).^2/(2*40))/(sqrt(2*pi)*40);
+priorpdf = exp(-(x-50).^2/(2*40))/(sqrt(2*pi)*40);
 priorcdf = normcdf(x,50,sqrt(40));
 prior    = diff([priorcdf 1]);
 %%
@@ -314,9 +325,9 @@ prior    = diff([priorcdf 1]);
 % Based on the location of the coffee cup,
 % the likelihood function of his location is a Gaussian distribution
 % with mean X=30 and variance 100.
-lkhpdf = exp((x-30).^2/(2*100))/(sqrt(2*pi)*100);
+lkhpdf = exp(-(x-30).^2/(2*100))/(sqrt(2*pi)*100);
 lkhcdf = normcdf(x,30,sqrt(100));
-likelihood = doff([lkhdcdf 1]);
+likelihood = diff([lkhcdf 1]);
 %%
 % $$ f(coffee\ cup|X) = \mathcal{N}(30,100) $$
 %%
@@ -326,16 +337,167 @@ likelihood = doff([lkhdcdf 1]);
 %%
 % $$ \propto e^{-\frac{(x-50)^2}{80} - \frac{(x-30)^2}{200}}$$
 %%
-% $$ \propto e^{-\frac{(x-310/7)^2}{30/7}} $$
+% $$ \propto e^{-\frac{(x-310/7)^2}{400/7}} $$
 %%
 % so
 %%
-% $$ f(X | coffee\ cup) = \mathcal{N}(310/7,15/7) $$
+% $$ f(X | coffee\ cup) = \mathcal{N}(310/7,200/7) $$
 %%
-posterior = prior*likelihood;
-posterior = posterior / sum(posterior);
+normalization = sum(priorpdf.*lkhpdf)*dx;
+posterior = priorpdf.*lkhpdf/ normalization;
 %%
-% posterior has a variance of 15/14
+% posterior has a variance of 200/7 = 28.57
 %%
+figure; hold on
+plot(priorpdf)
+plot(lkhpdf)
+plot(posterior)
+legend('prior','likelihood','posterior')
+xlabel('Nikhil''s location');
+ylabel('probability density')
+%%
+% * b)
+%%
+% The coffee cup was not that cold after all. Nikhil’s likelihood function
+% has mean X=30, but with a smaller variance of 20. 
+lkhpdf = exp(-(x-30).^2/(2*20))/(sqrt(2*pi)*20);
+lkhcdf = normcdf(x,30,sqrt(100));
+likelihood = diff([lkhcdf 1]);
+%%
+normalization = sum(priorpdf.*lkhpdf)*dx;
+posterior = priorpdf.*lkhpdf/ normalization;
+%%
+% The posterior moved leftwards toward the mean of likelihood. This makes
+% sense because we are now more confident about the evidence, so our estimate is more biased to the coffee cup's position.  
+%%
+figure; hold on
+plot(priorpdf)
+plot(lkhpdf)
+plot(posterior)
+legend('prior','likelihood','posterior')
+xlabel('Nikhil''s location');
+ylabel('probability density')
+%%
+% * c)
+%%
+% If the prior had been uniform, the posterior would be proportional to the
+% likelihood, thus having the same variance as the likelihood. 
+%%
+% The inclusion of prior lower the variance of posterior from 100 to 28.57,
+% or add to the inverse of the variance. 
+%%
+% $$ \frac{1}{\sigma^2_{posterior}} = \frac{1}{\sigma^2_{prior}} + \frac{1}{\sigma^2_{likelihood}} $$
+%% 4 Signal Detection Theory
+%%
+% * a)
+%%
+% For the “no coherence”’ stimulus, generate 1000 trials of the firing rate
+% of the neuron in response to these stimuli. Since we cannot have negative
+% firing rates, set all rates that are below zero to zero. 
+%%
+% $$ f(r|No Coherence) = \mathcal{N}(5,1) $$
+%%
+N = 1000;
+NC = 5+randn(N,1);
+NC(NC<0)=0;
+%%
+% $$ f(r|right) = \mathcal{N}(8,1) $$
+SC = 8+randn(N,1);
+SC(SC<0)=0;
+%%
+figure;hold on
+h1=histogram(NC);
+h2=histogram(SC);
+legend('0% coherence','10% coherence right')
+xlabel('firing rate')
+title('FR histogram')
+%%
+% * b)
+%%
+% $$ d' = (8-5)/1 = 3 $$
+%%
+d = (mean(SC) - mean(NC)) / ((std(SC)+std(NC))/2) 
+%%
+% * c)
+%%
+% Select various thresholds t and for each threshold calculate the hit and
+% false-alarm rates using your sample data from (a). 
+%%
+t = 0:.1:12;
+hit = 1 - cumsum(hist(SC,t))/N;
+FA = 1 - cumsum(hist(NC,t))/N;
+figure;plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('ROC')
+%%
+% percentage-correct equals
+%%
+% $$ P(right) * P(r>threshold | right) + P(No Coherence) * P(r<threshold | No Coherence) $$
+%%
+% $$ = P(right) * Hit + P(No Coherence) * CR $$
+%%
+% assume that 0% and 10% coherence stimuli occur equally often. To maximize
+% percentage-correct, we want to set a threshould that equals: 
+[~,ind] = max(0.5*hit + 0.5*(1-FA));
+threshold = t(ind)
+%%
+figure
+subplot(2,1,1);plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('threshold assuming equal occurence')
+hold on
+axis equal
+ylim([0 1]);xlim([0 1])
+scatter(FA(ind),hit(ind),'k*')
+subplot(2,1,2);
+h1=histogram(NC);hold on
+h2=histogram(SC);
+legend('0% coherence','10% coherence right')
+xlabel('firing rate')
+yl = ylim;
+plot([threshold threshold],[0 1000],'k--','LineWidth',3,'HandleVisibility','off')
+ylim(yl)
+%%
+% assume that 10% coherence stimuli occurs 75% of the time. To maximize
+% percentage-correct, we want to set a threshould that equals: 
+[~,ind] = max(0.75*hit + 0.25*(1-FA));
+threshold = t(ind)
+%%
+figure
+subplot(2,1,1);plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('threshold assuming 75% occurence')
+hold on
+axis equal
+ylim([0 1]);xlim([0 1])
+scatter(FA(ind),hit(ind),'k*')
+subplot(2,1,2);
+h1=histogram(NC);hold on
+h2=histogram(SC);
+legend('0% coherence','10% coherence right')
+xlabel('firing rate')
+yl = ylim;
+plot([threshold threshold],[0 1000],'k--','LineWidth',3,'HandleVisibility','off')
+ylim(yl)
 
+%%
+%%
+% To maximize
+% percentage-correct, we want to set a threshould such that: 
+%%
+% $$ P(right | r>threshould) = 0.5 $$
+%%
+% Since the posterior 
+%%
+% $$ P(right | r) = \frac{P(right)f(r|right)}{P(right)f(r|right) + P(No Coherence)f(r|No Coherence)} $$
+%%
+%%
+% $$ = \frac{P(right)\mathcal{N}(8,1)}{P(right)\mathcal{N}(8,1) + P(No Coherence)\mathcal{N}(5,1)} $$
+%%
+% * d)
+
+%%
 close all
