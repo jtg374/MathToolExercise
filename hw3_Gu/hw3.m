@@ -31,32 +31,19 @@ else
 end
     
 %%
-% System 2 *is* shift-invariant
-figure; hold on; grid on
+% System 2 *is* shift-invariant, circular boundary handling also holds for very late impulse. 
+positions = [1 2 4 8 62];
 %positions = randperm(N,4);
-positions = [1 2 4 8];
+impulseResponse = unknownSystem2(I(:,1));
 for p=positions+1
     output = unknownSystem2(I(:,p));
-    line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
+    shiftImpulseResponse = circshift(impulseResponse,p-1);
+    if all(abs(output - shiftImpulseResponse)<1e-10)
+        disp(['position ',num2str(p-1),' checked!'])
+    else
+        disp(['position ',num2str(p-1),' failed!'])
+    end
 end
-xlabel('time')
-ylabel('response')
-title('Impulse response of system 2 at different positions')
-legend('Location','north')
-%% 
-% circular boundary handling also holds for very late impulse. 
-figure; hold on; grid on
-for p=positions+54
-    output = unknownSystem2(I(:,p));
-    line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
-end
-xlabel('time')
-ylabel('response')
-title('Impulse response of system 2 at different positions')
-legend('Location','north')
-
 %%
 % System 2 is *nonlinear* because of a nonzero offset
 output1 = unknownSystem2(I(:,positions(4)));
@@ -78,34 +65,21 @@ legend('sum on output side','sum on input side','Location','northeast')
 title('nonlinearity of system 2')
 %%
 % System 3 *is* shift-invariant, circular boundary handling also holds for very late impulse.
-figure; hold on; grid on
-% positions = randperm(N,4)
-positions = [1 2 4 8];
+positions = [1 2 4 8 62];
+% positions = randperm(N,4);
+impulseResponse = unknownSystem3(I(:,1));
 for p=positions+1
     output = unknownSystem3(I(:,p));
-    line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p-1)]);
+    shiftImpulseResponse = circshift(impulseResponse,p-1);
+    if all(abs(output - shiftImpulseResponse)<1e-10)
+        disp(['position ',num2str(p-1),' checked!'])
+    else
+        disp(['position ',num2str(p-1),' failed!'])
+    end
 end
-xlabel('time')
-ylabel('response')
-title('Impulse response of system 3 at different positions')
-legend('Location','north')
-%% 
-% circular boundary handling also holds for very late impulse. 
-figure; hold on; grid on
-for p=positions+54
-    output = unknownSystem3(I(:,p));
-    line = plot(output);
-    set(line,'Displayname',['impulse response at ',num2str(p+1)]);
-end
-xlabel('time')
-ylabel('response')
-title('Impulse response of system 3 at different positions')
-legend('Location','north')
-
 %%
 % System 3 *is* possibly linear
-positions = randi(N,1,4);
+positions = randperm(N,4);
 g1=1;g2=1;
 output1 = unknownSystem3(I(:,positions(1)));
 output2 = unknownSystem3(I(:,positions(2)));
@@ -496,8 +470,10 @@ sigDS = sig(DS);
 plot(time(DS)/100,sigDS,'r*-')
 legend('original signal','subsampled signal')
 %%
-% The reduced version signal looks like another perodic signal. It doesn't provide a good
-% summary of the original signal. 
+% The reduced version signal looks like another perodic signal.
+% The original signal has a period of 0.1 s and the subsampled signal has a
+% period of 0.2 s
+% It doesn't provide a good summary of the original signal. 
 %%
 % subsampling operation *is linear* but *not shift-invariant*, because it's
 % essentially pairwise multiplication with another signal DS where every
@@ -514,7 +490,8 @@ sigDSF = fft(sigDSUS);
 figure; hold on
 bar((-N/2):(N/2-1),fftshift(abs(sigF)),'k')
 bar((-N/2):(N/2-1),fftshift(abs(sigDSF)),'r')
-legend('original signal','subsampled then upsampled signal')
+plot([-N/2/p,-N/2/p,N/2/p,N/2/p],[0 120 120 0],'b--')
+legend('original signal','subsampled then upsampled signal','1/2 subsampling frequency')
 ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
@@ -523,7 +500,22 @@ ylabel('Fourier amplitude')
 %%
 % subsampling followed by upsampling basically copys the origianl spectrum (without DC component) four times,
 % scales them by 1/4 both vertically and horizontally and places 
-% side by side with each other. 
+% side by side with each other, centered at multiples of 1/2 subsampling
+% frequency. 
+%% 
+% The aliasing effect is apparent: original high frequency (30 Hz) component 
+% is now at low frequency (5 Hz). 
+figure;bar((-N/8):(N/8-1),fftshift(abs(fft(sigDS))),'r')
+ticks = (-N/8):(N/40):(N/8-1);
+xticks(ticks)
+xticklabels(ticks/N*100)
+xlabel('frequency (Hz)')
+ylabel('Fourier amplitude')
+legend('subsampled signal')
+%%
+% The spectrum of the subsampled signal itself just sit in the box above. 
+% It's like fold the original spectrum at center, tear apart and
+% concatenate at the other sides. 
 %% 
 % This has something to do with the vector DS, which is also a period
 % signal with period 4. The Fourier amplitude spectrum of DS are just
@@ -534,6 +526,7 @@ for p = 2:4
     DS = mod(time,p)==0;
     bar((-N/2):(N/2-1),fftshift(abs(fft(DS)/N)),'DisplayName',['p = ',num2str(p)])
 end
+ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel('frequency (Hz)')
@@ -549,6 +542,7 @@ figure
 DS = mod(time,4)==0;
 SpectrumConv = cconv(sigF,fft(DS),N);
 bar((-N/2):(N/2-1),fftshift(abs(SpectrumConv)))
+ticks = (-N/2):(N/10):(N/2-1);
 xticks(ticks)
 xticklabels(ticks/N*100)
 xlabel('frequency (Hz)')
