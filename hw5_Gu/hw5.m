@@ -430,6 +430,8 @@ figure;plot(FA,hit,'k')
 xlabel('False Alarm')
 ylabel('Hit')
 title('ROC')
+axis equal
+ylim([0 1]);xlim([0 1])
 %%
 % percentage-correct equals
 %%
@@ -451,14 +453,16 @@ hold on
 axis equal
 ylim([0 1]);xlim([0 1])
 scatter(FA(ind),hit(ind),'k*')
+plot(FA(ind)+[-1 1]*.5,hit(ind)+[-1 1]*.5,'k--')
 subplot(2,1,2);
 h1=histogram(NC);hold on
 h2=histogram(SC);
-legend('0% coherence','10% coherence right')
 xlabel('firing rate')
 yl = ylim;
-plot([threshold threshold],[0 1000],'k--','LineWidth',3,'HandleVisibility','off')
+plot([threshold threshold],[0 1000],'k--','LineWidth',3)
 ylim(yl)
+legend('0% coherence','10% coherence right','threshold')
+
 %%
 % assume that 10% coherence stimuli occurs 75% of the time. To maximize
 % percentage-correct, we want to set a threshould that equals: 
@@ -474,30 +478,100 @@ hold on
 axis equal
 ylim([0 1]);xlim([0 1])
 scatter(FA(ind),hit(ind),'k*')
+plot(FA(ind)+[-1 1]*.75,hit(ind)+[-1 1]*.25,'k--')
 subplot(2,1,2);
 h1=histogram(NC);hold on
 h2=histogram(SC);
-legend('0% coherence','10% coherence right')
 xlabel('firing rate')
 yl = ylim;
-plot([threshold threshold],[0 1000],'k--','LineWidth',3,'HandleVisibility','off')
+plot([threshold threshold],[0 1000],'k--','LineWidth',3)
 ylim(yl)
+legend('0% coherence','10% coherence right','threshold')
 
 %%
-%%
-% To maximize
-% percentage-correct, we want to set a threshould such that: 
-%%
-% $$ P(right | r>threshould) = 0.5 $$
-%%
-% Since the posterior 
-%%
-% $$ P(right | r) = \frac{P(right)f(r|right)}{P(right)f(r|right) + P(No Coherence)f(r|No Coherence)} $$
-%%
-%%
-% $$ = \frac{P(right)\mathcal{N}(8,1)}{P(right)\mathcal{N}(8,1) + P(No Coherence)\mathcal{N}(5,1)} $$
-%%
 % * d)
+%%
+% Consider now a neuron with a more ”noisy” response so that the mean
+% firing rates are the same but the standard deviation is 2 spikes/s instead of 1 spike/s. 
+NC = 5+randn(N,1)*2;
+NC(NC<0)=0;
+SC = 8+randn(N,1)*2;
+SC(SC<0)=0;
+%%
+% now d' is halved
+d = (mean(SC) - mean(NC)) / ((std(SC)+std(NC))/2) 
+%%
+figure;hold on
+h1=histogram(NC);
+h2=histogram(SC);
+legend('0% coherence','10% coherence right')
+xlabel('firing rate')
+title('FR histogram')
+
+%%
+% the ROC curve is shifted towards diagonal
+t = 0:.1:12;
+hit = 1 - cumsum(hist(SC,t))/N;
+FA = 1 - cumsum(hist(NC,t))/N;
+figure;plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('ROC')
+axis equal
+ylim([0 1]);xlim([0 1])
+%%
+% assume that 0% and 10% coherence stimuli occur equally often. To maximize
+% percentage-correct, we want to set a threshould that equals: 
+[~,ind] = max(0.5*hit + 0.5*(1-FA));
+threshold = t(ind)
+%%
+% Still about at the center of two means
+%%
+figure
+subplot(2,1,1);plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('threshold assuming equal occurence')
+hold on
+axis equal
+ylim([0 1]);xlim([0 1])
+scatter(FA(ind),hit(ind),'k*')
+plot(FA(ind)+[-1 1]*.5,hit(ind)+[-1 1]*.5,'k--')
+subplot(2,1,2);
+h1=histogram(NC);hold on
+h2=histogram(SC);
+xlabel('firing rate')
+yl = ylim;
+plot([threshold threshold],[0 1000],'k--','LineWidth',3)
+ylim(yl)
+legend('0% coherence','10% coherence right','threshold')
+
+%%
+% assume that 10% coherence stimuli occurs 75% of the time. To maximize
+% percentage-correct, we want to set a threshould that equals: 
+[~,ind] = max(0.75*hit + 0.25*(1-FA));
+threshold = t(ind)
+%%
+% It's now further leftwards. 
+%%
+figure
+subplot(2,1,1);plot(FA,hit,'k')
+xlabel('False Alarm')
+ylabel('Hit')
+title('threshold assuming 75% occurence')
+hold on
+axis equal
+ylim([0 1]);xlim([0 1])
+scatter(FA(ind),hit(ind),'k*')
+plot(FA(ind)+[-1 1]*.75,hit(ind)+[-1 1]*.25,'k--')
+subplot(2,1,2);
+h1=histogram(NC);hold on
+h2=histogram(SC);
+xlabel('firing rate')
+yl = ylim;
+plot([threshold threshold],[0 1000],'k--','LineWidth',3)
+ylim(yl)
+legend('0% coherence','10% coherence right','threshold')
 
 %%
 close all
